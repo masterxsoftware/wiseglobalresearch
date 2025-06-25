@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+/* Float Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Logo Glow + Shine */
+.shine-hover {
+  position: relative;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  border-radius: 9999px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.shine-hover:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 25px rgba(255, 255, 255, 0.6),
+    0 0 45px rgba(255, 255, 255, 0.2),
+    inset 0 0 12px rgba(255, 255, 255, 0.3);
+}
+
+.shine-hover::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  transform: rotate(0deg);
+  opacity: 0;
+  pointer-events: none;
+  border-radius: 9999px;
+  transition: opacity 0.4s ease-in-out;
+  z-index: 1;
+}
+
+.shine-hover:hover::after {
+  animation: shine-spin 2s linear infinite;
+  opacity: 0.3;
+}
+
+@keyframes shine-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Text Glow */
+.glow-text {
+  color: #fff;
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.7),
+    0 0 12px rgba(255, 255, 255, 0.3),
+    0 0 18px rgba(255, 255, 255, 0.2);
+}
