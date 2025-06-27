@@ -68,11 +68,11 @@ function Footer() {
               Wise Global Research Services Pvt. Ltd. comprises seasoned and proficient research analysts specializing in the stock and commodity markets.
             </p>
             <div className="flex gap-4 justify-center md:justify-start mt-4">
-              <a href="https://facebook.com" target="_blank" rel="noreferrer"><FaFacebookF className="text-blue-600 text-lg hover:scale-110 transition" /></a>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer"><FaInstagram className="text-pink-500 text-lg hover:scale-110 transition" /></a>
-              <a href="https://twitter.com" target="_blank" rel="noreferrer"><SiX className="bg-white text-black rounded-full text-lg hover:scale-110 transition p-[2px]" /></a>
-              <a href="https://linkedin.com" target="_blank" rel="noreferrer"><FaLinkedinIn className="text-white text-lg hover:scale-110 transition" /></a>
-              <a href="https://youtube.com" target="_blank" rel="noreferrer"><FaYoutube className="text-red-600 text-lg hover:scale-110 transition" /></a>
+              <a href="https://www.facebook.com/wiseglobalresearch/" target="_blank" rel="noreferrer"><FaFacebookF className="text-blue-600 text-lg hover:scale-110 transition" /></a>
+              <a href="https://www.instagram.com/wiseglobalresearch/" target="_blank" rel="noreferrer"><FaInstagram className="text-pink-500 text-lg hover:scale-110 transition" /></a>
+              <a href="https://x.com/research221711" target="_blank" rel="noreferrer"><SiX className="bg-white text-black rounded-full text-lg hover:scale-110 transition p-[2px]" /></a>
+              <a href="https://www.linkedin.com/in/wise-global-research-services-63b535317/" target="_blank" rel="noreferrer"><FaLinkedinIn className="text-white text-lg hover:scale-110 transition" /></a>
+              <a href="https://www.youtube.com/@WiseGlobalResearchService" target="_blank" rel="noreferrer"><FaYoutube className="text-red-600 text-lg hover:scale-110 transition" /></a>
             </div>
           </div>
 

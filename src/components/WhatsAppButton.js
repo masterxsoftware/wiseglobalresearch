@@ -5,7 +5,7 @@ import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 function WhatsAppButton() {
   return (
     <a
-      href="https://wa.me/919977909494"
+      href="https://api.whatsapp.com/send/?phone=919977909494&text=Hey+Wise+Global+Research+Service+team%2C+I+need+help+with+trading.+Please+guide+me.&type=phone_number&app_absent=0"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"

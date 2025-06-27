@@ -13,6 +13,7 @@ module.exports = {
         float: 'float 4s ease-in-out infinite',
         glowPulse: 'glowPulse 2s ease-in-out infinite',
         rotateSlow: 'rotateSlow 8s linear infinite',
+        rotateY: 'rotateY 0.8s ease-in-out', // ✅ NEW
       },
       keyframes: {
         fadeIn: {
@@ -51,8 +52,13 @@ module.exports = {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
         },
+        rotateY: {
+          '0%': { transform: 'rotateY(0deg)' },
+          '50%': { transform: 'rotateY(180deg)' },
+          '100%': { transform: 'rotateY(0deg)' },
+        }, // ✅ NEW KEYFRAME
       },
     },
   },
   plugins: [],
-};
+};   

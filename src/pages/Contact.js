@@ -2,10 +2,11 @@
 import React from 'react';
 import { useForm, ValidationError } from '@formspree/react';
 import { motion } from 'framer-motion';
-
-// ✅ React Icons
-import { FaUser, FaEnvelope, FaPhone, FaCommentDots } from 'react-icons/fa';
 import {
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaCommentDots,
   FaWhatsapp,
   FaFacebookF,
   FaInstagram,
@@ -16,7 +17,6 @@ import {
 function Contact() {
   const [state, handleSubmit] = useForm('mgvyzjrd');
 
-  // ✅ Animation Variants
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: (i = 1) => ({
@@ -54,7 +54,6 @@ function Contact() {
       <div className="absolute inset-0 backdrop-blur-sm bg-black/10 z-0" />
 
       <div className="relative z-10 max-w-3xl mx-auto">
-        {/* Title */}
         <motion.h2
           className="text-4xl md:text-5xl font-extrabold text-center drop-shadow-md mb-6"
           variants={fadeInUp}
@@ -63,7 +62,6 @@ function Contact() {
           Let's Talk
         </motion.h2>
 
-        {/* Subtext */}
         <motion.p
           className="text-center text-white/90 mb-10"
           variants={fadeInUp}
@@ -73,14 +71,12 @@ function Contact() {
           possible.
         </motion.p>
 
-        {/* ✅ Form */}
         <motion.form
           onSubmit={handleSubmit}
           className="bg-white/30 backdrop-blur-xl border border-white/30 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] rounded-2xl p-8 space-y-6 text-white"
           variants={fadeInUp}
           custom={2}
         >
-          {/* Name */}
           <motion.div
             className="flex items-center gap-3"
             variants={fadeInUp}
@@ -97,7 +93,6 @@ function Contact() {
             />
           </motion.div>
 
-          {/* Email */}
           <motion.div
             className="flex items-center gap-3"
             variants={fadeInUp}
@@ -115,7 +110,6 @@ function Contact() {
           </motion.div>
           <ValidationError prefix="Email" field="email" errors={state.errors} />
 
-          {/* Phone */}
           <motion.div
             className="flex items-center gap-3"
             variants={fadeInUp}
@@ -132,7 +126,6 @@ function Contact() {
             />
           </motion.div>
 
-          {/* Message */}
           <motion.div
             className="flex items-start gap-3"
             variants={fadeInUp}
@@ -154,7 +147,6 @@ function Contact() {
             errors={state.errors}
           />
 
-          {/* Submit Button */}
           <motion.button
             type="submit"
             disabled={state.submitting}
@@ -166,57 +158,72 @@ function Contact() {
           </motion.button>
         </motion.form>
 
-        {/* ✅ Social Icons Drop & Hover Effect */}
+        {/* ✅ Updated Social Icons with Links */}
         <motion.div
           className="flex justify-center items-center gap-6 mt-10"
           initial="hidden"
           animate="visible"
         >
-          {[FaWhatsapp, FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter].map(
-            (Icon, index) => (
-              <motion.div
-                key={index}
-                variants={{
-                  hidden: { opacity: 0, y: -50, rotate: -90 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    rotate: 0,
-                    transition: {
-                      delay: 0.4 + index * 0.2,
-                      duration: 0.6,
-                      type: 'spring',
-                      stiffness: 100,
-                    },
+          {[
+            {
+              Icon: FaWhatsapp,
+              url: 'https://api.whatsapp.com/send/?phone=919977909494&text=Hey+Wise+Global+Research+Service+team%2C+I+need+help+with+trading.+Please+guide+me.&type=phone_number&app_absent=0',
+              color: 'text-green-400',
+            },
+            {
+              Icon: FaFacebookF,
+              url: 'https://www.facebook.com/wiseglobalresearch/',
+              color: 'text-blue-500',
+            },
+            {
+              Icon: FaInstagram,
+              url: 'https://www.instagram.com/wiseglobalresearch/',
+              color: 'text-pink-500',
+            },
+            {
+              Icon: FaLinkedinIn,
+              url: 'https://www.linkedin.com/in/wise-global-research-services-63b535317/',
+              color: 'text-blue-400',
+            },
+            {
+              Icon: FaXTwitter,
+              url: 'https://x.com/research221711',
+              color: 'text-black',
+            },
+          ].map(({ Icon, url, color }, index) => (
+            <motion.a
+              key={index}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              variants={{
+                hidden: { opacity: 0, y: -50, rotate: -90 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  rotate: 0,
+                  transition: {
+                    delay: 0.4 + index * 0.2,
+                    duration: 0.6,
+                    type: 'spring',
+                    stiffness: 100,
                   },
-                }}
-                whileHover={{
-                  scale: 1.2,
-                  rotate: 10,
-                  transition: { type: 'spring', stiffness: 300 },
-                }}
-                whileTap={{
-                  scale: 0.95,
-                  rotate: -5,
-                }}
-                className="cursor-pointer"
-              >
-                <Icon
-                  className={`text-3xl transition-transform ${
-                    index === 0
-                      ? 'text-green-400'
-                      : index === 1
-                      ? 'text-blue-500'
-                      : index === 2
-                      ? 'text-pink-500'
-                      : index === 3
-                      ? 'text-blue-400'
-                      : 'text-black'
-                  }`}
-                />
-              </motion.div>
-            )
-          )}
+                },
+              }}
+              whileHover={{
+                scale: 1.2,
+                rotate: 10,
+                transition: { type: 'spring', stiffness: 300 },
+              }}
+              whileTap={{
+                scale: 0.95,
+                rotate: -5,
+              }}
+              className="cursor-pointer"
+            >
+              <Icon className={`text-3xl transition-transform ${color}`} />
+            </motion.a>
+          ))}
         </motion.div>
       </div>
     </motion.div>
