@@ -4,16 +4,23 @@ import './index.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './firebase';
+
+// Theme Wrapper
+import TimeBasedThemeWrapper from './components/TimeBasedThemeWrapper';
 
 // Core Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import TimeBasedThemeWrapper from './components/TimeBasedThemeWrapper';
 import WhatsAppButton from './components/WhatsAppButton';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import ScrollToTop from './components/ScrollToTop';
 import ChatWidget from './components/ChatWidget';
 import FloatingPayButton from './components/FloatingPayButton';
+import ParticlesBackground from './components/ParticlesBackground';
+import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 
 // Main Pages
 import Home from './pages/Home';
@@ -23,6 +30,10 @@ import Demo from './pages/Demo';
 import Contact from './pages/Contact';
 import Legal from './pages/Legal';
 import LiveChart from './pages/LiveChart';
+import NotFound from './pages/NotFound';
+import Reports from './pages/Reports';
+import Complaint from './pages/Complaint';
+import PaymentInfo from './pages/PaymentInfo';
 
 // Dropdown Pages
 import Team from './pages/Team';
@@ -36,12 +47,6 @@ import Blogs from './pages/Blogs';
 import MarketNews from './pages/MarketNews';
 import UserLogin from './pages/UserLogin';
 import ClientPanel from './pages/ClientPanel';
-
-// Other Pages
-import Complaint from './pages/Complaint';
-import Reports from './pages/Reports';
-import NotFound from './pages/NotFound';
-import PaymentInfo from './pages/PaymentInfo';
 
 // Services - Equity
 import Cash from './pages/Cash';
@@ -64,6 +69,9 @@ import Forex from './pages/Forex';
 import Currency from './pages/Currency';
 import Comex from './pages/Comex';
 
+// Admin
+import ContactData from './pages/ContactData';
+
 function App() {
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
@@ -71,11 +79,21 @@ function App() {
 
   return (
     <TimeBasedThemeWrapper>
+      {/* Toast */}
+      <ToastContainer position="top-center" autoClose={3000} />
       <ScrollToTop />
+
+      {/* Background Particles */}
+      <div className="fixed top-0 left-0 w-full h-full z-[-1]">
+        <ParticlesBackground />
+      </div>
+
+      {/* Navigation */}
       <Navbar />
+
+      {/* Page Content */}
       <div className="pt-16 px-4">
         <Routes>
-          {/* Main Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
@@ -83,34 +101,22 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/legal" element={<Legal />} />
           <Route path="/livechart" element={<LiveChart />} />
-
-          {/* Dropdown Routes - Company */}
           <Route path="/team" element={<Team />} />
           <Route path="/vision" element={<Vision />} />
-
-          {/* Dropdown Routes - Services */}
           <Route path="/equity" element={<Equity />} />
           <Route path="/intraday" element={<Intraday />} />
           <Route path="/mcx" element={<Mcx />} />
-
-          {/* Dropdown Routes - HR Zone */}
           <Route path="/career" element={<Career />} />
           <Route path="/training" element={<Training />} />
-
-          {/* Dropdown Routes - Insights */}
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/market-news" element={<MarketNews />} />
-
-          {/* Dashboard Routes */}
           <Route path="/user-login" element={<UserLogin />} />
           <Route path="/client-panel" element={<ClientPanel />} />
-
-          {/* Other Pages */}
           <Route path="/complaint" element={<Complaint />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/payment" element={<PaymentInfo />} />
 
-          {/* Nested Services - Equity */}
+          {/* Equity Services */}
           <Route path="/services/equity/cash" element={<Cash />} />
           <Route path="/services/equity/stock-option" element={<StockOption />} />
           <Route path="/services/equity/delivery" element={<Delivery />} />
@@ -119,7 +125,7 @@ function App() {
           <Route path="/services/equity/stock-index-option" element={<StockIndexOption />} />
           <Route path="/services/equity/btst" element={<BTST />} />
 
-          {/* Nested Services - MCX */}
+          {/* MCX Services */}
           <Route path="/services/mcx/bullions" element={<Bullions />} />
           <Route path="/services/mcx/energy" element={<Energy />} />
           <Route path="/services/mcx/metal" element={<Metal />} />
@@ -131,11 +137,22 @@ function App() {
           <Route path="/services/currency" element={<Currency />} />
           <Route path="/services/comex" element={<Comex />} />
 
-          {/* Fallback - 404 */}
+          {/* Admin Protected Route */}
+          <Route
+            path="/admin/contact-data"
+            element={
+              <ProtectedAdminRoute>
+                <ContactData />
+              </ProtectedAdminRoute>
+            }
+          />
+
+          {/* Fallback Not Found Page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
 
+      {/* Footer & Floating Elements */}
       <Footer />
       <WhatsAppButton />
       <ScrollToTopButton />

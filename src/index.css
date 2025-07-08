@@ -1,33 +1,25 @@
+/* 🌀 Tailwind Imports */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ✅ Global Body Styles */
 body {
   font-family: 'Josefin Sans', sans-serif;
+  background: transparent; /* Required for gradient themes */
+  color: white;
+  overflow-x: hidden;
 }
 
-/* Float Animation */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
+/* ❌ Removed Glow Text Class */
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-/* Logo Glow + Shine */
+/* ✅ Shine Hover Effect */
 .shine-hover {
   position: relative;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   border-radius: 9999px;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
-
 .shine-hover:hover {
   transform: scale(1.1);
   box-shadow:
@@ -35,7 +27,6 @@ body {
     0 0 45px rgba(255, 255, 255, 0.2),
     inset 0 0 12px rgba(255, 255, 255, 0.3);
 }
-
 .shine-hover::after {
   content: "";
   position: absolute;
@@ -51,22 +42,105 @@ body {
   transition: opacity 0.4s ease-in-out;
   z-index: 1;
 }
-
 .shine-hover:hover::after {
   animation: shine-spin 2s linear infinite;
   opacity: 0.3;
 }
 
-@keyframes shine-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* ✅ Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
 }
 
-/* Text Glow */
-.glow-text {
-  color: #fff;
-  text-shadow:
-    0 0 6px rgba(255, 255, 255, 0.7),
-    0 0 12px rgba(255, 255, 255, 0.3),
-    0 0 18px rgba(255, 255, 255, 0.2);
+/* ✅ Shine Spin Animation */
+@keyframes shine-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ✅ Background Gradient Helper */
+.bg-gradient-dark {
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+}
+
+/* ✅ Smooth Transitions */
+.transition-glow {
+  transition: all 0.3s ease-in-out;
+}
+
+/* ✅ Global Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+/* ✅ Custom Scrollbar (For Footer or any div) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ✅ TradingView Widget Fix */
+.tradingview-widget-container iframe {
+  background-color: transparent !important;
+}
+
+/* ✅ Custom Slider Text Animation */
+@keyframes slideTextIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ✅ Zoom In Animation */
+@keyframes zoomIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ✅ Text Reveal Animation */
+@keyframes textReveal {
+  0% {
+    opacity: 0;
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  }
+  100% {
+    opacity: 1;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
 }

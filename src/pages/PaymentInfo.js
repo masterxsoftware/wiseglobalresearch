@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FaMoneyCheckAlt } from 'react-icons/fa';
-import qrImage from '../assets/images/QR.png'; // Make sure image is present
+import qrImage from '../assets/images/QR.png'; // Make sure image exists
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -103,12 +103,13 @@ const PaymentInfo = () => {
           </motion.div>
         </motion.div>
 
-        {/* Payment Gateway Button */}
+        {/* Payment Gateway Buttons */}
         <motion.div
-          className="flex justify-center mt-10"
+          className="flex flex-col md:flex-row gap-6 justify-center mt-10"
           variants={fadeInUp}
           custom={5}
         >
+          {/* CCAvenue Button */}
           <a
             href="https://formbuilder.ccavenue.com/live/au-small-finance-bank/wise-global-research-services-pvt-ltd"
             target="_blank"
@@ -117,10 +118,26 @@ const PaymentInfo = () => {
             <motion.button
               whileHover={{ scale: 1.07, rotate: 1 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-3 px-7 py-4 bg-green-500/90 text-white font-semibold rounded-xl shadow-xl backdrop-blur-lg border border-white/30 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] transition duration-300"
+              className="flex items-center gap-3 px-6 py-3 bg-green-500/90 text-white font-semibold rounded-xl shadow-xl backdrop-blur-lg border border-white/30 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] transition duration-300"
             >
               <FaMoneyCheckAlt className="text-white text-xl" />
-              Pay Securely Online
+              Pay via CCAvenue
+            </motion.button>
+          </a>
+
+          {/* PayU Button */}
+          <a
+            href="https://u.payu.in/hr313T3SHfRR"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <motion.button
+              whileHover={{ scale: 1.07, rotate: -1 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-3 px-6 py-3 bg-yellow-500/90 text-white font-semibold rounded-xl shadow-xl backdrop-blur-lg border border-white/30 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] transition duration-300"
+            >
+              <FaMoneyCheckAlt className="text-white text-xl" />
+              Pay via PayU
             </motion.button>
           </a>
         </motion.div>
@@ -138,7 +155,7 @@ const PaymentInfo = () => {
   );
 };
 
-// ✅ Reusable BankCard
+// ✅ Reusable BankCard Component
 const BankCard = ({ title, color, bg, details, custom }) => (
   <motion.div
     className={`border border-white/30 p-6 rounded-xl shadow-2xl backdrop-blur-xl hover:scale-[1.02] transition duration-300 animate-float ${bg}`}

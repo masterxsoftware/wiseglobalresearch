@@ -1,14 +1,23 @@
-import React from 'react';
+// src/components/TimeBasedThemeWrapper.js
+import React, { useContext, useEffect } from 'react';
+import { ThemeContext } from '../context/ThemeContext';
 
 const TimeBasedThemeWrapper = ({ children }) => {
-  const gradient = 'linear-gradient(to right, #6a11cb, #2575fc)';
+  const { theme, gradients } = useContext(ThemeContext);
+  const { background, textColor } = gradients[theme] || gradients.default;
+
+  useEffect(() => {
+    document.body.style.background = background;
+    document.body.style.color = textColor;
+  }, [background, textColor]);
 
   return (
     <div
       style={{
-        background: gradient,
+        background,
+        color: textColor,
+        transition: '0.6s ease-in-out',
         minHeight: '100vh',
-        transition: '0.5s ease-in-out',
       }}
     >
       {children}
@@ -16,4 +25,4 @@ const TimeBasedThemeWrapper = ({ children }) => {
   );
 };
 
-export default TimeBasedThemeWrapper;   
+export default TimeBasedThemeWrapper;
