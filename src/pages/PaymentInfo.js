@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FaMoneyCheckAlt } from 'react-icons/fa';
-import qrImage from '../assets/images/QR.png'; // Make sure image exists
+import qrImage from '../assets/images/QR.png'; // Ensure this image exists
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -18,14 +18,10 @@ const fadeInUp = {
 const PaymentInfo = () => {
   return (
     <motion.div
-      className="relative min-h-screen py-20 px-4 text-white overflow-hidden bg-gradient-to-br from-[#6a11cb] to-[#2575fc]"
+      className="relative min-h-screen py-20 px-4 text-white overflow-hidden bg-transparent backdrop-blur-none"
       initial="hidden"
       animate="visible"
     >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm z-0" />
-
-      {/* Content */}
       <motion.div
         className="relative z-10 max-w-6xl mx-auto"
         variants={fadeInUp}
@@ -44,7 +40,7 @@ const PaymentInfo = () => {
           variants={fadeInUp}
           custom={2}
         >
-          {/* QR Block */}
+          {/* QR Payment Block */}
           <motion.div
             className="bg-white/30 border border-white/30 p-6 rounded-xl shadow-2xl backdrop-blur-xl hover:scale-105 transition duration-300 animate-float"
             variants={fadeInUp}
@@ -72,7 +68,7 @@ const PaymentInfo = () => {
             </p>
           </motion.div>
 
-          {/* Bank Details */}
+          {/* Bank Details Cards */}
           <motion.div className="space-y-8" variants={fadeInUp} custom={4}>
             <BankCard
               title="HDFC BANK"
@@ -109,7 +105,6 @@ const PaymentInfo = () => {
           variants={fadeInUp}
           custom={5}
         >
-          {/* CCAvenue Button */}
           <a
             href="https://formbuilder.ccavenue.com/live/au-small-finance-bank/wise-global-research-services-pvt-ltd"
             target="_blank"
@@ -125,7 +120,6 @@ const PaymentInfo = () => {
             </motion.button>
           </a>
 
-          {/* PayU Button */}
           <a
             href="https://u.payu.in/hr313T3SHfRR"
             target="_blank"
@@ -142,7 +136,7 @@ const PaymentInfo = () => {
           </a>
         </motion.div>
 
-        {/* Note */}
+        {/* Payment Note */}
         <motion.p
           className="text-center text-sm text-yellow-200 font-semibold mt-12"
           variants={fadeInUp}

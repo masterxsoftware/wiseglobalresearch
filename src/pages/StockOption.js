@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 
 function StockOption() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <div className="min-h-screen bg-transparent">
       <Helmet>
         <title>Professional Stock Options Trading | Wise Global</title>
         <meta name="description" content="SEBI-registered stock options advisory with proven strategies. Get expert calls, risk management techniques, and real-time alerts for maximum returns." />
@@ -28,8 +28,7 @@ function StockOption() {
           <span className="inline-block bg-blue-100 text-blue-800 px-4 py-1 rounded-full text-sm font-medium mb-4">
             SEBI Registered Advisory
           </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-            Advanced <span className="text-blue-600">Stock Options</span> Trading
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">\            Advanced <span className="text-blue-600">Stock Options</span> Trading
           </h1>
           <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto">
             Professional options strategies with <span className="font-semibold text-green-600">75%+ accuracy</span> and complete risk management
@@ -49,7 +48,7 @@ function StockOption() {
             <motion.div
               key={index}
               whileHover={{ y: -5 }}
-              className="bg-white p-4 rounded-xl shadow-sm flex items-center gap-3"
+              className="bg-transparent backdrop-blur-md p-4 rounded-xl border border-white/20 shadow-sm flex items-center gap-3"
             >
               <div className="p-2 bg-blue-50 rounded-lg">{stat.icon}</div>
               <div>
@@ -102,7 +101,7 @@ function StockOption() {
             <motion.div
               key={index}
               whileHover={{ scale: 1.02 }}
-              className="bg-white p-6 rounded-xl shadow-sm border border-gray-100"
+              className="bg-transparent backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-sm"
             >
               <div className="p-3 bg-blue-50 rounded-lg w-fit mb-3">{feature.icon}</div>
               <h3 className="text-lg font-bold text-gray-800 mb-2">{feature.title}</h3>

@@ -1,19 +1,35 @@
-/* 🌀 Tailwind Imports */
+/* 🌀 Tailwind Directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ✅ Global Body Styles */
+/* ✅ Global Font + Background */
 body {
   font-family: 'Josefin Sans', sans-serif;
-  background: transparent; /* Required for gradient themes */
+  background: transparent; /* Enables theme backgrounds */
   color: white;
   overflow-x: hidden;
 }
 
-/* ❌ Removed Glow Text Class */
+/* ✅ Responsive Container Helpers */
+.container {
+  @apply max-w-screen-xl mx-auto px-4 md:px-6;
+}
 
-/* ✅ Shine Hover Effect */
+/* ✅ Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ✅ Shine Button Hover */
 .shine-hover {
   position: relative;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
@@ -47,40 +63,13 @@ body {
   opacity: 0.3;
 }
 
-/* ✅ Floating Animation */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
 /* ✅ Shine Spin Animation */
 @keyframes shine-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-/* ✅ Background Gradient Helper */
-.bg-gradient-dark {
-  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-}
-
-/* ✅ Smooth Transitions */
-.transition-glow {
-  transition: all 0.3s ease-in-out;
-}
-
-/* ✅ Global Scrollbar Styling */
+/* ✅ Smooth Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -91,49 +80,61 @@ body {
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
 }
-
-/* ✅ Custom Scrollbar (For Footer or any div) */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 6px;
 }
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+
+/* ✅ Background for dark sections */
+.bg-gradient-dark {
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
 }
 
-/* ✅ TradingView Widget Fix */
-.tradingview-widget-container iframe {
-  background-color: transparent !important;
+/* ✅ Scroll To Top */
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 999;
+  background-color: #22c55e;
+  color: white;
+  border-radius: 9999px;
+  padding: 0.75rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+.scroll-to-top-btn:hover {
+  background-color: #16a34a;
+  transform: scale(1.1);
 }
 
-/* ✅ Custom Slider Text Animation */
-@keyframes slideTextIn {
-  0% {
+/* ✅ Alert Bar Marquee */
+@keyframes scrollText {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+.animate-scroll {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scrollText 25s linear infinite;
+}
+
+/* ✅ Footer Reveal */
+@keyframes fadeInUp {
+  from {
     opacity: 0;
-    transform: translateX(-50px);
+    transform: translateY(40px);
   }
-  100% {
+  to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
 }
-
-/* ✅ Zoom In Animation */
-@keyframes zoomIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+.footer-animated {
+  animation: fadeInUp 1s ease-in-out;
 }
 
-/* ✅ Text Reveal Animation */
+/* ✅ Text Reveal */
 @keyframes textReveal {
   0% {
     opacity: 0;
@@ -142,5 +143,21 @@ body {
   100% {
     opacity: 1;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+/* ✅ Responsive Fixes for Landscape & Portrait */
+@media screen and (orientation: landscape) {
+  body {
+    font-size: 0.95rem;
+  }
+  .floating-buttons {
+    bottom: 1rem;
+  }
+}
+
+@media screen and (orientation: portrait) {
+  body {
+    font-size: 1rem;
   }
 }

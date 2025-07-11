@@ -79,7 +79,7 @@ function App() {
 
   return (
     <TimeBasedThemeWrapper>
-      {/* Toast */}
+      {/* Toast Notifications */}
       <ToastContainer position="top-center" autoClose={3000} />
       <ScrollToTop />
 
@@ -88,11 +88,11 @@ function App() {
         <ParticlesBackground />
       </div>
 
-      {/* Navigation */}
+      {/* Navbar */}
       <Navbar />
 
-      {/* Page Content */}
-      <div className="pt-16 px-4">
+      {/* Page Content Wrapper */}
+      <main className="pt-20 px-4 md:px-6 min-h-screen max-w-screen-xl mx-auto">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -137,7 +137,7 @@ function App() {
           <Route path="/services/currency" element={<Currency />} />
           <Route path="/services/comex" element={<Comex />} />
 
-          {/* Admin Protected Route */}
+          {/* Admin Panel Route */}
           <Route
             path="/admin/contact-data"
             element={
@@ -147,12 +147,12 @@ function App() {
             }
           />
 
-          {/* Fallback Not Found Page */}
+          {/* 404 Page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </div>
+      </main>
 
-      {/* Footer & Floating Elements */}
+      {/* Footer & Floating Buttons */}
       <Footer />
       <WhatsAppButton />
       <ScrollToTopButton />

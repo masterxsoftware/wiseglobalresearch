@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 import { ref, push } from 'firebase/database';
 import { db } from '../firebase';
 import {
-  FaUser, FaEnvelope, FaPhone, FaCommentDots
+  FaUser, FaEnvelope, FaPhone, FaCommentDots,
+  FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn, FaYoutube
 } from 'react-icons/fa6';
 
 function Contact() {
@@ -20,23 +21,18 @@ function Contact() {
     e.preventDefault();
     setLoading(true);
 
-    console.log("🚀 Submitting to Firebase:", formData);
-
     try {
       await push(ref(db, 'contacts'), formData);
-      console.log("✅ Data successfully pushed to Firebase");
-
       setSuccess(true);
-      setFormData({ name: '', email: '', phone: '', message: '' }); // Clear form after submit
+      setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (err) {
-      console.error("❌ Firebase Error:", err);
-      alert('❌ Something went wrong. Please try again.');
+      console.error("Firebase Error:", err);
+      alert('Something went wrong. Please try again.');
     }
 
     setLoading(false);
   };
 
-  // ⏳ Auto reset after 3 seconds
   useEffect(() => {
     if (success) {
       const timer = setTimeout(() => {
@@ -56,7 +52,6 @@ function Contact() {
     }),
   };
 
-  // ✅ Thank You message after form submit
   if (success) {
     return (
       <motion.div
@@ -74,20 +69,23 @@ function Contact() {
   }
 
   return (
-    <motion.div className="relative min-h-screen py-20 px-4 text-white" initial="hidden" animate="visible">
-      <div className="absolute inset-0 backdrop-blur-sm bg-black/10 z-0" />
+    <motion.div className="relative min-h-screen py-20 px-4 text-white bg-transparent" initial="hidden" animate="visible">
+      {/* ✅ Fully transparent background */}
+      <div className="absolute inset-0 bg-transparent z-0" />
+
       <div className="relative z-10 max-w-3xl mx-auto">
         <motion.h2 className="text-4xl font-extrabold text-center mb-6" variants={fadeInUp} custom={0}>
           Let's Talk
         </motion.h2>
 
+        {/* ✅ Form Card - remains with blur and color */}
         <motion.form
           onSubmit={handleSubmit}
           className="bg-white/20 p-8 rounded-xl backdrop-blur border border-white/30"
           variants={fadeInUp}
           custom={1}
         >
-          {/* Full Name */}
+          {/* Name */}
           <motion.div className="flex items-center gap-3 mb-4" variants={fadeInUp} custom={1.1}>
             <FaUser />
             <input
@@ -153,6 +151,35 @@ function Contact() {
           >
             {loading ? 'Sending...' : 'Send Message'}
           </motion.button>
+
+          {/* ✅ Social Media Icons */}
+          <motion.div
+            className="flex justify-center gap-6 mt-10"
+            initial="hidden"
+            animate="visible"
+          >
+            {[
+              { icon: FaFacebookF, color: 'text-blue-500', link: 'https://facebook.com' },
+              { icon: FaInstagram, color: 'text-pink-500', link: 'https://instagram.com' },
+              { icon: FaTwitter, color: 'text-sky-400', link: 'https://twitter.com' },
+              { icon: FaLinkedinIn, color: 'text-blue-700', link: 'https://linkedin.com' },
+              { icon: FaYoutube, color: 'text-red-500', link: 'https://youtube.com' },
+            ].map(({ icon: Icon, color, link }, i) => (
+              <motion.a
+                key={i}
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.3, rotate: 5 }}
+                whileTap={{ scale: 0.9 }}
+                className={`${color} text-xl hover:text-white transition duration-300`}
+                variants={fadeInUp}
+                custom={1.5 + i * 0.1}
+              >
+                <Icon />
+              </motion.a>
+            ))}
+          </motion.div>
         </motion.form>
       </div>
     </motion.div>
