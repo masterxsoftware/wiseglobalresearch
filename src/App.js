@@ -6,7 +6,6 @@ import 'aos/dist/aos.css';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './firebase';
 
 // Theme Wrapper
 import TimeBasedThemeWrapper from './components/TimeBasedThemeWrapper';
@@ -72,6 +71,12 @@ import Comex from './pages/Comex';
 // Admin
 import ContactData from './pages/ContactData';
 
+// New Pages
+import Terms from './pages/Terms';
+import Refund from './pages/Refund';
+import Privacy from './pages/Privacy';
+import DailyRecommendation from './pages/DailyRecommendation';
+
 function App() {
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
@@ -115,6 +120,11 @@ function App() {
           <Route path="/complaint" element={<Complaint />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/payment" element={<PaymentInfo />} />
+          {/* New Routes */}
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/refund" element={<Refund />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/recommendation" element={<DailyRecommendation />} />
 
           {/* Equity Services */}
           <Route path="/services/equity/cash" element={<Cash />} />

@@ -15,7 +15,6 @@ const TimeBasedThemeWrapper = ({ children }) => {
     <div
       style={{
         position: 'relative',
-        background,
         color: textColor,
         transition: '0.6s ease-in-out',
         minHeight: '100vh',

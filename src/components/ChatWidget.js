@@ -2,8 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaCommentDots, FaTimes, FaUser, FaPhone, FaCity } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { db } from '../firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import axios from 'axios';
 
 const ChatWidget = () => {
@@ -32,19 +30,6 @@ const ChatWidget = () => {
       chatHistory.current.push({ role: 'assistant', content: text });
       setIsTyping(false);
     }, delay);
-  };
-
-  const saveToFirebase = async () => {
-    try {
-      await addDoc(collection(db, 'chatSessions'), {
-        ...formData,
-        chatHistory: chatHistory.current,
-        timestamp: serverTimestamp()
-      });
-      console.log('Chat saved to Firebase');
-    } catch (error) {
-      console.error('Error saving to Firebase:', error);
-    }
   };
 
   const getAIResponse = async (userMessage) => {
@@ -109,7 +94,6 @@ const ChatWidget = () => {
   const endChat = () => {
     sendBotMessage('Thank you for chatting with us! We will contact you soon.', 500);
     setTimeout(() => {
-      saveToFirebase();
       setMessages([]);
       setFormData({ name: '', phone: '', city: '' });
       setStep('askName');

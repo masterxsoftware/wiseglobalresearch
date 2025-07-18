@@ -1,6 +1,6 @@
 // src/components/AddUser.js
 import React, { useState } from 'react';
-import { db } from '../firebase';
+import { firestore } from '../firebase';
 import { collection, addDoc } from "firebase/firestore";
 
 const AddUser = () => {
@@ -9,7 +9,7 @@ const AddUser = () => {
   const handleAdd = async () => {
     if (!name.trim()) return alert("Enter a name");
     try {
-      await addDoc(collection(db, "users"), { name });
+      await addDoc(collection(firestore, "users"), { name });
       alert("User added!");
       setName("");
     } catch (err) {

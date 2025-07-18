@@ -1,14 +1,35 @@
-/* ------------------------------
-   ✅ Animations
------------------------------- */
+/* Navbar.css */
+
+/* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .animate-fadeIn {
@@ -19,9 +40,11 @@
   animation: slideDown 0.3s ease-in-out;
 }
 
-/* ------------------------------
-   ✅ Navbar Item Hover Line
------------------------------- */
+.animate-slideIn {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+/* Navbar Item Hover Line */
 .nav-item {
   position: relative;
   padding: 8px 12px;
@@ -45,17 +68,23 @@
   width: 100%;
 }
 
-/* ------------------------------
-   ✅ Logo Animation
------------------------------- */
+/* Logo Animation */
 .rotate-logo:hover img {
   transform: rotate(360deg);
   transition: transform 0.6s ease-in-out;
 }
 
-/* ------------------------------
-   ✅ Mobile Drawer Menu Styles
------------------------------- */
+/* Ensure icons scale properly */
+svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* Base styles for navbar */
+
+
+/* Mobile Drawer Menu Styles */
 @media (max-width: 768px) {
   .nav-item {
     display: block;
@@ -77,7 +106,6 @@
     width: 80%;
     max-width: 320px;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(12px);
     color: white;
     display: flex;
@@ -92,7 +120,7 @@
 
   .mobile-menu.open {
     transform: translateX(0);
-    animation: slideDown 0.4s ease-in-out;
+    animation: slideIn 0.4s ease-in-out;
   }
 
   .mobile-overlay {
@@ -102,7 +130,7 @@
     width: 100vw;
     height: 100vh;
     backdrop-filter: blur(4px);
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: transparent;
     z-index: 9990;
   }
 
@@ -138,8 +166,38 @@
     transition: all 0.3s ease;
   }
 
-  /* ✅ Hide MegaMenu in Mobile */
-  .group.relative.hidden.md\:block {
+  /* Hide MegaMenu and dropdowns in mobile */
+  .group.relative {
+    display: none !important;
+  }
+
+  img.logo-hover {
+    height: 48px;
+  }
+}
+
+@media (min-width: 769px) {
+  .group:hover .group-hover\:flex {
+    display: flex;
+  }
+
+  .nav-item {
+    font-size: 1rem;
+  }
+
+  img.logo-hover {
+    height: 64px;
+  }
+
+  .mobile-menu {
+    display: none !important;
+  }
+
+  .mobile-overlay {
+    display: none !important;
+  }
+
+  .drawer-toggle {
     display: none !important;
   }
 }

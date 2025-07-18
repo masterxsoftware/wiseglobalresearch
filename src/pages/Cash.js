@@ -181,13 +181,6 @@ const Cash = () => {
           {isLoading ? 'Connecting…' : <><FaWhatsapp /> Claim Free Tips</>}
         </button>
       </motion.section>
-
-      <div className="text-xs text-gray-400 text-center mt-8 leading-5 max-w-4xl mx-auto px-4">
-        <p><strong>SEBI Reg. No.: INH000016719</strong> — SEBI Registered Research Analyst</p>
-        <p>Disclaimer: Investments in securities market are subject to market risks. Read all the related documents carefully before investing.</p>
-        <p>Contact: <a href="mailto:support@wiseglobalresearch.com" className="text-yellow-300 underline">support@wiseglobalresearch.com</a> | <a href="tel:9977909494" className="text-yellow-300 underline">+91 9977909494</a></p>
-        <p className="mt-2">© {new Date().getFullYear()} Wise Global Research. All Rights Reserved.</p>
-      </div>
     </div>
   );
 };

@@ -70,8 +70,8 @@ function Footer() {
               <h3 className="text-lg font-semibold mb-3" style={{ color: textColor }}>Useful Links</h3>
               <ul className="space-y-2">
                 <li><Link to="/legal" className="hover:text-yellow-400">→ Disclaimer</Link></li>
-                <li><Link to="/privacy" className="hover:text-yellow-400">→ Privacy Policy</Link></li>
-                <li><Link to="/refund" className="hover:text-yellow-400">→ Refund Policy</Link></li>
+                <li><Link to="/privacy" className="hover:text-yellow-400">→ Privacy Policy</Link></li>{/* Updated links */}
+                <li><Link to="/refund" className="hover:text-yellow-400">→ Refund Policy</Link></li>{/* Updated links */}
                 <li><Link to="/complaint" className="hover:text-yellow-400">→ Complaint Box</Link></li>
                 <li><Link to="/terms" className="hover:text-yellow-400">→ Terms & Conditions</Link></li>
               </ul>

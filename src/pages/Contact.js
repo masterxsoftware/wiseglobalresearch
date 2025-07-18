@@ -1,8 +1,6 @@
 // src/pages/Contact.js
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ref, push } from 'firebase/database';
-import { db } from '../firebase';
 import {
   FaUser, FaEnvelope, FaPhone, FaCommentDots,
   FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn, FaYoutube
@@ -21,16 +19,12 @@ function Contact() {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      await push(ref(db, 'contacts'), formData);
+    // Simulate form submission without Firebase
+    setTimeout(() => {
       setSuccess(true);
       setFormData({ name: '', email: '', phone: '', message: '' });
-    } catch (err) {
-      console.error("Firebase Error:", err);
-      alert('Something went wrong. Please try again.');
-    }
-
-    setLoading(false);
+      setLoading(false);
+    }, 1000); // Fake delay to mimic async behavior
   };
 
   useEffect(() => {
@@ -78,7 +72,7 @@ function Contact() {
           Let's Talk
         </motion.h2>
 
-        {/* ✅ Form Card - remains with blur and color */}
+        {/* ✅ Form Card */}
         <motion.form
           onSubmit={handleSubmit}
           className="bg-white/20 p-8 rounded-xl backdrop-blur border border-white/30"

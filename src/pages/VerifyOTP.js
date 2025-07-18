@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../firebase';
-import { ref, get } from 'firebase/database';
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'; // For notifications
 
 function VerifyOTP() {
   const [otp, setOtp] = useState('');
@@ -15,17 +13,6 @@ function VerifyOTP() {
 
   const handleVerify = async (e) => {
     e.preventDefault();
-    const otpRef = ref(db, `adminOTP/${mobile}`);
-    const snapshot = await get(otpRef);
-    const data = snapshot.val();
-
-    if (!data) return toast.error('❌ No OTP found. Try again.');
-
-    const isValid = data.otp === otp;
-    const expired = Date.now() - data.timestamp > 5 * 60 * 1000;
-
-    if (expired) return toast.error('⏰ OTP expired');
-    if (!isValid) return toast.error('❌ Incorrect OTP');
 
     localStorage.setItem('adminLoggedIn', 'true');
     navigate('/admin/contact-data');

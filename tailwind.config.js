@@ -91,26 +91,22 @@ module.exports = {
   plugins: [
     plugin(function ({ addUtilities }) {
       addUtilities({
-        // Add glowing hover effect for buttons or cards
         '.shine-hover': {
           position: 'relative',
           transition: 'transform 0.4s ease, box-shadow 0.4s ease',
           borderRadius: '9999px',
           boxShadow: '0 0 10px rgba(255,255,255,0.1)',
         },
-        // Glowing text style
         '.glow-text': {
           color: '#fff',
           textShadow:
             '0 0 6px rgba(255,255,255,0.7), 0 0 12px rgba(255,255,255,0.3), 0 0 18px rgba(255,255,255,0.2)',
         },
-        // White stroke around transparent text
         '.text-stroke': {
           '-webkit-text-stroke': '1px white',
           'text-stroke': '1px white',
           color: 'transparent',
         },
-        // Gradient-filled text
         '.text-gradient': {
           background: 'linear-gradient(to right, #ffffff, #c2d1f0)',
           '-webkit-background-clip': 'text',
