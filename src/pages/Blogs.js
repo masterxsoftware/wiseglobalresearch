@@ -1,7 +1,7 @@
 // src/pages/Blogs.js
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaChartLine, FaBookOpen, FaUser, FaEnvelope, FaArrowRight } from 'react-icons/fa';
+import { FaBookOpen, FaArrowRight } from 'react-icons/fa';
 
 // Animation variants for container
 const containerVariants = {
@@ -126,33 +126,7 @@ const fallbackImage = 'https://images.pexels.com/photos/3184297/pexels-photo-318
 
 const Blogs = () => {
   const [expandedIndex, setExpandedIndex] = useState(null);
-  const [formData, setFormData] = useState({ email: '' });
-  const [formError, setFormError] = useState('');
 
-  // Form handling
-  const handleInputChange = (e) => {
-    setFormData({ email: e.target.value });
-    setFormError('');
-  };
-
-  const validateForm = () => {
-    if (!formData.email.trim()) return 'Email is required';
-    if (!/\S+@\S+\.\S+/.test(formData.email)) return 'Invalid email format';
-    return '';
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const error = validateForm();
-    if (error) {
-      setFormError(error);
-    } else {
-      console.log('Newsletter subscription:', formData); // Replace with API call
-      alert('Subscribed successfully!');
-      setFormData({ email: '' });
-      setFormError('');
-    }
-  };
 
   // Image error handling
   const handleImageError = (e) => {
@@ -161,7 +135,7 @@ const Blogs = () => {
 
   return (
     <motion.div
-      className="container mx-auto py-12 px-4 max-w-7xl bg-gray-800"
+      className="container mx-auto py-12 px-4 max-w-7xl bg-transparent"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -184,9 +158,16 @@ const Blogs = () => {
 
       {/* Featured Post Section */}
       <motion.div
-        className="bg-blue-900 rounded-xl p-8 mb-12"
+        className="transform transition-transform duration-300 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-8 mb-12"
+        style={{
+          WebkitBackdropFilter: 'blur(10px)',
+          backdropFilter: 'blur(10px)',
+        }}
         variants={itemVariants}
-        style={{ transformStyle: 'preserve-3d' }}
+        initial="hidden"
+        animate="visible"
+        whileHover="hover"
+    
       >
         <h2 className="text-3xl font-bold text-white mb-4">Featured Post</h2>
         <motion.div
@@ -221,12 +202,16 @@ const Blogs = () => {
           {categories.map((category) => (
             <motion.div
               key={category.id}
-              className="bg-gray-700 rounded-xl shadow-lg p-6 border-t-4 border-blue-500 text-center"
+              className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg p-6 border-t-4 border-blue-500 text-center"
+              style={{
+                WebkitBackdropFilter: 'blur(10px)',
+                backdropFilter: 'blur(10px)',
+              }}
               variants={cardVariants}
               initial="hidden"
               animate="visible"
               whileHover="hover"
-              style={{ transformStyle: 'preserve-3d' }}
+      
             >
               <FaBookOpen className="text-blue-300 text-4xl mb-4 mx-auto" />
               <h3 className="text-xl font-semibold text-white mb-2">{category.name}</h3>
@@ -243,12 +228,16 @@ const Blogs = () => {
           {posts.map((post, index) => (
             <motion.div
               key={post.id}
-              className="bg-gray-700 rounded-xl shadow-lg p-6 border-t-4 border-blue-500 flex flex-col"
+              className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg p-6 border-t-4 border-blue-500 flex flex-col"
+              style={{
+                WebkitBackdropFilter: 'blur(10px)',
+                backdropFilter: 'blur(10px)',
+              }}
               variants={cardVariants}
               initial="hidden"
               animate="visible"
               whileHover="hover"
-              style={{ transformStyle: 'preserve-3d' }}
+    
             >
               <img
                 src={post.image}
@@ -285,9 +274,23 @@ const Blogs = () => {
                         const relatedPost = posts.find((p) => p.id === relatedId);
                         return (
                           <li key={relatedId}>
-                            <a href="#" className="text-blue-300 hover:text-blue-100">
+                            <button
+                              onClick={() => {
+                                // Replace this with the action you want to perform,
+                                // e.g., navigating to the related post in a modal or
+                                // expanding content on the page.
+                                console.log(`Clicked on related post: ${relatedPost?.title}`);
+                              }}
+                              className="text-blue-300 hover:text-blue-100"
+                              style={{ 
+                                textDecoration: 'none', 
+                                padding: 0, 
+                                border: 'none', 
+                                background: 'none', 
+                                cursor: 'pointer' }}
+                            >
                               {relatedPost?.title}
-                            </a>
+                            </button>
                           </li>
                         );
                       })}
@@ -300,42 +303,11 @@ const Blogs = () => {
         </div>
       </motion.div>
 
-      {/* Newsletter Subscription Form */}
-      <motion.div
-        className="bg-green-900 rounded-xl p-8 mb-12"
-        variants={itemVariants}
-        style={{ transformStyle: 'preserve-3d' }}
-      >
-        <h2 className="text-3xl font-bold text-white mb-6 text-center">Subscribe to Our Newsletter</h2>
-        <p className="text-white max-w-lg mx-auto mb-6">
-          Get the latest SEBI-compliant market insights, trading tips, and updates on NSE, BSE, and MCX directly to your inbox.
-        </p>
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="flex-1 p-3 border rounded-lg bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your email"
-            />
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition"
-            >
-              Subscribe <FaEnvelope className="inline ml-2" />
-            </motion.button>
-          </div>
-          {formError && <p className="text-red-400 text-sm mt-2">{formError}</p>}
-        </form>
-      </motion.div>
+   
 
       {/* Call to Action */}
       <motion.div
-        className="text-center bg-green-900 rounded-xl p-8 mb-12"
+        className="text-center bg-transparent rounded-xl p-8 mb-12"
         variants={itemVariants}
         style={{ transformStyle: 'preserve-3d' }}
       >
@@ -344,24 +316,13 @@ const Blogs = () => {
           Contact our team to explore trading solutions like Smart Options and MCX Supreme, tailored for Indian markets.
         </p>
         <a
-          href="/contact"
+          href="wise-global/contact#/contact"
           className="inline-block bg-blue-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-600 transition"
         >
           Contact Us <FaArrowRight className="inline ml-2" />
         </a>
       </motion.div>
-
-      {/* Disclaimer */}
-      <motion.div
-        variants={itemVariants}
-        className="text-center p-4 bg-yellow-900 text-white rounded-lg"
-      >
-        <p>
-          <strong>Disclaimer:</strong> Investments in the securities market are subject to market risks. Read all related documents carefully before investing. Wise Global Research is not responsible for any profit or loss that may occur.
-        </p>
       </motion.div>
-    </motion.div>
   );
 };
-
 export default Blogs;

@@ -1,147 +1,237 @@
-// src/pages/Services.js
-import React from 'react';
-import { Link } from 'react-router-dom'; // For navigation links
-import { FaChartLine, FaDollarSign, FaUserCheck } from 'react-icons/fa'; // For icons
+// src/pages/DailyRecommendation.js
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { FaArrowUp, FaArrowDown, FaBullseye, FaStopCircle, FaPlus, FaMinus } from 'react-icons/fa';
 
-const Services = () => {
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1 },
+};
+
+// Mock data generator for recommendations based on date
+const generateMockRecommendations = () => {
+  const today = new Date().toISOString().split('T')[0];
+  return [
+    {
+      id: 1,
+      name: 'NIFTY',
+      type: 'BUY',
+      entry: (23500 + Math.random() * 100).toFixed(2),
+      target: (23650 + Math.random() * 100).toFixed(2),
+      stopLoss: (23400 + Math.random() * 100).toFixed(2),
+      timestamp: `${today} 9:15 AM`,
+    },
+    {
+      id: 2,
+      name: 'BANKNIFTY',
+      type: 'SELL',
+      entry: (50200 + Math.random() * 200).toFixed(2),
+      target: (50000 + Math.random() * 200).toFixed(2),
+      stopLoss: (50350 + Math.random() * 200).toFixed(2),
+      timestamp: `${today} 9:20 AM`,
+    },
+    {
+      id: 3,
+      name: 'RELIANCE',
+      type: 'BUY',
+      entry: (2900 + Math.random() * 50).toFixed(2),
+      target: (2950 + Math.random() * 50).toFixed(2),
+      stopLoss: (2875 + Math.random() * 50).toFixed(2),
+      timestamp: `${today} 9:30 AM`,
+    },
+    {
+      id: 4,
+      name: 'GOLD',
+      type: 'BUY',
+      entry: (72000 + Math.random() * 500).toFixed(2),
+      target: (72500 + Math.random() * 500).toFixed(2),
+      stopLoss: (71700 + Math.random() * 500).toFixed(2),
+      timestamp: `${today} 10:00 AM`,
+    },
+    {
+      id: 5,
+      name: 'CRUDEOIL',
+      type: 'SELL',
+      entry: (6500 + Math.random() * 100).toFixed(2),
+      target: (6420 + Math.random() * 100).toFixed(2),
+      stopLoss: (6550 + Math.random() * 100).toFixed(2),
+      timestamp: `${today} 10:15 AM`,
+    },
+  ];
+};
+
+// Services data
+const services = [
+  { category: 'Cash', name: 'Smart Cash', count: 4, description: 'Smart Cash offers curated stock picks for intraday and short-term trading.' },
+  { category: 'Cash', name: 'Evaluation Stock Cash', count: 7, description: 'Evaluation Stock Cash provides detailed stock analysis for long-term investments.' },
+  { category: 'Option', name: 'Smart Options', count: 1, description: 'Smart Options delivers high-probability options trading strategies.' },
+  { category: 'Option', name: 'Impulse Option', count: 1, description: 'Impulse Option focuses on aggressive options trading for quick returns.' },
+  { category: 'Option', name: 'Smart Future', count: 1, description: 'Smart Future offers futures trading strategies with calculated risks.' },
+  { category: 'Option', name: 'Evaluation Stock Option', count: 1, description: 'Evaluation Stock Option combines stock and options for balanced portfolios.' },
+  { category: 'Index', name: 'Evaluation Index Options', count: 1, description: 'Evaluation Index Options targets index-based options trading.' },
+  { category: 'Index', name: 'Impulse Index Options', count: 1, description: 'Impulse Index Options focuses on high-volatility index trading.' },
+  { category: 'Index', name: 'Smart Index Option', count: 1, description: 'Smart Index Option provides stable index options strategies.' },
+  { category: 'Specialization', name: 'MCX Supreme', count: 1, description: 'MCX Supreme offers premium commodity trading signals.' },
+  { category: 'Specialization', name: 'Galaxy MCX', count: 3, description: 'Galaxy MCX provides diversified commodity trading strategies.' },
+  { category: 'Specialization', name: 'Universal Cash', count: 1, description: 'Universal Cash offers flexible cash market trading plans.' },
+  { category: 'Specialization', name: 'Infinity Club', count: 1, description: 'Infinity Club provides exclusive trading insights and mentorship.' },
+];
+
+const DailyRecommendation = () => {
+  const [recommendations, setRecommendations] = useState([]);
+  const [expandedService, setExpandedService] = useState(null);
+
+  useEffect(() => {
+    // Simulate daily data fetch
+    setRecommendations(generateMockRecommendations());
+    
+    // Update recommendations daily
+    const interval = setInterval(() => {
+      setRecommendations(generateMockRecommendations());
+    }, 24 * 60 * 60 * 1000); // Every 24 hours
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const toggleService = (index) => {
+    setExpandedService(expandedService === index ? null : index);
+  };
+
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-blue-900 text-white py-16 px-6 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Daily Recommendations</h1>
-        <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto">
-          Explore our wide range of financial services and daily market recommendations to help you achieve your investment goals.
+    <motion.div
+      className="container mx-auto py-12 px-4"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Recommendations Section */}
+      <motion.div className="text-center mb-12" variants={itemVariants}>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+          Today's Market Recommendations
+        </h1>
+        <p className="text-lg text-gray-600">
+          Expert calls for intraday and positional trades. Last updated: {new Date().toLocaleDateString()}
         </p>
-        <Link
-          to="/signup"
-          className="mt-6 inline-block bg-yellow-500 text-black font-semibold py-3 px-6 rounded-lg hover:bg-yellow-600 transition"
-        >
-          Get Started
-        </Link>
-      </section>
+      </motion.div>
 
-      {/* Services Overview */}
-      <section className="py-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">Our Financial Services</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Service Card 1 */}
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-              <FaChartLine className="text-4xl text-blue-900 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Market Analysis</h3>
-              <p className="text-gray-600">
-                Daily insights and technical analysis to guide your investment decisions in stocks, commodities, and forex.
-              </p>
-            </div>
-            {/* Service Card 2 */}
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-              <FaDollarSign className="text-4xl text-blue-900 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Investment Plans</h3>
-              <p className="text-gray-600">
-                Tailored investment strategies to maximize returns and manage risks effectively.
-              </p>
-            </div>
-            {/* Service Card 3 */}
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-              <FaUserCheck className="text-4xl text-blue-900 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Personalized Support</h3>
-              <p className="text-gray-600">
-                Dedicated advisors to provide one-on-one guidance for your financial journey.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Subscription Plans */}
-      <section className="bg-gray-200 py-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">Subscription Plans</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Plan 1 */}
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Basic Plan</h3>
-              <p className="text-3xl font-semibold text-blue-900 mb-4">$99/month</p>
-              <ul className="text-gray-600 mb-6">
-                <li>Daily Market Updates</li>
-                <li>Weekly Reports</li>
-                <li>Email Support</li>
-              </ul>
-              <Link
-                to="/signup"
-                className="inline-block bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-800 transition"
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
+        variants={containerVariants}
+      >
+        {recommendations.map((rec) => (
+          <motion.div
+            key={rec.id}
+            className={`rounded-xl shadow-lg p-6 border-t-4 ${
+              rec.type === 'BUY' ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
+            }`}
+            variants={itemVariants}
+            whileHover={{ y: -5, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-800">{rec.name}</h2>
+              <span
+                className={`px-4 py-1 text-sm font-semibold rounded-full text-white ${
+                  rec.type === 'BUY' ? 'bg-green-500' : 'bg-red-500'
+                }`}
               >
-                Choose Plan
-              </Link>
+                {rec.type}
+              </span>
             </div>
-            {/* Plan 2 */}
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center border-2 border-yellow-500">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Pro Plan</h3>
-              <p className="text-3xl font-semibold text-blue-900 mb-4">$199/month</p>
-              <ul className="text-gray-600 mb-6">
-                <li>Daily Recommendations</li>
-                <li>Real-Time Alerts</li>
-                <li>Priority Email Support</li>
-              </ul>
-              <Link
-                to="/signup"
-                className="inline-block bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-800 transition"
-              >
-                Choose Plan
-              </Link>
+            <div className="space-y-3 text-gray-700">
+              <div className="flex items-center">
+                {rec.type === 'BUY' ? <FaArrowUp className="mr-3 text-green-500" /> : <FaArrowDown className="mr-3 text-red-500" />}
+                <div>
+                  <strong>Entry Price:</strong> {rec.entry}
+                </div>
+              </div>
+              <div className="flex items-center">
+                <FaBullseye className="mr-3 text-blue-500" />
+                <div>
+                  <strong>Target:</strong> {rec.target}
+                </div>
+              </div>
+              <div className="flex items-center">
+                <FaStopCircle className="mr-3 text-orange-500" />
+                <div>
+                  <strong>Stop Loss:</strong> {rec.stopLoss}
+                </div>
+              </div>
             </div>
-            {/* Plan 3 */}
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Elite Plan</h3>
-              <p className="text-3xl font-semibold text-blue-900 mb-4">$399/month</p>
-              <ul className="text-gray-600 mb-6">
-                <li>Personalized Portfolio</li>
-                <li>One-on-One Consulting</li>
-                <li>24/7 Support</li>
-              </ul>
-              <Link
-                to="/signup"
-                className="inline-block bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-800 transition"
-              >
-                Choose Plan
-              </Link>
+            <div className="text-right text-xs text-gray-500 mt-4">
+              {rec.timestamp}
             </div>
-          </div>
-        </div>
-      </section>
+          </motion.div>
+        ))}
+      </motion.div>
 
-      {/* Call to Action */}
-      <section className="bg-blue-900 text-white py-12 px-6 text-center">
-        <h2 className="text-3xl font-bold mb-4">Ready to Start Investing?</h2>
-        <p className="text-lg text-gray-200 max-w-2xl mx-auto mb-6">
-          Join thousands of satisfied clients and take control of your financial future with our expert recommendations.
-        </p>
-        <Link
-          to="/signup"
-          className="inline-block bg-yellow-500 text-black font-semibold py-3 px-6 rounded-lg hover:bg-yellow-600 transition"
-        >
-          Sign Up Now
-        </Link>
-      </section>
+      {/* What We Offer Section */}
+      <motion.div className="text-center mb-12" variants={itemVariants}>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+          What We Offer
+        </h1>
+        <p className="text-lg text-gray-600">Great Offer For Customers</p>
+      </motion.div>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8 px-6">
-        <div className="max-w-7xl mx-auto text-center">
-          <h3 className="text-2xl font-bold mb-4">Wise Global Research</h3>
-          <p className="text-gray-400 mb-4">
-            Providing expert financial advice and daily market recommendations since 2010.
-          </p>
-          <div className="flex justify-center space-x-4 mb-4">
-            <Link to="/about" className="text-gray-400 hover:text-white">About Us</Link>
-            <Link to="/contact" className="text-gray-400 hover:text-white">Contact</Link>
-            <Link to="/privacy" className="text-gray-400 hover:text-white">Privacy Policy</Link>
-            <Link to="/terms" className="text-gray-400 hover:text-white">Terms of Service</Link>
-          </div>
-          <p className="text-gray-500">&copy; 2025 Wise Global Research. All rights reserved.</p>
-        </div>
-      </footer>
-    </div>
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
+        variants={containerVariants}
+      >
+        {services.map((service, index) => (
+          <motion.div
+            key={index}
+            className="rounded-xl shadow-lg p-6 bg-white border-t-4 border-blue-500"
+            variants={itemVariants}
+            whileHover={{ y: -5, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-gray-800">{service.name}</h2>
+              <span className="px-3 py-1 text-sm font-semibold rounded-full text-white bg-blue-500">
+                {service.count}
+              </span>
+            </div>
+            <p className="text-gray-600 mb-4">{service.category}</p>
+            {expandedService === index && (
+              <motion.p
+                className="text-gray-700 mb-4"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+              >
+                {service.description}
+              </motion.p>
+            )}
+            <button
+              onClick={() => toggleService(index)}
+              className="flex items-center text-blue-500 hover:text-blue-700 font-semibold"
+            >
+              {expandedService === index ? (
+                <>
+                  <FaMinus className="mr-2" /> Hide Details
+                </>
+              ) : (
+                <>
+                  <FaPlus className="mr-2" /> Read More
+                </>
+              )}
+            </button>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="text-center mt-12 p-4 bg-yellow-100 text-yellow-800 rounded-lg">
+        <p><strong>Disclaimer:</strong> Investments in securities market are subject to market risks. Read all the related documents carefully before investing. We are not responsible for any profit or loss that may occur.</p>
+      </motion.div>
+    </motion.div>
   );
 };
 
-export default Services;
+export default DailyRecommendation;

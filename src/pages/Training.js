@@ -1,7 +1,7 @@
 // src/pages/Training.js
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaChartLine, FaBookOpen, FaShieldAlt, FaUsers, FaCertificate } from 'react-icons/fa';
+import { FaChartLine, FaBookOpen, FaShieldAlt, FaUsers } from 'react-icons/fa';
 
 // Animation variants
 const containerVariants = {
@@ -24,7 +24,7 @@ const cardVariants = {
   hover: { scale: 1.05, rotateY: 10, boxShadow: '0 15px 30px rgba(0,0,0,0.2)' },
 };
 
-// Training programs and testimonials data (same as before)
+// Training programs and testimonials data
 const trainingPrograms = [
   {
     id: 1,
@@ -142,7 +142,7 @@ const Training = () => {
 
   return (
     <motion.div
-      className="container mx-auto py-12 px-4 max-w-5xl bg-gray-800"
+      className="container mx-auto py-12 px-4 max-w-5xl bg-blur"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -159,7 +159,7 @@ const Training = () => {
       </motion.div>
 
       {/* Introduction Section */}
-      <motion.div className="bg-blue-900 rounded-xl p-8 mb-12" variants={itemVariants} style={{ transformStyle: 'preserve-3d' }}>
+      <motion.div className="bg-blur rounded-xl p-8 mb-12" variants={itemVariants} style={{ transformStyle: 'preserve-3d' }}>
         <h2 className="text-3xl font-bold text-white mb-4">Why Choose Our Training?</h2>
         <p className="text-white text-lg leading-7 mb-6">
           Our programs are designed for beginners and seasoned traders alike, offering practical insights into NSE, BSE, and MCX markets. Learn from industry experts with 5+ years of experience, access recorded sessions, and earn a certificate upon completion.
@@ -179,7 +179,7 @@ const Training = () => {
           {trainingPrograms.map((program) => (
             <motion.div
               key={program.id}
-              className="bg-gray-700 rounded-xl shadow-lg p-6 border-t-4 border-blue-500"
+              className="bg-blur rounded-xl shadow-lg p-6 border-t-4 border-blue-500"
               variants={cardVariants}
               initial="hidden"
               animate="visible"
@@ -229,7 +229,7 @@ const Training = () => {
           {testimonials.map((testimonial) => (
             <motion.div
               key={testimonial.id}
-              className="bg-gray-700 rounded-xl shadow-lg p-6 border-t-4 border-green-500 text-center"
+              className="bg-blur rounded-xl shadow-lg p-6 border-t-4 border-green-500 text-center"
               variants={cardVariants}
               initial="hidden"
               animate="visible"
@@ -246,7 +246,7 @@ const Training = () => {
       </motion.div>
 
       {/* Registration Form Section */}
-      <motion.div className="bg-green-900 rounded-xl p-8 mb-12" variants={itemVariants} style={{ transformStyle: 'preserve-3d' }}>
+      <motion.div className="bg-blur rounded-xl p-8 mb-12" variants={itemVariants} style={{ transformStyle: 'preserve-3d' }}>
         <h2 className="text-3xl font-bold text-white mb-6 text-center">Register for Training</h2>
         <form onSubmit={handleSubmit} className="space-y-6 max-w-lg mx-auto">
           <div>
@@ -259,7 +259,7 @@ const Training = () => {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-lg bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border rounded-lg bg-blur text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your full name"
             />
             {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
@@ -274,7 +274,7 @@ const Training = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-lg bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border rounded-lg bg-blur text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
             />
             {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
@@ -289,7 +289,7 @@ const Training = () => {
               name="phone"
               value={formData.phone}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-lg bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border rounded-lg bg-blur text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your 10-digit phone number"
             />
             {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
@@ -303,7 +303,7 @@ const Training = () => {
               name="course"
               value={formData.course}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-lg bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border rounded-lg bg-blur text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select a course</option>
               {trainingPrograms.map((program) => (
@@ -323,7 +323,7 @@ const Training = () => {
               name="message"
               value={formData.message}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-lg bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border rounded-lg bg-blur text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows="5"
               placeholder="Tell us about your interest in our training programs"
             />
@@ -340,7 +340,7 @@ const Training = () => {
 
       {/* Call to Action */}
       <motion.div
-        className="text-center bg-green-900 rounded-xl p-8 mb-12"
+        className="text-center bg-blur rounded-xl p-8 mb-12"
         variants={itemVariants}
         style={{ transformStyle: 'preserve-3d' }}
       >
@@ -359,9 +359,9 @@ const Training = () => {
       {/* Disclaimer */}
       <motion.div
         variants={itemVariants}
-        className="text-center p-4 bg-yellow-900 text-white rounded-lg"
+        className="text-center bg-blur p-4 rounded-lg"
       >
-        <p>
+        <p className="text-white">
           <strong>Disclaimer:</strong> Investments in the securities market are subject to market risks. Read all related documents carefully before investing. Wise Global Research is not responsible for any profit or loss that may occur.
         </p>
       </motion.div>

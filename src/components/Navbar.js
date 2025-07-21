@@ -78,44 +78,66 @@ const navLinks = [
 
 const MegaMenu = ({ label, categories, location, textColor }) => {
   const [isOpen, setIsOpen] = useState(false);
-  let timeoutId;
+  const timeoutId = useRef(null);
+  const menuRef = useRef(null);
 
   const handleMouseEnter = () => {
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId.current);
     setIsOpen(true);
   };
 
   const handleMouseLeave = () => {
-    timeoutId = setTimeout(() => setIsOpen(false), 200);
+    timeoutId.current = setTimeout(() => {
+      setIsOpen(false);
+    }, 500);
+  };
+
+  const handleMenuMouseEnter = () => {
+    clearTimeout(timeoutId.current);
+    setIsOpen(true);
   };
 
   return (
-    <div className="relative group" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <button className="nav-item font-semibold text-sm md:text-base px-2 py-1" style={{ color: textColor }}>
+    <div
+      className="relative group"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      ref={menuRef}
+    >
+      <button
+        className="nav-item font-semibold text-sm md:text-base px-2 py-1"
+        style={{ color: textColor }}
+      >
         {label}
       </button>
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-2 backdrop-blur-lg bg-white/50 border border-[#37eb34] text-black shadow-lg rounded-xl z-50 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 w-[90vw] md:w-[80vw] max-w-[900px] animate-fadeIn">
-          {categories.map((cat) => (
-            <div key={cat.label}>
-              <div className="font-semibold text-sm md:text-base mb-2 text-[#37eb34]">{cat.label}</div>
-              <div className="space-y-1 text-xs md:text-sm">
-                {cat.items.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className={`block hover:text-blue-600 py-1 transition-all duration-300 ${
-                      location.pathname === item.path ? 'text-green-600 font-semibold' : ''
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
+      <div
+        className={`absolute top-full left-0 mt-0 bg-white/50 backdrop-blur-lg border border-[#37eb34] text-black shadow-lg rounded-xl z-50 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 w-[90vw] md:w-[80vw] max-w-[900px] transition-opacity duration-300 ${
+          isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+        } animate-slideDown`}
+        onMouseEnter={handleMenuMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {categories.map((cat) => (
+          <div key={cat.label}>
+            <div className="font-semibold text-sm md:text-base mb-2 text-[#37eb34]">
+              {cat.label}
             </div>
-          ))}
-        </div>
-      )}
+            <div className="space-y-1 text-xs md:text-sm">
+              {cat.items.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`block hover:text-blue-600 py-1 transition-all duration-300 ${
+                    location.pathname === item.path ? 'text-green-600 font-semibold' : ''
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -164,7 +186,7 @@ function Navbar() {
                 <button className="nav-item font-semibold text-sm md:text-base px-2 py-1" style={{ color: textColor }}>
                   {label}
                 </button>
-                <div className="absolute top-full left-0 mt-2 bg-white/50 backdrop-blur-md border border-[#37eb34] text-black shadow-md rounded-md z-50 group-hover:flex flex-col min-w-[200px] p-2 hidden animate-slideDown">
+                <div className="absolute top-full left-0 mt-0 bg-white/50 backdrop-blur-md border border-[#37eb34] text-black shadow-md rounded-md z-50 group-hover:flex flex-col min-w-[200px] p-2 hidden transition-opacity duration-300 opacity-0 group-hover:opacity-100 group-hover:visible animate-slideDown">
                   {items.map((item) => (
                     <Link
                       key={item.path}
@@ -206,7 +228,6 @@ function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Drawer */}
       {drawerOpen && (
         <div className="mobile-overlay" onClick={() => setDrawerOpen(false)}></div>
       )}
