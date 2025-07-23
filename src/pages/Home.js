@@ -22,9 +22,8 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { useForm } from 'react-hook-form';
-import { ref, push } from 'firebase/database';
+import { ref, push, onValue } from 'firebase/database';
 import { toast } from 'react-toastify';
-import emailjs from '@emailjs/browser';
 import { db } from '../firebase';
 
 // Register Chart.js components
@@ -115,6 +114,14 @@ const Home = () => {
     }))
   );
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [tableData, setTableData] = useState([
+    { srNo: 1, source: 'Directly from Investors', pendingLastMonth: 0, received: 0, resolved: 0, pending: 0, pending3Months: 0, avgResolutionTime: 0 },
+    { srNo: 2, source: 'SEBI (SCORES)', pendingLastMonth: 0, received: 0, resolved: 0, pending: 0, pending3Months: 0, avgResolutionTime: 0 },
+    { srNo: 3, source: 'Other Sources (if any)', pendingLastMonth: 0, received: 0, resolved: 0, pending: 0, pending3Months: 0, avgResolutionTime: 0 },
+    { srNo: 'Grand Total', source: '', pendingLastMonth: 0, received: 0, resolved: 0, pending: 0, pending3Months: 0, avgResolutionTime: 0 },
+  ]);
+  const [loadingTable, setLoadingTable] = useState(true);
+  const [errorTable, setErrorTable] = useState(null);
 
   // Scroll to contact form
   const scrollToContactForm = () => {
@@ -148,10 +155,31 @@ const Home = () => {
     return () => clearInterval(slideInterval);
   }, []);
 
-  // Initialize EmailJS
+  // Fetch table data from Firebase
   useEffect(() => {
-    emailjs.init('ScyszsjDfNxwKWuxn');
-    console.log('EmailJS initialized with public key: ScyszsjDfNxwKWuxn');
+    const tableRef = ref(db, 'complaintTableData/data'); // Corrected Firebase path
+    const unsubscribe = onValue(tableRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // Firebase returns an object, convert it to an array for rendering
+        const dataArray = Array.isArray(data) ? data : Object.values(data);
+        setTableData(dataArray);
+      } else {
+        setTableData([
+          { srNo: 1, source: 'Directly from Investors', pendingLastMonth: 0, received: 0, resolved: 0, pending: 0, pending3Months: 0, avgResolutionTime: 0 },
+          { srNo: 2, source: 'SEBI (SCORES)', pendingLastMonth: 0, received: 0, resolved: 0, pending: 0, pending3Months: 0, avgResolutionTime: 0 },
+          { srNo: 3, source: 'Other Sources (if any)', pendingLastMonth: 0, received: 0, resolved: 0, pending: 0, pending3Months: 0, avgResolutionTime: 0 },
+          { srNo: 'Grand Total', source: '', pendingLastMonth: 0, received: 0, resolved: 0, pending: 0, pending3Months: 0, avgResolutionTime: 0 },
+        ]);
+      }
+      setLoadingTable(false);
+    }, (error) => {
+      console.error('Error fetching table data:', error);
+      setErrorTable('Failed to load table data. Please try again later.');
+      setLoadingTable(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -1044,6 +1072,67 @@ const Home = () => {
           <ContactForm />
         </div>
       </section>
+
+      {/* Complaint Table Section */}
+      <section className="py-16 px-4 bg-blur">
+        <div className="max-w-6xl mx-auto custom-box-bg rounded-xl shadow-lg p-8 border border-gray-200/20">
+          <motion.h2
+            className="text-3xl font-bold text-center mb-8"
+            variants={itemVariants}
+          >
+            Complaint Data for July 2025
+          </motion.h2>
+          {loadingTable ? (
+            <div className="flex justify-center items-center py-6">
+              <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : errorTable ? (
+            <div className="bg-red-500/20 rounded-xl p-6 shadow-lg border border-red-500/30 text-center text-white">
+              {errorTable}
+            </div>
+          ) : (
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="bg-gray-800">
+                  <th className="p-2 border">Sr. No.</th>
+                  <th className="p-2 border">Received from</th>
+                  <th className="p-2 border">Pending at the end of last month</th>
+                  <th className="p-2 border">Received</th>
+                  <th className="p-2 border">Resolved</th>
+                  <th className="p-2 border">Pending</th>
+                  <th className="p-2 border">Pending Complaints  3 Months</th>
+                  <th className="p-2 border">Average Resolution time (in days)^</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(tableData) ? (
+                  tableData.map((row) => (
+                    <tr key={row.srNo} className="bg-gray-700">
+                      <td className="p-2 border">{row.srNo}</td>
+                      <td className="p-2 border">{row.source}</td>
+                      <td className="p-2 border">{row.pendingLastMonth || 0}</td>
+                      <td className="p-2 border">{row.received || 0}</td>
+                      <td className="p-2 border">{row.resolved || 0}</td>
+                      <td className="p-2 border">{row.pending || 0}</td>
+                      <td className="p-2 border">{row.pending3Months || 0}</td>
+                      <td className="p-2 border">{row.avgResolutionTime || 0}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" className="p-2 border text-center text-red-500">
+                      Error: Table data is not in a valid format
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
+          <p className="mt-2 text-sm">
+            ^ Average Resolution time is the sum total of time taken to resolve each complaint in days, in the current month divided by total number of complaints resolved in the current month.
+          </p>
+        </div>
+      </section>
     </motion.div>
   );
 };
@@ -1235,37 +1324,19 @@ const ContactForm = () => {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        interest: data.interest, // Save interest instead of formType
+        interest: data.interest,
         message: data.message,
         timestamp: Date.now(),
       };
-      console.log('Submitting form data to Firebase:', formData);
       await push(ref(db, 'homeFormSubmissions'), formData);
-      console.log('Form data saved successfully to Firebase:', formData);
-
-      // Send notification email to admin via EmailJS
-      const templateParams = {
-        to_email: 'wiseglobalresearchservice@gmail.com',
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        interest: data.interest,
-        message: data.message,
-      };
-
-      const emailResponse = await emailjs.send(
-        'service_8u6ie54', // Replace with your EmailJS service ID
-        'template_7n0xtk5', // Replace with your EmailJS template ID
-        templateParams,
-        'ScyszsjDfNxwKWuxn' // Public key
-      );
-      console.log('Notification email sent to admin:', emailResponse);
 
       toast.success('Form submitted successfully! We will contact you soon.', { position: 'top-center' });
       reset();
     } catch (error) {
       console.error('Error submitting form:', error);
-      toast.error(`Failed to submit form: ${error.message}`, { position: 'top-center' });
+      // Use String(error) to avoid "undefined" if error is not a standard Error object.
+      const errorMessage = error.message ? error.message : String(error);
+      toast.error(`Failed to submit form: ${errorMessage}`, { position: 'top-center' });
     } finally {
       setSubmitting(false);
     }

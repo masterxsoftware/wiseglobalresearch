@@ -5,6 +5,9 @@ import {
   FaUser, FaEnvelope, FaPhone, FaCommentDots,
   FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn, FaYoutube
 } from 'react-icons/fa6';
+import { ref, push } from 'firebase/database';
+import { toast } from 'react-toastify';
+import { db } from '../firebase';
 
 function Contact() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
@@ -19,12 +22,23 @@ function Contact() {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate form submission without Firebase
-    setTimeout(() => {
+    const submissionData = {
+      ...formData,
+      timestamp: Date.now(),
+    };
+
+    try {
+      // Save to the same location as the Home.js form
+      await push(ref(db, 'homeFormSubmissions'), submissionData);
+      toast.success('Form submitted successfully! We will contact you soon.', { position: 'top-center' });
       setSuccess(true);
       setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (error) {
+      console.error('Error submitting form to Firebase:', error);
+      toast.error(`Failed to submit form: ${error.message}`, { position: 'top-center' });
+    } finally {
       setLoading(false);
-    }, 1000); // Fake delay to mimic async behavior
+    }
   };
 
   useEffect(() => {

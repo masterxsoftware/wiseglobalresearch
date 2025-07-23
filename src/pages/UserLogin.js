@@ -1,193 +1,304 @@
-// src/pages/UserLogin.js
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ref, set, get } from 'firebase/database';
-import { toast } from 'react-toastify';
-import { db } from '../firebase';
-import emailjs from '@emailjs/browser';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
+import { toast } from "react-toastify";
+import { motion, useAnimation } from "framer-motion";
+import logo from "../assets/images/w.png"; // Verify this path is correct
 
-const allowedEmail = 'wiseglobalresearchservice@gmail.com';
-
-function UserLogin() {
+const UserLogin = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
-  const [error, setError] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({ email: "", password: "" });
+  const logoControls = useAnimation();
+  const textControls = useAnimation();
 
-  // Initialize EmailJS and AOS
+  // Animate logo on component mount
   useEffect(() => {
-    AOS.init({ duration: 800, once: true });
-    emailjs.init('ScyszsjDfNxwKWuxn'); // New EmailJS public key
-    console.log('EmailJS initialized with public key: ScyszsjDfNxwKWuxn');
-  }, []);
+    logoControls.start({
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 120, delay: 0.2 },
+    });
+  }, [logoControls]);
 
-  const generateOTP = () => {
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log('Generated OTP:', otp);
-    return otp;
-  };
+  // Redirect if already authenticated
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user && localStorage.getItem("isAuthenticated") === "true") {
+        navigate("/admin/contact-data");
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
 
-  const handleSendOTP = async () => {
-    setError('');
-    if (email !== allowedEmail) {
-      setError('Invalid Email Address.');
-      toast.error('Only official email allowed.', { position: 'top-center' });
-      console.log('Invalid email entered:', email);
-      return;
+  // Form validation
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { email: "", password: "" };
+
+    if (!email) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+      isValid = false;
     }
 
-    const generatedOtp = generateOTP();
-    const timestamp = Date.now();
-
-    try {
-      // Save OTP to Firebase
-      await set(ref(db, 'adminOTP'), {
-        email,
-        otp: generatedOtp,
-        timestamp,
-      });
-      console.log('OTP saved to Firebase:', { email, otp: generatedOtp, timestamp });
-
-      // Send OTP via EmailJS
-      const templateParams = {
-        to_email: email,
-        otp: generatedOtp,
-      };
-
-      const response = await emailjs.send(
-        'service_8u6ie54', // Replace with your correct EmailJS service ID
-        'template_7n0xtk5', // Replace with your correct EmailJS template ID
-        templateParams
-      );
-      console.log('EmailJS response:', response);
-
-      setOtpSent(true);
-      toast.success('OTP sent successfully!', { position: 'top-center' });
-    } catch (err) {
-      console.error('Error sending OTP:', err);
-      setError(`Failed to send OTP: ${err.message}`);
-      toast.error(`Failed to send OTP: ${err.message}`, { position: 'top-center' });
+    if (!password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long";
+      isValid = false;
+    } else if (!/[A-Z]/.test(password)) {
+      newErrors.password = "Password must contain at least one uppercase letter";
+      isValid = false;
+    } else if (!/[a-z]/.test(password)) {
+      newErrors.password = "Password must contain at least one lowercase letter";
+      isValid = false;
+    } else if (!/[0-9]/.test(password)) {
+      newErrors.password = "Password must contain at least one number";
+      isValid = false;
+    } else if (!/[!@#$%^&*]/.test(password)) {
+      newErrors.password = "Password must contain at least one special character";
+      isValid = false;
     }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
+  // Handle login
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
+    setIsLoading(true);
 
-    if (email !== allowedEmail) {
-      setError('Invalid Email Address.');
-      toast.error('Only official email allowed.', { position: 'top-center' });
-      console.log('Invalid email entered:', email);
+    if (!validateForm()) {
+      setIsLoading(false);
       return;
     }
 
     try {
-      const otpRef = ref(db, 'adminOTP');
-      const snapshot = await get(otpRef);
-      const data = snapshot.val();
-      const currentTime = Date.now();
-      const otpAge = currentTime - data?.timestamp;
-
-      console.log('OTP verification data:', { data, otpAge });
-
-      if (
-        data &&
-        data.email === email &&
-        data.otp === otp &&
-        otpAge < 300000 // 5-minute expiry
-      ) {
-        localStorage.setItem('isAuthenticated', 'true');
-        toast.success('Login successful!', { position: 'top-center' });
-        navigate('/admin/contact-data');
-      } else {
-        setError('Invalid or expired OTP. Please try again.');
-        toast.error('Invalid or expired OTP.', { position: 'top-center' });
-      }
+      await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem("isAuthenticated", "true");
+      toast.success("Login successful!", { position: "top-center" });
+      navigate("/admin/contact-data");
     } catch (error) {
-      console.error('Error verifying OTP:', error);
-      setError(`Login failed: ${error.message}`);
-      toast.error(`Login failed: ${error.message}`, { position: 'top-center' });
+      let errorMessage = "Login failed. Please try again.";
+      if (error.code === "auth/user-not-found") {
+        errorMessage = "No user found with this email.";
+      } else if (error.code === "auth/wrong-password") {
+        errorMessage = "Incorrect password.";
+      } else if (error.code === "auth/too-many-requests") {
+        errorMessage = "Too many attempts. Please try again later.";
+      }
+      toast.error(errorMessage, { position: "top-center" });
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  // Logo hover animation
+  const handleLogoHover = async () => {
+    await logoControls.start({
+      scale: 1.1,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    });
+  };
+
+  const handleLogoHoverEnd = async () => {
+    await logoControls.start({
+      scale: 1,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    });
+  };
+
+  // Text animation for "Admin Login"
+  const handleTextHover = async () => {
+    await textControls.start({
+      scale: 1.05,
+      color: "#eab308",
+      transition: { duration: 0.3, ease: "easeInOut" },
+    });
+  };
+
+  const handleTextHoverEnd = async () => {
+    await textControls.start({
+      scale: 1,
+      color: "#ffffff",
+      transition: { duration: 0.3, ease: "easeInOut" },
+    });
+  };
+
+  // Form animation variants
+  const formVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
+  };
+
+  // Input field animation variants
+  const inputVariants = {
+    hover: {
+      scale: 1.02,
+      boxShadow: "0px 0px 8px rgba(234, 179, 8, 0.3)",
+      transition: { duration: 0.2 },
+    },
+    focus: {
+      scale: 1.02,
+      borderColor: "#eab308",
+      boxShadow: "0px 0px 8px rgba(234, 179, 8, 0.5)",
+      transition: { duration: 0.2 },
+    },
+  };
+
+  // Button animation variants
+  const buttonVariants = {
+    hover: {
+      scale: 1.05,
+      backgroundColor: "#ca8a04",
+      boxShadow: "0px 0px 12px rgba(234, 179, 8, 0.7)",
+      transition: { duration: 0.3 },
+    },
+    tap: { scale: 0.95 },
   };
 
   return (
-    <motion.div
-      className="max-w-md mx-auto p-4 custom-box-bg rounded-xl shadow-lg border border-gray-200/20 min-h-screen flex items-center"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      data-aos="fade-up"
-    >
-      <div className="w-full">
-        <h2 className="text-2xl font-bold text-center mb-6 text-white">Admin Login</h2>
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1 text-white">Email</label>
-            <input
+    <div className="min-h-screen flex items-center justify-center bg-transparent">
+      <motion.div
+        variants={formVariants}
+        initial="hidden"
+        animate="visible"
+        className="relative backdrop-blur-lg bg-white/10 p-8 rounded-2xl shadow-xl border border-white/20 w-full max-w-md"
+        role="region"
+        aria-label="Admin login form"
+      >
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-2xl">
+            <svg
+              className="animate-spin h-8 w-8 text-yellow-400"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+          </div>
+        )}
+
+        {/* Logo */}
+        <motion.div
+          className="flex justify-center mb-6"
+          animate={logoControls}
+          onHoverStart={handleLogoHover}
+          onHoverEnd={handleLogoHoverEnd}
+          initial={{ y: -50, opacity: 0 }}
+        >
+          <img
+            src={logo}
+            alt="Company Logo"
+            className="w-20 h-20 object-contain"
+            style={{ filter: "drop-shadow(0 0 8px rgba(234, 179, 8, 0.4))" }}
+            onError={(e) => {
+              e.target.src = "https://via.placeholder.com/80?text=Logo"; // Fallback image
+              console.error("Failed to load logo at ../assets/images/w.png");
+            }}
+          />
+        </motion.div>
+
+        {/* Title */}
+        <motion.h2
+          className="text-2xl text-white font-semibold text-center mb-6"
+          animate={textControls}
+          onHoverStart={handleTextHover}
+          onHoverEnd={handleTextHoverEnd}
+          aria-label="Admin Login"
+        >
+          Admin Login
+        </motion.h2>
+
+        {/* Form */}
+        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          {/* Email Input */}
+          <div className="relative">
+            <motion.input
               type="email"
+              placeholder="Enter Email"
+              className="px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 w-full"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300/50 custom-box-bg focus:ring-2 focus:ring-blue-500 text-white"
               required
-              data-aos="fade-up"
-              data-aos-delay="100"
+              variants={inputVariants}
+              whileHover="hover"
+              whileFocus="focus"
+              aria-label="Email address"
+              autoComplete="email"
             />
+            {errors.email && (
+              <p className="text-red-400 text-sm mt-1" role="alert">
+                {errors.email}
+              </p>
+            )}
           </div>
 
-          {!otpSent && (
-            <motion.button
-              type="button"
-              onClick={handleSendOTP}
-              className="w-full bg-yellow-500 text-white py-3 rounded-lg shadow-md hover:shadow-lg transition"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              data-aos="zoom-in"
-              data-aos-delay="200"
-            >
-              Send OTP
-            </motion.button>
-          )}
+          {/* Password Input */}
+          <div className="relative">
+            <motion.input
+              type="password"
+              placeholder="Enter Password"
+              className="px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 w-full"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              variants={inputVariants}
+              whileHover="hover"
+              whileFocus="focus"
+              aria-label="Password"
+              autoComplete="current-password"
+            />
+            {errors.password && (
+              <p className="text-red-400 text-sm mt-1" role="alert">
+                {errors.password}
+              </p>
+            )}
+          </div>
 
-          {otpSent && (
-            <>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-white">Enter OTP</label>
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300/50 custom-box-bg focus:ring-2 focus:ring-blue-500 text-white"
-                  required
-                  data-aos="fade-up"
-                  data-aos-delay="300"
-                />
-              </div>
-              <motion.button
-                type="submit"
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg shadow-md hover:shadow-lg transition"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                data-aos="zoom-in"
-                data-aos-delay="400"
-              >
-                Login
-              </motion.button>
-            </>
-          )}
-
-          {error && (
-            <p className="text-red-500 text-sm" data-aos="fade-up" data-aos-delay="500">
-              {error}
-            </p>
-          )}
+          {/* Submit Button */}
+          <motion.button
+            type="submit"
+            disabled={isLoading}
+            className={`bg-yellow-500 text-white font-medium py-3 rounded-lg transition duration-300 shadow-md ${
+              isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-600"
+            }`}
+            variants={buttonVariants}
+            whileHover={isLoading ? {} : "hover"}
+            whileTap={isLoading ? {} : "tap"}
+            aria-label="Submit login form"
+          >
+            {isLoading ? "Logging in..." : "Login"}
+          </motion.button>
         </form>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
-}
+};
 
 export default UserLogin;

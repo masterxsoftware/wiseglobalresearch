@@ -1,375 +1,695 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { FiDownload, FiTrash2, FiUpload, FiSearch } from 'react-icons/fi';
+/**
+ * Reports.js
+ * Component for displaying and managing research reports with password-protected downloads.
+ * Features day-based filtering, category selection, search, pagination, and animations.
+ */
 
-const weekDays = [
-  { day: 'Monday', date: 'July 8' },
-  { day: 'Tuesday', date: 'July 9' },
-  { day: 'Wednesday', date: 'July 10' },
-  { day: 'Thursday', date: 'July 11' },
-  { day: 'Friday', date: 'July 12' },
-];
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ref, onValue } from 'firebase/database';
+import { db, auth } from '../firebase';
+import { toast } from 'react-toastify';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiDownload, FiSearch, FiLock, FiEye } from 'react-icons/fi';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import PropTypes from 'prop-types';
 
-const categories = ['Market', 'Technical', 'Financial', 'Competitor', 'Other'];
+// Constants
+const WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const CATEGORIES = ['Market', 'Technical', 'Financial', 'Competitor', 'Other'];
 
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: 'easeOut', staggerChildren: 0.2 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
+const buttonVariants = {
+  hover: { scale: 1.05, boxShadow: '0px 4px 15px rgba(79, 70, 229, 0.4)' },
+  tap: { scale: 0.95 },
+};
+
+// Loading spinner component
+const LoadingSpinner = () => (
+  <motion.div
+    className="flex justify-center items-center py-6"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5 }}
+  >
+    <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+  </motion.div>
+);
+
+// Confirmation modal for password verification
+const PasswordModal = ({ isOpen, onClose, onConfirm, report }) => (
+  <AnimatePresence>
+    {isOpen && (
+      <motion.div
+        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          className="bg-white/10 backdrop-blur-lg p-6 rounded-xl shadow-xl border border-gray-200/20 max-w-md w-full"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+        >
+          <h3 className="text-lg font-semibold text-white mb-4">Verify Password for {report?.title}</h3>
+          <input
+            type="text"
+            placeholder="Enter 4-digit password"
+            className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-400 mb-4"
+            onChange={(e) => onConfirm(e.target.value, report)}
+            aria-label={`Password for ${report?.title}`}
+          />
+          <div className="flex justify-end gap-4">
+            <motion.button
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+              aria-label="Cancel password verification"
+            >
+              Cancel
+            </motion.button>
+          </div>
+        </motion.div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
+PasswordModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  report: PropTypes.shape({
+    title: PropTypes.string,
+    password: PropTypes.string,
+  }),
+};
+
+// Report preview modal
+const ReportPreviewModal = ({ isOpen, onClose, report, onDownload }) => (
+  <AnimatePresence>
+    {isOpen && (
+      <motion.div
+        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          className="bg-white/10 backdrop-blur-lg p-6 rounded-xl shadow-xl border border-gray-200/20 max-w-lg w-full"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+        >
+          <h3 className="text-lg font-semibold text-white mb-4">{report?.title}</h3>
+          <p className="text-gray-300 mb-4">{report?.description}</p>
+          <p className="text-sm text-gray-400 mb-2">Category: {report?.category}</p>
+          <p className="text-sm text-gray-400 mb-4">Size: {report?.size}</p>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+            alt="PDF Thumbnail"
+            className="w-32 h-32 object-contain mx-auto mb-4"
+          />
+          <div className="flex justify-end gap-4">
+            <motion.button
+              onClick={() => onDownload(report)}
+              className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+              aria-label={`Download ${report?.title}`}
+            >
+              <FiDownload /> Download
+            </motion.button>
+            <motion.button
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+              aria-label="Close preview"
+            >
+              Close
+            </motion.button>
+          </div>
+        </motion.div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
+ReportPreviewModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  report: PropTypes.shape({
+    title: PropTypes.string,
+    description: PropTypes.string,
+    category: PropTypes.string,
+    size: PropTypes.string,
+  }),
+  onDownload: PropTypes.func.isRequired,
+};
+
+// Day selector component
+const DaySelector = ({ activeDay, setActiveDay }) => (
+  <motion.div
+    className="mb-8 flex justify-center"
+    variants={itemVariants}
+    data-aos="fade-up"
+  >
+    <div className="inline-flex rounded-md shadow-sm">
+      {WEEK_DAYS.map((day) => (
+        <motion.button
+          key={day}
+          onClick={() => setActiveDay(day)}
+          className={`px-6 py-3 text-sm font-medium transition-all duration-300 ${
+            activeDay === day
+              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white'
+              : 'bg-white/10 text-white hover:bg-white/20'
+          } ${day === 'Monday' ? 'rounded-l-lg' : ''} ${
+            day === 'Friday' ? 'rounded-r-lg' : ''
+          }`}
+          variants={buttonVariants}
+          whileHover="hover"
+          whileTap="tap"
+          aria-label={`Select ${day}`}
+        >
+          {day}
+        </motion.button>
+      ))}
+    </div>
+  </motion.div>
+);
+
+DaySelector.propTypes = {
+  activeDay: PropTypes.string.isRequired,
+  setActiveDay: PropTypes.func.isRequired,
+};
+
+// Search and filter component
+const SearchFilter = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory }) => (
+  <motion.div
+    className="mb-6 flex flex-col md:flex-row gap-4"
+    variants={itemVariants}
+    data-aos="fade-up"
+  >
+    <div className="relative flex-grow">
+      <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+      <input
+        type="text"
+        placeholder="Search reports..."
+        className="pl-10 pr-4 py-3 w-full rounded-lg bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-400 shadow-md transition-all duration-300"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        aria-label="Search reports"
+      />
+    </div>
+    <select
+      className="px-4 py-3 rounded-lg bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-400 shadow-md transition-all duration-300"
+      value={selectedCategory}
+      onChange={(e) => setSelectedCategory(e.target.value)}
+      aria-label="Select report category"
+    >
+      <option value="All">All Categories</option>
+      {CATEGORIES.map((cat) => (
+        <option key={cat} value={cat} className="bg-gray-800">
+          {cat}
+        </option>
+      ))}
+    </select>
+  </motion.div>
+);
+
+SearchFilter.propTypes = {
+  searchTerm: PropTypes.string.isRequired,
+  setSearchTerm: PropTypes.func.isRequired,
+  selectedCategory: PropTypes.string.isRequired,
+  setSelectedCategory: PropTypes.func.isRequired,
+};
+
+// Report card component
+const ReportCard = ({ report, isSelected, onVerify, onPreview }) => (
+  <motion.li
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    className={`p-4 rounded-lg cursor-pointer transition-colors duration-300 bg-white/5 backdrop-blur-lg border border-gray-200/10 ${
+      isSelected ? 'bg-indigo-500/20 border-indigo-200/20' : 'hover:bg-gray-700/50'
+    }`}
+    data-aos="fade-up"
+  >
+    <div className="flex justify-between items-start">
+      <div>
+        <h4 className="font-medium text-white">{report.title}</h4>
+        <p className="text-sm text-gray-300 mt-1">{report.description}</p>
+      </div>
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+        {report.size}
+      </span>
+    </div>
+    <div className="mt-2">
+      <span className="inline-block text-xs font-medium text-indigo-400">
+        {report.category}
+      </span>
+    </div>
+    <div className="mt-3 flex items-center gap-3">
+      <motion.button
+        onClick={() => onPreview(report)}
+        className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+        variants={buttonVariants}
+        whileHover="hover"
+        whileTap="tap"
+        aria-label={`Preview ${report.title}`}
+      >
+        <FiEye /> Preview
+      </motion.button>
+      <motion.button
+        onClick={() => onVerify(report)}
+        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+        variants={buttonVariants}
+        whileHover="hover"
+        whileTap="tap"
+        aria-label={`Verify password for ${report.title}`}
+      >
+        <FiLock /> Verify
+      </motion.button>
+    </div>
+  </motion.li>
+);
+
+ReportCard.propTypes = {
+  report: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    category: PropTypes.string.isRequired,
+    size: PropTypes.string.isRequired,
+  }).isRequired,
+  isSelected: PropTypes.bool.isRequired,
+  onVerify: PropTypes.func.isRequired,
+  onPreview: PropTypes.func.isRequired,
+};
+
+// Pagination component
+const Pagination = ({ totalPages, currentPage, paginate }) => (
+  <motion.div
+    className="mt-6 flex justify-center gap-3"
+    variants={itemVariants}
+    data-aos="fade-up"
+  >
+    {Array.from({ length: totalPages }, (_, i) => (
+      <motion.button
+        key={i + 1}
+        onClick={() => paginate(i + 1)}
+        className={`px-4 py-2 rounded-lg shadow-md transition-all duration-300 ${
+          currentPage === i + 1
+            ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white'
+            : 'bg-gray-200 text-black hover:bg-gray-300'
+        }`}
+        variants={buttonVariants}
+        whileHover="hover"
+        whileTap="tap"
+        aria-label={`Go to page ${i + 1}`}
+      >
+        {i + 1}
+      </motion.button>
+    ))}
+  </motion.div>
+);
+
+Pagination.propTypes = {
+  totalPages: PropTypes.number.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  paginate: PropTypes.func.isRequired,
+};
+
+/**
+ * Main Reports component
+ * @returns {JSX.Element} Reports page UI
+ */
 function Reports() {
-  const [activeDayIndex, setActiveDayIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const [activeDay, setActiveDay] = useState('Monday');
   const [pdfPreview, setPdfPreview] = useState(null);
   const [reports, setReports] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [uploading, setUploading] = useState(false);
-  const [newReport, setNewReport] = useState({
-    title: '',
-    description: '',
-    category: 'Market',
-    size: '0MB',
-    file: null,
-  });
-  const fileInputRef = useRef(null);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+  const [sortBy, setSortBy] = useState('title');
+  const [sortOrder, setSortOrder] = useState('asc');
 
+  // Check authentication
   useEffect(() => {
-    const storedReports = JSON.parse(localStorage.getItem('dailyReports')) || {};
-    setReports(storedReports);
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (!user) {
+        localStorage.removeItem('isAuthenticated');
+        navigate('/user-login');
+        toast.error('Please log in to access this page.', { position: 'top-center' });
+      } else {
+        localStorage.setItem('isAuthenticated', 'true');
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
+
+  // Fetch reports
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+    setIsLoading(true);
+    const reportsRef = ref(db, 'reports');
+    const unsubscribe = onValue(
+      reportsRef,
+      (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const reportList = Object.entries(data).map(([key, value]) => ({
+            id: key,
+            ...value,
+          }));
+          const groupedReports = WEEK_DAYS.reduce((acc, day) => {
+            acc[day] = reportList.filter((report) => report.day === day);
+            return acc;
+          }, {});
+          setReports(groupedReports);
+          toast.success('Reports loaded successfully.', { position: 'top-center', autoClose: 2000 });
+        } else {
+          setReports(WEEK_DAYS.reduce((acc, day) => ({ ...acc, [day]: [] }), {}));
+          toast.info('No reports found.', { position: 'top-center', autoClose: 2000 });
+        }
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error('Error fetching reports:', error);
+        toast.error('Failed to load reports: ' + error.message, { position: 'top-center' });
+        setIsLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
   }, []);
 
+  // Reset preview when day changes
   useEffect(() => {
     setPdfPreview(null);
-  }, [activeDayIndex]);
+    setSelectedReport(null);
+    setCurrentPage(1);
+  }, [activeDay]);
 
-  const handlePreview = (report) => {
-    setIsLoading(true);
-    setTimeout(() => {
+  // Handle password verification
+  const handleVerifyPassword = useCallback((password, report) => {
+    if (!password) {
+      toast.error('Please enter a password.', { position: 'top-center' });
+      return;
+    }
+    if (password === report.password) {
       setPdfPreview(report);
-      setIsLoading(false);
-    }, 800);
+      setSelectedReport(report);
+      setIsPasswordModalOpen(false);
+      toast.success('Password verified successfully.', { position: 'top-center' });
+    } else {
+      toast.error('Incorrect password.', { position: 'top-center' });
+    }
+  }, []);
+
+  // Handle report preview
+  const handlePreviewReport = (report) => {
+    setSelectedReport(report);
+    setIsPreviewOpen(true);
   };
 
-  const handleDelete = (reportId) => {
-    const currentDay = weekDays[activeDayIndex].day;
-    const updatedReports = { ...reports };
-    updatedReports[currentDay] = updatedReports[currentDay].filter(r => r.id !== reportId);
-    setReports(updatedReports);
-    localStorage.setItem('dailyReports', JSON.stringify(updatedReports));
-    if (pdfPreview?.id === reportId) setPdfPreview(null);
+  // Handle download
+  const handleDownload = (report) => {
+    if (!selectedReport || selectedReport.id !== report.id) {
+      toast.error('Please verify the password first.', { position: 'top-center' });
+      return;
+    }
+    try {
+      const base64String = report.file.split(',')[1];
+      const byteCharacters = atob(base64String);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = report.filename || `${report.title}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      toast.success('Report downloaded successfully.', { position: 'top-center' });
+      setIsPreviewOpen(false);
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      toast.error('Failed to download report: ' + error.message, { position: 'top-center' });
+    }
   };
 
-  const handleUpload = () => {
-    if (!newReport.file) return;
-    setUploading(true);
-    const currentDay = weekDays[activeDayIndex].day;
-    const newReportEntry = {
-      id: Date.now(),
-      title: newReport.title || "Untitled Report",
-      description: newReport.description || "No description",
-      category: newReport.category,
-      size: `${Math.round(newReport.file.size / (1024 * 1024))}MB`,
-      file: URL.createObjectURL(newReport.file),
-    };
-    const updatedReports = { ...reports };
-    if (!updatedReports[currentDay]) updatedReports[currentDay] = [];
-    updatedReports[currentDay].push(newReportEntry);
-    setReports(updatedReports);
-    localStorage.setItem('dailyReports', JSON.stringify(updatedReports));
-    setUploading(false);
-    setNewReport({ title: '', description: '', category: 'Market', size: '0MB', file: null });
-    fileInputRef.current.value = '';
-  };
-
-  const getStorageUsed = () => {
-    const todayReports = reports[weekDays[activeDayIndex].day] || [];
-    return todayReports.reduce((sum, r) => sum + parseFloat(r.size.replace('MB', '')) || 0, 0);
-  };
-
-  const currentDay = weekDays[activeDayIndex];
-  const currentDayReports = reports[currentDay.day] || [];
-  const filteredReports = currentDayReports.filter(report => {
+  // Filter and sort reports
+  const currentDayReports = reports[activeDay] || [];
+  const filteredReports = currentDayReports.filter((report) => {
     const matchesSearch = report.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || report.category === selectedCategory;
     return matchesSearch && matchesCategory;
+  }).sort((a, b) => {
+    if (sortBy === 'title') {
+      return sortOrder === 'asc'
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title);
+    } else if (sortBy === 'size') {
+      const sizeA = parseFloat(a.size);
+      const sizeB = parseFloat(b.size);
+      return sortOrder === 'asc' ? sizeA - sizeB : sizeB - sizeA;
+    }
+    return 0;
   });
 
-  const usedStorage = getStorageUsed();
-  const maxSize = 30;
-  const storagePercentage = Math.min((usedStorage / maxSize) * 100, 100);
-  const isStorageFull = usedStorage >= maxSize;
+  // Pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const paginatedReports = filteredReports.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="min-h-screen bg-transparent py-8 px-4 sm:px-6 lg:px-8">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-7xl mx-auto"
-      >
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl lg:text-6xl">
+    <motion.div
+      className="min-h-screen bg-transparent py-8 px-4 sm:px-6 lg:px-8 pt-20"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          className="text-center mb-12"
+          variants={itemVariants}
+          data-aos="fade-up"
+        >
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight">
             Research Reports
           </h1>
-          <p className="mt-5 max-w-xl mx-auto text-xl text-gray-500">
-            Daily analysis and insights (Monday to Friday)
+          <p className="mt-5 max-w-xl mx-auto text-xl text-gray-300">
+            Daily analysis and insights
           </p>
-        </div>
+        </motion.div>
 
         {/* Day Selector */}
-        <div className="mb-8 flex justify-center">
-          <div className="inline-flex rounded-md shadow-sm">
-            {weekDays.map((day, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveDayIndex(index)}
-                className={`px-4 py-2 text-sm font-medium ${activeDayIndex === index 
-                  ? 'bg-indigo-600 text-white' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50'} 
-                  ${index === 0 ? 'rounded-l-lg' : ''} 
-                  ${index === weekDays.length - 1 ? 'rounded-r-lg' : ''}`}
-              >
-                {day.day}<br/>
-                <span className="text-xs text-gray-400">{day.date}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+        <DaySelector activeDay={activeDay} setActiveDay={setActiveDay} />
 
         {/* Search & Filter */}
-        <div className="mb-6 flex flex-col md:flex-row gap-4">
-          <div className="relative flex-grow">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FiSearch className="text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search reports..."
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-black"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <select
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-black"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <option value="All">All Categories</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-          <button
-            onClick={() => fileInputRef.current.click()}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2"
-          >
-            <FiUpload /> Upload Report
-          </button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept=".pdf"
-            className="hidden"
-            onChange={(e) => setNewReport({ ...newReport, file: e.target.files[0] })}
-          />
-        </div>
+        <SearchFilter
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
 
-        {/* Upload Modal */}
-        {newReport.file && (
-          <div className="mb-6 bg-white p-4 rounded-lg shadow-md">
-            <h3 className="font-medium mb-2">Upload New Report</h3>
-            <input
-              type="text"
-              placeholder="Title"
-              className="w-full p-2 mb-2 border rounded text-black"
-              value={newReport.title}
-              onChange={(e) => setNewReport({ ...newReport, title: e.target.value })}
-            />
-            <textarea
-              placeholder="Description"
-              className="w-full p-2 mb-2 border rounded text-black"
-              value={newReport.description}
-              onChange={(e) => setNewReport({ ...newReport, description: e.target.value })}
-            />
-            <select
-              className="w-full p-2 mb-2 border rounded text-black"
-              value={newReport.category}
-              onChange={(e) => setNewReport({ ...newReport, category: e.target.value })}
-            >
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => {
-                  setNewReport({ ...newReport, file: null });
-                  fileInputRef.current.value = '';
-                }}
-                className="px-3 py-1 bg-gray-200 rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleUpload}
-                disabled={uploading}
-                className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
-                {uploading ? 'Uploading...' : 'Upload'}
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Sort Controls */}
+        <motion.div
+          className="mb-6 flex justify-end gap-4"
+          variants={itemVariants}
+          data-aos="fade-up"
+        >
+          <select
+            className="px-4 py-2 rounded-lg bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-400 shadow-md transition-all duration-300"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            aria-label="Sort reports by"
+          >
+            <option value="title">Sort by Title</option>
+            <option value="size">Sort by Size</option>
+          </select>
+          <motion.button
+            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+            variants={buttonVariants}
+            whileHover="hover"
+            whileTap="tap"
+            aria-label={`Sort ${sortOrder === 'asc' ? 'descending' : 'ascending'}`}
+          >
+            {sortOrder === 'asc' ? 'Sort ↓' : 'Sort ↑'}
+          </motion.button>
+        </motion.div>
 
         {/* Main Content */}
-        <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+        <motion.div
+          className="bg-white/10 backdrop-blur-lg shadow-xl rounded-lg overflow-hidden"
+          variants={itemVariants}
+          data-aos="fade-up"
+        >
           <div className="flex flex-col md:flex-row">
             {/* Report List */}
-            <div className="w-full md:w-1/3 border-r border-gray-200">
+            <div className="w-full md:w-1/3 border-r border-gray-200/20">
               <div className="p-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  {currentDay.day}, {currentDay.date}
-                </h3>
-                {filteredReports.length > 0 ? (
+                <h3 className="text-lg font-medium text-white mb-4">{activeDay}</h3>
+                {isLoading ? (
+                  <LoadingSpinner />
+                ) : paginatedReports.length > 0 ? (
                   <ul className="space-y-4">
-                    {filteredReports.map((report) => (
-                      <motion.li 
+                    {paginatedReports.map((report) => (
+                      <ReportCard
                         key={report.id}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className={`p-4 rounded-lg cursor-pointer transition-colors ${pdfPreview?.id === report.id 
-                          ? 'bg-indigo-50 border border-indigo-200' 
-                          : 'hover:bg-gray-50'}`}
-                        onClick={() => handlePreview(report)}
-                      >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-medium text-gray-900">{report.title}</h4>
-                            <p className="text-sm text-gray-500 mt-1">{report.description}</p>
-                          </div>
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                            {report.size}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center mt-2">
-                          <span className="inline-block text-xs font-medium text-indigo-600">
-                            {report.category}
-                          </span>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDelete(report.id);
-                            }}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <FiTrash2 size={16} />
-                          </button>
-                        </div>
-                      </motion.li>
+                        report={report}
+                        isSelected={pdfPreview?.id === report.id}
+                        onVerify={() => {
+                          setSelectedReport(report);
+                          setIsPasswordModalOpen(true);
+                        }}
+                        onPreview={() => handlePreviewReport(report)}
+                      />
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-gray-500 text-sm">No reports found.</p>
+                  <p className="text-gray-300 text-sm">No reports found.</p>
                 )}
               </div>
             </div>
 
             {/* PDF Preview */}
-            <div className="w-full md:w-2/3 bg-gray-50">
+            <div className="w-full md:w-2/3 bg-gray-900/50">
               <div className="p-6 h-full">
-                {isLoading ? (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-                  </div>
-                ) : pdfPreview ? (
+                {pdfPreview ? (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white shadow-sm rounded-lg overflow-hidden h-full flex flex-col"
+                    className="bg-white/10 backdrop-blur-lg shadow-sm rounded-lg overflow-hidden h-full flex flex-col"
+                    data-aos="fade-up"
                   >
-                    <div className="px-6 py-4 border-b border-gray-200">
-                      <h3 className="text-lg font-medium text-gray-900">{pdfPreview.title}</h3>
-                      <p className="text-sm text-gray-500 mt-1">{pdfPreview.description}</p>
+                    <div className="px-6 py-4 border-b border-gray-200/20">
+                      <h3 className="text-lg font-medium text-white">{pdfPreview.title}</h3>
+                      <p className="text-sm text-gray-300 mt-1">{pdfPreview.description}</p>
                     </div>
-                    <div className="flex-grow p-6 flex items-center justify-center bg-gray-100">
+                    <div className="flex-grow p-6 flex items-center justify-center bg-gray-800/50">
                       <div className="text-center">
-                        <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
-                          <img 
-                            src="https://cdn-icons-png.flaticon.com/512/337/337946.png" 
-                            alt="PDF Thumbnail" 
+                        <div className="mb-4 p-4 bg-white/10 rounded-lg shadow-inner">
+                          <img
+                            src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+                            alt="PDF Thumbnail"
                             className="w-32 h-32 object-contain mx-auto"
                           />
                         </div>
                         <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="px-6 py-2 bg-indigo-600 text-white text-sm font-medium rounded-full shadow-lg hover:bg-indigo-700 transition flex items-center gap-2 mx-auto"
-                          onClick={() => window.open(pdfPreview.file, '_blank')}
+                          onClick={() => handleDownload(pdfPreview)}
+                          className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 mx-auto"
+                          variants={buttonVariants}
+                          whileHover="hover"
+                          whileTap="tap"
+                          aria-label={`Download ${pdfPreview.title}`}
                         >
-                          <FiDownload /> View Full Report
+                          <FiDownload /> Download Report
                         </motion.button>
-                        <p className="mt-2 text-sm text-gray-500">
+                        <p className="mt-2 text-sm text-gray-300">
                           {pdfPreview.title} ({pdfPreview.size})
                         </p>
                       </div>
                     </div>
-                    <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 text-right">
+                    <div className="px-6 py-4 border-t border-gray-200/20 bg-gray-900/50 text-right">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        Available for viewing only
+                        Available for download only
                       </span>
                     </div>
                   </motion.div>
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center">
-                      <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      <svg
+                        className="mx-auto h-12 w-12 text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
                       </svg>
-                      <h3 className="mt-2 text-sm font-medium text-gray-900">No report selected</h3>
-                      <p className="mt-1 text-sm text-gray-500">Click on a report to preview it</p>
+                      <h3 className="mt-2 text-sm font-medium text-white">No report selected</h3>
+                      <p className="mt-1 text-sm text-gray-300">
+                        Click on a report and verify the password to preview it
+                      </p>
                     </div>
                   </div>
                 )}
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Storage Info */}
-        <div className={`mt-8 bg-white shadow rounded-lg p-6 ${isStorageFull ? 'border-2 border-red-500' : ''}`}>
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">Report Storage</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                All reports are stored securely using localStorage.
-                {isStorageFull && (
-                  <span className="text-red-500 font-medium"> Storage full! Delete some reports to upload new ones.</span>
-                )}
-              </p>
-            </div>
-            <div className="flex items-center">
-              <div className="mr-4 text-right">
-                <p className="text-sm font-medium text-gray-900">Max Size</p>
-                <p className="text-sm text-gray-500">30 MB per day</p>
-              </div>
-              <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                <span className="text-indigo-600 font-medium">30MB</span>
-              </div>
-            </div>
-          </div>
-          <div className="mt-6">
-            <div className="overflow-hidden bg-gray-200 rounded-full h-2">
-              <div 
-                className={`rounded-full h-2 ${storagePercentage >= 90 ? 'bg-red-500' : 'bg-indigo-600'}`} 
-                style={{ width: `${storagePercentage}%` }}
-              ></div>
-            </div>
-            <div className="mt-2 flex justify-between text-sm text-gray-500">
-              <span>Storage used: {usedStorage}MB</span>
-              <span>Limit: 30MB</span>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </div>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            paginate={paginate}
+          />
+        )}
+      </div>
+
+      {/* Password Verification Modal */}
+      <PasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        onConfirm={handleVerifyPassword}
+        report={selectedReport}
+      />
+
+      {/* Report Preview Modal */}
+      <ReportPreviewModal
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        report={selectedReport}
+        onDownload={handleDownload}
+      />
+    </motion.div>
   );
 }
 
