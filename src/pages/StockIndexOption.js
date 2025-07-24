@@ -1,145 +1,616 @@
-import React from 'react';
+// Import required dependencies
+import React, { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
+import { toast } from 'react-toastify';
 import {
-  FaChartLine, FaShieldAlt, FaRupeeSign, 
-  FaPercentage, FaUsers, FaCalendarAlt,
-  FaWhatsapp, FaPhoneAlt, FaInfoCircle
+  FaWhatsapp, FaArrowRight, FaRupeeSign, FaChartLine,
+  FaShieldAlt, FaStar, FaUserTie, FaPhoneAlt,
+  FaRegClock, FaHandHoldingUsd, FaUniversity, FaChartBar,
+  FaExclamationTriangle, FaBook, FaUsers, FaPercentage,
+  FaCalendarAlt, FaChevronLeft, FaChevronRight
 } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
-function StockOption() {
+// Main StockIndexOption component
+const StockIndexOption = () => {
+  // State for FAQ accordion
+  const [openFAQ, setOpenFAQ] = useState(null);
+  // State for WhatsApp button loading
+  const [isLoading, setIsLoading] = useState(false);
+  // State for testimonial carousel
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  // Toggle FAQ accordion
+  const toggleFAQ = (index) => {
+    setOpenFAQ(openFAQ === index ? null : index);
+  };
+
+  // Handle WhatsApp button click
+  const handleWhatsAppClick = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      window.open('https://wa.me/9977909494', '_blank');
+      setIsLoading(false);
+    }, 500);
+  };
+
+  // Handle Contact button click with toast notification
+  const handleContactClick = () => {
+    toast.info('Redirecting to Contact page...', { position: 'top-center', autoClose: 2000 });
+    setTimeout(() => {
+      window.location.href = '/contact';
+    }, 1000);
+  };
+
+  // Handle testimonial carousel navigation
+  const nextTestimonial = () => {
+    setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+  };
+  const prevTestimonial = () => {
+    setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
+
+  // Memoized FAQ list for performance optimization
+  const faqList = useMemo(() => [
+    {
+      question: 'What are Stock Index Options?',
+      answer:
+        'Stock index options are contracts based on indices like Nifty or Bank Nifty, giving the right to buy or sell the index at a specific price within a set period. They offer high leverage and are ideal for volatility trading.',
+      icon: <FaChartLine className="text-teal-500 text-xl" />,
+    },
+    {
+      question: 'Why trade index options with Wise Global?',
+      answer:
+        '• Research-driven Nifty/Bank Nifty calls\n• Real-time WhatsApp alerts\n• Advanced volatility strategies\n• Strict risk management\n• Personalized guidance\n• Weekly webinars',
+      icon: <FaShieldAlt className="text-cyan-500 text-xl" />,
+    },
+    {
+      question: 'What is the minimum capital required?',
+      answer:
+        '• ₹15,000–₹30,000: Start with single lots\n• ₹50,000–₹1.5 Lakh: Balanced hedging strategies\n• ₹3 Lakh+: Multi-strategy portfolios\n• No lock-in period',
+      icon: <FaRupeeSign className="text-yellow-500 text-xl" />,
+    },
+    {
+      question: 'What strategies do you focus on?',
+      answer:
+        '• Delta-neutral strategies\n• Volatility spreads (straddles, strangles)\n• Iron condors and butterflies\n• Hedging with futures\n• Greeks-based analysis\n• Tailored to risk appetite',
+      icon: <FaChartBar className="text-teal-600 text-xl" />,
+    },
+    {
+      question: 'What is the historical performance?',
+      answer:
+        '• Average Annual Return (3 Yr): 19.2% CAGR\n• Success Rate: 70% on recommended trades\n• Typical Holding Period: 1–15 days\n• Risk-Reward Ratio: 1:2.8\n• *Past performance is not indicative of future results.*',
+      icon: <FaStar className="text-amber-500 text-xl" />,
+    },
+    {
+      question: 'How do I join your advisory service?',
+      answer:
+        '1. Contact us via WhatsApp\n2. Complete KYC (PAN, Aadhaar)\n3. Explore 3 introductory calls\n4. Select a plan\n5. Access live signals dashboard',
+      icon: <FaUserTie className="text-cyan-400 text-xl" />,
+    },
+    {
+      question: 'What support is provided?',
+      answer:
+        '• Dedicated index options expert\n• 24/7 WhatsApp/email support\n• Weekly strategy reviews\n• Educational webinars\n• Greeks analysis training\n• Daily market updates',
+      icon: <FaPhoneAlt className="text-blue-500 text-xl" />,
+    },
+    {
+      question: 'How are fees structured?',
+      answer:
+        'Plans are customized for index traders. Visit our pricing page or contact us via WhatsApp for transparent fee details.',
+      icon: <FaRupeeSign className="text-yellow-500 text-xl" />,
+    },
+    {
+      question: 'What are the risks of index options?',
+      answer:
+        'Index options carry high risks due to leverage, volatility, and time decay. Losses can exceed initial investments. Always use stop-losses and consult offer documents.',
+      icon: <FaExclamationTriangle className="text-red-500 text-xl" />,
+    },
+    {
+      question: 'How do you handle volatile markets?',
+      answer:
+        'We use volatility-based strategies like straddles and iron condors, combined with strict risk management, to navigate turbulent markets effectively.',
+      icon: <FaShieldAlt className="text-cyan-500 text-xl" />,
+    },
+  ], []);
+
+  // Features data for the features section
+  const features = [
+    {
+      icon: <FaChartLine className="text-3xl text-teal-500" />,
+      title: 'Volatility Strategies',
+      description: 'Advanced delta-neutral and volatility-based trades for Nifty and Bank Nifty.',
+    },
+    {
+      icon: <FaRegClock className="text-3xl text-cyan-500" />,
+      title: 'Instant Alerts',
+      description: 'Real-time WhatsApp notifications for precise entry and exit points.',
+    },
+    {
+      icon: <FaHandHoldingUsd className="text-3xl text-yellow-500" />,
+      title: 'Hedging Expertise',
+      description: 'Protect capital with futures and options-based hedging techniques.',
+    },
+    {
+      icon: <FaUniversity className="text-3xl text-blue-500" />,
+      title: 'Learning Hub',
+      description: 'Access webinars, tutorials, and Greeks analysis training.',
+    },
+    {
+      icon: <FaShieldAlt className="text-3xl text-red-500" />,
+      title: 'Risk Control',
+      description: 'Robust stop-loss and position sizing to limit losses.',
+    },
+  ];
+
+  // Performance stats data
+  const performanceStats = [
+    { metric: '4,500+', label: 'Active Traders', icon: <FaUsers className="text-2xl text-teal-500" /> },
+    { metric: '70%', label: 'Trade Success Rate', icon: <FaPercentage className="text-2xl text-cyan-500" /> },
+    { metric: '19.2%', label: '3-Yr CAGR', icon: <FaCalendarAlt className="text-2xl text-yellow-500" /> },
+    { metric: 'SEBI', label: 'Registered', icon: <FaShieldAlt className="text-2xl text-blue-500" /> },
+  ];
+
+  // Testimonials data
+  const testimonials = [
+    {
+      text: 'Their volatility strategies transformed my Nifty trading. The alerts are timely and precise.',
+      author: 'Rahul Sharma, Mumbai',
+      rating: 5,
+    },
+    {
+      text: 'The Greeks training webinars helped me master index options. Excellent support team!',
+      author: 'Neha Patel, Ahmedabad',
+      rating: 5,
+    },
+    {
+      text: 'Hedging guidance saved my portfolio during market swings. Highly recommend!',
+      author: 'Vikram Rao, Bangalore',
+      rating: 4,
+    },
+    {
+      text: 'Real-time alerts and risk management have improved my trading discipline.',
+      author: 'Anita Desai, Delhi',
+      rating: 4,
+    },
+  ];
+
+  // Market insights data
+  const marketInsights = [
+    {
+      title: 'Nifty Volatility Trends',
+      description: 'Analyze VIX and historical volatility to time your index options trades effectively.',
+    },
+    {
+      title: 'Bank Nifty Breakout Strategies',
+      description: 'Learn breakout patterns for Bank Nifty options with our research-driven calls.',
+    },
+    {
+      title: 'Greeks-Based Trading',
+      description: 'Understand Delta, Gamma, and Theta to optimize your options strategies.',
+    },
+  ];
+
+  // Regulations data for investor education
+  const regulations = [
+    {
+      title: 'High-Risk Nature',
+      description: 'Index options trading involves significant risks due to leverage and volatility. Losses may exceed investments. Review offer documents carefully.',
+    },
+    {
+      title: 'No Assured Returns',
+      description: 'SEBI prohibits guaranteed return claims. Historical performance (e.g., 19.2% CAGR) is not indicative of future results.',
+    },
+    {
+      title: 'KYC Requirements',
+      description: 'Complete KYC (PAN, Aadhaar) for SEBI compliance, ensuring transparency and security.',
+    },
+    {
+      title: 'Grievance Redressal',
+      description: 'Contact us or use SEBI’s SCORES platform at scores.gov.in for prompt complaint resolution.',
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="pt-24 px-4 pb-10 min-h-screen bg-gradient-to-b from-teal-900/10 to-blue-900/10 text-gray-800">
+      {/* SEO and Meta Tags */}
       <Helmet>
-        <title>Professional Stock Options Trading | Wise Global</title>
-        <meta name="description" content="SEBI-registered stock options advisory with proven strategies. Get expert calls, risk management techniques, and real-time alerts for maximum returns." />
-        <meta name="keywords" content="stock options trading, Nifty options, Bank Nifty options, options strategies, SEBI registered advisor, options trading tips" />
-        <meta property="og:title" content="Professional Stock Options Trading | Wise Global" />
-        <meta property="og:description" content="Get expert stock options trading calls with risk management from SEBI-registered advisors." />
+        <title>Stock Index Options Trading India | Wise Global</title>
+        <meta
+          name="description"
+          content="Wise Global offers SEBI-registered stock index options advisory with research-driven calls, real-time alerts, and advanced strategies for Nifty and Bank Nifty. Start trading confidently."
+        />
+        <meta
+          name="keywords"
+          content="stock index options trading, Nifty options, Bank Nifty options, options trading India, SEBI registered advisor, index options strategies, financial advisory India"
+        />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Wise Global" />
+        <meta property="og:title" content="Stock Index Options Trading India | Wise Global" />
+        <meta
+          property="og:description"
+          content="Join Wise Global for SEBI-registered stock index options advisory with real-time alerts and advanced strategies for Nifty and Bank Nifty."
+        />
+        <meta property="og:image" content="https://wiseglobal.com/assets/og-index-options.jpg" /> {/* Replace with actual image URL */}
+        <meta property="og:url" content="https://wiseglobal.com/stock-index-options" /> {/* Replace with actual URL */}
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Stock Index Options Trading India | Wise Global" />
+        <meta
+          name="twitter:description"
+          content="Discover Wise Global’s SEBI-registered stock index options advisory with real-time alerts and strategies for Nifty and Bank Nifty."
+        />
+        <meta name="twitter:image" content="https://wiseglobal.com/assets/og-index-options.jpg" /> {/* Replace with actual image URL */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            'mainEntity': faqList.map(faq => ({
+              '@type': 'Question',
+              'name': faq.question,
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': faq.answer.replace(/\n/g, '<br>')
+              }
+            }))
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            'itemListElement': marketInsights.map((insight, index) => ({
+              '@type': 'Article',
+              'position': index + 1,
+              'name': insight.title,
+              'description': insight.description
+            }))
+          })}
+        </script>
       </Helmet>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-12 px-4 max-w-7xl mx-auto text-center">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+        className="text-center mb-20 max-w-7xl mx-auto"
+      >
+        <motion.span
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="inline-block bg-white/10 backdrop-blur-md text-teal-200 px-4 py-1 rounded-full text-sm font-medium mb-4"
         >
-          <span className="inline-block bg-blue-100 text-blue-800 px-4 py-1 rounded-full text-sm font-medium mb-4">
-            SEBI Registered Advisory
-          </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">\            Advanced <span className="text-blue-600">Stock Options</span> Trading
-          </h1>
-          <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto">
-            Professional options strategies with <span className="font-semibold text-green-600">75%+ accuracy</span> and complete risk management
-          </p>
+          SEBI-Registered Index Options Advisory
+        </motion.span>
+        <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-400 to-blue-400 mb-6">
+          Excel in Stock Index Options Trading
+        </h1>
+        <p className="text-lg text-gray-200 mt-4 max-w-3xl mx-auto">
+          Leverage Wise Global’s expertise for research-driven Nifty and Bank Nifty options strategies, real-time alerts, and disciplined risk management.
+        </p>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="text-sm text-gray-300 mt-4"
+        >
+          <FaExclamationTriangle className="inline mr-2" />
+          Index options trading carries high risks. Review all offer documents carefully.
         </motion.div>
-      </section>
+        <div className="flex flex-col sm:flex-row justify-center mt-10 gap-6">
+          <motion.button
+            whileHover={{ scale: 1.1, boxShadow: '0 0 20px rgba(0, 255, 255, 0.3)' }}
+            whileTap={{ scale: 0.95 }}
+            animate={{ scale: [1, 1.05, 1], transition: { repeat: Infinity, duration: 1.5 } }}
+            onClick={handleWhatsAppClick}
+            disabled={isLoading}
+            className="flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg min-w-[260px] transition-all"
+          >
+            {isLoading ? 'Connecting…' : (
+              <>
+                <FaWhatsapp /> Explore 3 Introductory Calls
+              </>
+            )}
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.1, boxShadow: '0 0 20px rgba(0, 0, 255, 0.3)' }}
+            whileTap={{ scale: 0.95 }}
+            animate={{ scale: [1, 1.05, 1], transition: { repeat: Infinity, duration: 1.5 } }}
+            onClick={handleContactClick}
+            className="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md text-cyan-200 border border-cyan-500 px-8 py-4 rounded-full font-semibold shadow-lg min-w-[260px] transition-all"
+          >
+            <FaPhoneAlt /> Contact Research Team
+          </motion.button>
+        </div>
+      </motion.section>
 
-      {/* Stats Section */}
-      <section className="py-8 px-4 max-w-5xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { icon: <FaPercentage className="text-2xl text-green-500" />, value: "75%+", label: "Accuracy Rate" },
-            { icon: <FaUsers className="text-2xl text-blue-500" />, value: "5000+", label: "Traders" },
-            { icon: <FaCalendarAlt className="text-2xl text-amber-500" />, value: "5+ Years", label: "Experience" },
-            { icon: <FaShieldAlt className="text-2xl text-purple-500" />, value: "SEBI", label: "Registered" },
-          ].map((stat, index) => (
+      {/* Performance Stats Section */}
+      <motion.section
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="max-w-6xl mx-auto mb-20"
+      >
+        <h2 className="text-3xl font-bold text-center text-white mb-12">Our Index Options Track Record</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-4">
+          {performanceStats.map((stat, index) => (
             <motion.div
               key={index}
-              whileHover={{ y: -5 }}
-              className="bg-transparent backdrop-blur-md p-4 rounded-xl border border-white/20 shadow-sm flex items-center gap-3"
+              initial={{ x: index % 2 === 0 ? -50 : 50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              whileHover={{ scale: 1.08, boxShadow: '0 0 15px rgba(255, 255, 255, 0.2)' }}
+              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl text-center border border-white/20"
             >
-              <div className="p-2 bg-blue-50 rounded-lg">{stat.icon}</div>
-              <div>
-                <div className="font-bold text-gray-800">{stat.value}</div>
-                <div className="text-sm text-gray-600">{stat.label}</div>
-              </div>
+              <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }} className="mb-3">
+                {stat.icon}
+              </motion.div>
+              <div className="text-4xl font-bold text-white mb-3">{stat.metric}</div>
+              <div className="text-gray-300 text-sm">{stat.label}</div>
             </motion.div>
           ))}
         </div>
-      </section>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          className="text-center text-sm text-gray-300 mt-6"
+        >
+          <FaExclamationTriangle className="inline mr-2" />
+          Metrics are historical and not a guarantee of future results.
+        </motion.div>
+      </motion.section>
 
       {/* Features Section */}
-      <section className="py-12 px-4 max-w-7xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-10 text-gray-800">
-          Our <span className="text-blue-600">Options Trading</span> Features
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            {
-              icon: <FaChartLine className="text-2xl text-blue-600" />,
-              title: "Premium & Discount Strategies",
-              desc: "Advanced calls for both premium buying and discount selling strategies"
-            },
-            {
-              icon: <FaShieldAlt className="text-2xl text-green-600" />,
-              title: "Risk Management",
-              desc: "Strict stop-loss and position sizing rules for capital protection"
-            },
-            {
-              icon: <FaRupeeSign className="text-2xl text-amber-600" />,
-              title: "Hedging Techniques",
-              desc: "Portfolio hedging strategies to protect your investments"
-            },
-            {
-              icon: <FaPercentage className="text-2xl text-purple-600" />,
-              title: "Probability Analysis",
-              desc: "Data-driven probability assessments for each trade"
-            },
-            {
-              icon: <FaUsers className="text-2xl text-red-500" />,
-              title: "Dedicated Support",
-              desc: "1-on-1 guidance from options trading experts"
-            },
-            {
-              icon: <FaInfoCircle className="text-2xl text-teal-600" />,
-              title: "Educational Resources",
-              desc: "Weekly webinars and training materials"
-            }
-          ].map((feature, index) => (
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
+        className="max-w-7xl mx-auto mb-20 px-4"
+      >
+        <h2 className="text-3xl font-bold text-center text-white mb-12">Our Index Options Services</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
             <motion.div
               key={index}
-              whileHover={{ scale: 1.02 }}
-              className="bg-transparent backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-sm"
+              initial={{ x: index % 2 === 0 ? -50 : 50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              whileHover={{ y: -10, boxShadow: '0 0 20px rgba(255, 255, 255, 0.2)' }}
+              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20"
             >
-              <div className="p-3 bg-blue-50 rounded-lg w-fit mb-3">{feature.icon}</div>
-              <h3 className="text-lg font-bold text-gray-800 mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.desc}</p>
+              <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }} className="mb-5">
+                {feature.icon}
+              </motion.div>
+              <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
+              <p className="text-gray-300 text-sm">{feature.description}</p>
             </motion.div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
-      {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4">Start Trading Options Like a Pro</h2>
-          <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
-            Get your first 3 options trading calls free with our SEBI-registered advisory
+      {/* Market Insights Section */}
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+        className="max-w-7xl mx-auto mb-20 px-4"
+      >
+        <h2 className="text-3xl font-bold text-center text-white mb-12">Market Insights for Index Options</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {marketInsights.map((insight, index) => (
+            <motion.div
+              key={index}
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              whileHover={{ scale: 1.05 }}
+              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20"
+            >
+              <h3 className="text-xl font-semibold text-white mb-3">{insight.title}</h3>
+              <p className="text-gray-300 text-sm">{insight.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* Testimonials Section with Carousel */}
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        className="max-w-6xl mx-auto mb-20 px-4"
+      >
+        <h2 className="text-3xl font-bold text-center text-white mb-12">What Our Traders Say</h2>
+        <div className="relative">
+          <motion.div
+            key={currentTestimonial}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.5 }}
+            className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20"
+          >
+            <div className="text-yellow-400 mb-4 flex justify-center">
+              {Array(testimonials[currentTestimonial].rating).fill().map((_, i) => (
+                <FaStar key={i} />
+              ))}
+            </div>
+            <blockquote className="text-gray-300 italic mb-4 text-center">{testimonials[currentTestimonial].text}</blockquote>
+            <div className="text-white font-medium text-center">{testimonials[currentTestimonial].author}</div>
+          </motion.div>
+          <div className="flex justify-between mt-6">
+            <button onClick={prevTestimonial} className="text-cyan-400 hover:text-cyan-300">
+              <FaChevronLeft size={24} />
+            </button>
+            <button onClick={nextTestimonial} className="text-cyan-400 hover:text-cyan-300">
+              <FaChevronRight size={24} />
+            </button>
+          </div>
+        </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          className="text-center text-sm text-gray-300 mt-6"
+        >
+          <FaExclamationTriangle className="inline mr-2" />
+          Testimonials reflect individual experiences and may not represent typical results.
+        </motion.div>
+      </motion.section>
+
+      {/* Risk Calculator Placeholder */}
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.7 }}
+        className="max-w-6xl mx-auto mb-20 px-4"
+      >
+        <h2 className="text-3xl font-bold text-center text-white mb-12">Risk Calculator</h2>
+        <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20 text-center">
+          <p className="text-gray-300 mb-4">
+            Use our risk calculator to estimate potential losses and optimize position sizing for index options trading.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="flex items-center justify-center gap-2 bg-white text-blue-700 hover:bg-blue-50 px-6 py-3 rounded-full font-semibold shadow-md min-w-[240px]">
-              <FaWhatsapp /> Chat on WhatsApp
-            </button>
-            <button className="flex items-center justify-center gap-2 bg-transparent text-white border border-white hover:bg-blue-800 px-6 py-3 rounded-full font-semibold shadow-md min-w-[240px]">
-              <FaPhoneAlt /> Call Now
-            </button>
-          </div>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-full font-semibold"
+            onClick={() => toast.info('Risk Calculator coming soon!', { position: 'top-center' })}
+          >
+            Try Risk Calculator
+          </motion.button>
+          <p className="text-sm text-gray-300 mt-4">
+            <FaExclamationTriangle className="inline mr-2" />
+            Always assess risks before trading. Consult a financial advisor.
+          </p>
         </div>
-      </section>
+      </motion.section>
 
-      {/* Disclaimer */}
-      <div className="py-6 px-4 bg-yellow-50 text-yellow-800 text-sm">
-        <div className="max-w-7xl mx-auto flex items-start gap-2">
-          <FaInfoCircle className="mt-0.5 flex-shrink-0" />
-          <div>
-            <strong>Disclaimer:</strong> Trading in stock options involves risks. Past performance is not indicative of future results. Our services are for educational purposes only. Consult your financial advisor before trading.
-          </div>
+      {/* Regulations Section */}
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.8 }}
+        className="max-w-6xl mx-auto mb-20 px-4"
+      >
+        <h2 className="text-3xl font-bold text-center text-white mb-12">Stock Market Regulations</h2>
+        <div className="grid md:grid-cols-2 gap-8">
+          {regulations.map((regulation, index) => (
+            <motion.div
+              key={index}
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              whileHover={{ scale: 1.05 }}
+              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20"
+            >
+              <div className="mb-5">
+                <FaBook className="text-3xl text-teal-500" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">{regulation.title}</h3>
+              <p className="text-gray-300 text-sm">{regulation.description}</p>
+            </motion.div>
+          ))}
         </div>
-      </div>
+      </motion.section>
+
+      {/* FAQ Section */}
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.9 }}
+        className="max-w-5xl mx-auto mb-20 px-4"
+      >
+        <h2 className="text-3xl font-bold text-center text-white mb-12">Frequently Asked Questions</h2>
+        <div className="space-y-6">
+          {faqList.map((faq, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              whileHover={{ scale: 1.02 }}
+              className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20"
+            >
+              <button
+                onClick={() => toggleFAQ(idx)}
+                className="flex justify-between items-center w-full"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-transparent rounded-lg">{faq.icon}</div>
+                  <span className="font-semibold text-left text-white text-base md:text-lg">{faq.question}</span>
+                </div>
+                <FaArrowRight
+                  className={`transition-transform duration-300 ${openFAQ === idx ? 'rotate-90 text-cyan-400' : 'text-gray-300'}`}
+                />
+              </button>
+              <AnimatePresence>
+                {openFAQ === idx && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="overflow-hidden pt-3 pl-12 text-gray-300 text-sm"
+                  >
+                    {faq.answer.split('\n').map((line, i) => (
+                      <p key={i} className="mb-2">{line}</p>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* Call to Action Section */}
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 1.0 }}
+        className="max-w-4xl mx-auto text-center mb-16 px-4"
+      >
+        <h2 className="text-3xl font-bold text-white mb-6">Start Your Index Options Journey</h2>
+        <p className="text-gray-300 mb-8 text-lg">
+          Join Wise Global for SEBI-registered index options advisory with 3 introductory calls. Navigate Nifty and Bank Nifty markets with confidence.
+        </p>
+        <motion.button
+          whileHover={{ scale: 1.1, boxShadow: '0 0 20px rgba(0, 255, 255, 0.3)' }}
+          whileTap={{ scale: 0.95 }}
+          animate={{ scale: [1, 1.05, 1], transition: { repeat: Infinity, duration: 1.5 } }}
+          onClick={handleWhatsAppClick}
+          disabled={isLoading}
+          className="flex items-center justify-center gap-2 mx-auto bg-teal-600 hover:bg-teal-700 text-white px-10 py-4 rounded-full text-lg font-semibold shadow-lg min-w-[280px] transition-all"
+        >
+          {isLoading ? 'Connecting…' : (
+            <>
+              <FaWhatsapp /> Explore Introductory Calls
+            </>
+          )}
+        </motion.button>
+      </motion.section>
+
+      {/* Compliance Footer */}
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 1.1 }}
+        className="max-w-7xl mx-auto text-center px-4 py-8 bg-white/10 backdrop-blur-lg rounded-xl border border-white/20"
+      >
+        <h3 className="text-xl font-semibold text-white mb-4">Important Disclosures</h3>
+        <p className="text-gray-300 text-sm mb-4">
+          <FaExclamationTriangle className="inline mr-2" />
+          Index options trading involves high risks due to leverage and volatility. Losses may exceed investments. Past performance is not indicative of future results. For subscription fees, visit <a href="https://x.ai/grok" className="text-cyan-400 hover:underline">our pricing page</a>.
+        </p>
+        <p className="text-gray-300 text-sm">
+          For grievances, contact us at <a href="mailto:support@wiseglobal.com" className="text-cyan-400 hover:underline">support@wiseglobal.com</a> or file a complaint on SEBI’s SCORES platform at <a href="https://scores.gov.in" className="text-cyan-400 hover:underline">scores.gov.in</a>.
+        </p>
+      </motion.section>
     </div>
   );
-}
+};
 
-export default StockOption;
+export default StockIndexOption;

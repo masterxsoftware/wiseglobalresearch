@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   FaTimes, FaBuilding, FaBriefcase, FaNewspaper, FaUserShield,
-  FaChartLine, FaCoins, FaGlobe, FaUniversity
+  FaChartLine, FaCoins, FaGlobe, FaUniversity, FaFileAlt, FaShieldAlt
 } from 'react-icons/fa';
 import wiseLogo from '../assets/images/wise3.png';
 import './Navbar.css';
@@ -66,6 +66,10 @@ const dropdownLinks = {
   Dashboard: [
     { path: '/user-login', label: 'User Login', icon: <FaUserShield /> },
     { path: '/client-panel', label: 'Client Panel', icon: <FaCoins /> },
+    { path: '/client-service-consert', label: 'Client Service Consert', icon: <FaUserShield /> },
+    { path: '/complaint-data', label: 'Complaint Data', icon: <FaFileAlt /> },
+    { path: '/investor-chart', label: 'Investor Chart', icon: <FaChartLine /> },
+    { path: '/anti-money-laundering', label: 'Anti-Money Laundering', icon: <FaShieldAlt /> },
   ],
 };
 

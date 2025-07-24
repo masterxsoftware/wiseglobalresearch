@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect } from 'react';
 // Define an extensive set of vibrant, sexy gradients
 const gradients = {
   default: {
-    background: 'linear-gradient(to right, rgba(5, 160, 250, 0.84), rgba(16, 130, 223, 0.88))',
+    background: 'linear-gradient(to right, rgba(250, 115, 5, 0.9), rgba(223, 92, 16, 0.88))',
     textColor: '#ffffff',
     transition: 'background 0.5s ease-in-out', // Smooth transition
   },
