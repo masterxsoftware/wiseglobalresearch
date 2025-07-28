@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaBookOpen, FaArrowRight } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 // Animation variants for container
 const containerVariants = {
@@ -315,12 +316,12 @@ const Blogs = () => {
         <p className="text-white max-w-2xl mx-auto mb-6">
           Contact our team to explore trading solutions like Smart Options and MCX Supreme, tailored for Indian markets.
         </p>
-        <a
-          href="wise-global/contact#/contact"
+        <Link
+          to="/contact"
           className="inline-block bg-blue-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-600 transition"
         >
           Contact Us <FaArrowRight className="inline ml-2" />
-        </a>
+        </Link>
       </motion.div>
       </motion.div>
   );

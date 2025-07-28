@@ -11,6 +11,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler
 } from 'chart.js';
 
 // Register Chart.js components
@@ -22,7 +23,8 @@ ChartJS.register(
   PointElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
 
 // Sample data for charts

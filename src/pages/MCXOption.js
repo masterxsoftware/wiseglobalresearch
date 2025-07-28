@@ -11,6 +11,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
@@ -25,7 +26,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  zoomPlugin
+  zoomPlugin,
+  Filler
 );
 
 // Sample data for charts

@@ -19,7 +19,8 @@ import ScrollToTop from './components/ScrollToTop';
 import ChatWidget from './components/ChatWidget';
 import FloatingPayButton from './components/FloatingPayButton';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
-import ParticlesBackground from './components/ParticlesBackground'; // Added import
+import ParticlesBackground from './components/ParticlesBackground';
+import AdminLayout from './pages/admin/AdminLayout';
 
 // Lazy Loaded Pages
 const Home = lazy(() => import('./pages/Home'));
@@ -44,7 +45,6 @@ const Blogs = lazy(() => import('./pages/Blogs'));
 const MarketNews = lazy(() => import('./pages/MarketNews'));
 const UserLogin = lazy(() => import('./pages/UserLogin'));
 const ClientPanel = lazy(() => import('./pages/ClientPanel'));
-const Cash = lazy(() => import('./pages/Cash'));
 const StockOption = lazy(() => import('./pages/StockOption'));
 const Delivery = lazy(() => import('./pages/Delivery'));
 const Index = lazy(() => import('./pages/Index'));
@@ -59,15 +59,20 @@ const NCDEX = lazy(() => import('./pages/NCDEX'));
 const Forex = lazy(() => import('./pages/Forex'));
 const Currency = lazy(() => import('./pages/Currency'));
 const Comex = lazy(() => import('./pages/Comex'));
-const ContactData = lazy(() => import('./pages/ContactData'));
 const Terms = lazy(() => import('./pages/Terms'));
 const Refund = lazy(() => import('./pages/Refund'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const DailyRecommendation = lazy(() => import('./pages/DailyRecommendation'));
 const ClientServiceConsert = lazy(() => import('./pages/ClientServiceConsert'));
-const ComplaintData = lazy(() => import('./pages/ComplaintData'));
 const InvestorChart = lazy(() => import('./pages/InvestorChart'));
 const AntiMoneyLaundering = lazy(() => import('./pages/AntiMoneyLaundering'));
+
+// Lazy Loaded Admin Pages
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const ContactSubmissions = lazy(() => import('./pages/admin/ContactSubmissions'));
+const ConsentSubmissions = lazy(() => import('./pages/admin/ConsentSubmissions'));
+const ComplaintManager = lazy(() => import('./pages/admin/ComplaintManager'));
+const ReportManager = lazy(() => import('./pages/admin/ReportManager'));
 
 function App() {
   useEffect(() => {
@@ -137,7 +142,6 @@ function App() {
             <Route path="/refund" element={<Refund />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/recommendation" element={<DailyRecommendation />} />
-            <Route path="/services/equity/cash" element={<Cash />} />
             <Route path="/services/equity/stock-option" element={<StockOption />} />
             <Route path="/services/equity/delivery" element={<Delivery />} />
             <Route path="/services/equity/index" element={<Index />} />
@@ -152,16 +156,18 @@ function App() {
             <Route path="/services/forex" element={<Forex />} />
             <Route path="/services/currency" element={<Currency />} />
             <Route path="/services/comex" element={<Comex />} />
-            <Route
-              path="/admin/contact-data"
-              element={
-                <ProtectedAdminRoute>
-                  <ContactData />
-                </ProtectedAdminRoute>
-              }
-            />
+            <Route 
+              path="/admin"
+              element={<ProtectedAdminRoute><AdminLayout /></ProtectedAdminRoute>}
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="contacts" element={<ContactSubmissions />} />
+              <Route path="consents" element={<ConsentSubmissions />} />
+              <Route path="complaints" element={<ComplaintManager />} />
+              <Route path="reports" element={<ReportManager />} />
+            </Route>
             <Route path="/client-service-consert" element={<ClientServiceConsert />} />
-            <Route path="/complaint-data" element={<ComplaintData />} />
             <Route path="/investor-chart" element={<InvestorChart />} />
             <Route path="/anti-money-laundering" element={<AntiMoneyLaundering />} />
             <Route path="*" element={<NotFound />} />

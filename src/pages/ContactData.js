@@ -278,6 +278,108 @@ SubmissionTable.propTypes = {
   sortOrder: PropTypes.oneOf(['asc', 'desc']).isRequired,
 };
 
+// New component for Consent Submissions Table
+const ConsentSubmissionTable = ({ submissions, handleDelete }) => (
+  <motion.div
+    className="bg-gray-800/30 rounded-xl shadow-lg border border-gray-200/20 overflow-x-auto mb-8"
+    variants={tableVariants}
+    initial="hidden"
+    animate="visible"
+    data-aos="fade-up"
+  >
+    <table className="w-full text-white">
+      <thead className="bg-gray-700/50">
+        <tr>
+          <th className="p-4 text-left text-sm font-semibold">Client Name</th>
+          <th className="p-4 text-left text-sm font-semibold">Father's Name</th>
+          <th className="p-4 text-left text-sm font-semibold">Client ID</th>
+          <th className="p-4 text-left text-sm font-semibold">Email</th>
+          <th className="p-4 text-left text-sm font-semibold">DOB</th>
+          <th className="p-4 text-left text-sm font-semibold">PAN</th>
+          <th className="p-4 text-left text-sm font-semibold">Aadhaar</th>
+          <th className="p-4 text-left text-sm font-semibold">Address</th>
+          <th className="p-4 text-left text-sm font-semibold">PAN Card</th>
+          <th className="p-4 text-left text-sm font-semibold">Aadhaar Card</th>
+          <th className="p-4 text-left text-sm font-semibold">Signature</th>
+          <th className="p-4 text-left text-sm font-semibold">Timestamp</th>
+          <th className="p-4 text-left text-sm font-semibold">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {submissions.map((submission, index) => (
+          <motion.tr
+            key={submission.id}
+            className="border-b border-gray-200/20 hover:bg-gray-700/20 transition-colors duration-200"
+            variants={rowVariants}
+            data-aos="fade-up"
+            data-aos-delay={index * 100}
+          >
+            <td className="p-4">{submission.clientName || 'N/A'}</td>
+            <td className="p-4">{submission.fatherName || 'N/A'}</td>
+            <td className="p-4">{submission.clientId || 'N/A'}</td>
+            <td className="p-4">{submission.email || 'N/A'}</td>
+            <td className="p-4">{submission.dob || 'N/A'}</td>
+            <td className="p-4">{submission.pan || 'N/A'}</td>
+            <td className="p-4">{submission.aadhaar || 'N/A'}</td>
+            <td className="p-4 max-w-xs truncate">{submission.address || 'N/A'}</td>
+            <td className="p-4">
+              {submission.panDataUrl ? (
+                <a href={submission.panDataUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View</a>
+              ) : 'N/A'}
+            </td>
+            <td className="p-4">
+              {submission.aadhaarDataUrl ? (
+                <a href={submission.aadhaarDataUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View</a>
+              ) : 'N/A'}
+            </td>
+            <td className="p-4">
+              {submission.signatureDataUrl ? (
+                <a href={submission.signatureDataUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View</a>
+              ) : 'N/A'}
+            </td>
+            <td className="p-4">
+              {submission.timestamp ? new Date(submission.timestamp).toLocaleString('en-IN') : 'N/A'}
+            </td>
+            <td className="p-4">
+              <motion.button
+                onClick={() => handleDelete(submission.id)}
+                className="text-red-500 hover:text-red-700"
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                aria-label={`Delete submission for ${submission.clientName || 'N/A'}`}
+              >
+                <FiTrash2 size={16} />
+              </motion.button>
+            </td>
+          </motion.tr>
+        ))}
+      </tbody>
+    </table>
+  </motion.div>
+);
+
+ConsentSubmissionTable.propTypes = {
+  submissions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      clientName: PropTypes.string,
+      fatherName: PropTypes.string,
+      clientId: PropTypes.string,
+      email: PropTypes.string,
+      dob: PropTypes.string,
+      pan: PropTypes.string,
+      aadhaar: PropTypes.string,
+      address: PropTypes.string,
+      panDataUrl: PropTypes.string,
+      aadhaarDataUrl: PropTypes.string,
+      signatureDataUrl: PropTypes.string,
+      timestamp: PropTypes.string,
+    })
+  ).isRequired,
+  handleDelete: PropTypes.func.isRequired,
+};
+
 // Complaint table component with edit functionality
 const ComplaintTable = ({ tableData, setTableData, handleEditTableRow, handleDeleteTableRow }) => {
   // Ensure tableData is an array, fallback to empty array if not
@@ -699,6 +801,9 @@ function ContactData() {
   const [selectedReport, setSelectedReport] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editRowData, setEditRowData] = useState(null);
+  const [consentSubmissions, setConsentSubmissions] = useState([]);
+  const [loadingConsent, setLoadingConsent] = useState(true);
+  const [errorConsent, setErrorConsent] = useState(null);
 
   // Check authentication
   useEffect(() => {
@@ -833,6 +938,32 @@ function ContactData() {
     };
   }, [sortOrder]);
 
+  // Fetch Client Service Consent submissions
+  useEffect(() => {
+    const consentRef = ref(db, 'clientServiceConsentForms');
+    const unsubscribeConsent = onValue(
+      consentRef,
+      (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const consentList = Object.entries(data)
+            .map(([key, value]) => ({ id: key, ...value }))
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by date desc
+          setConsentSubmissions(consentList);
+        } else {
+          setConsentSubmissions([]);
+        }
+        setLoadingConsent(false);
+      },
+      (error) => {
+        console.error('Error fetching consent submissions:', error);
+        setErrorConsent('Failed to load consent submissions: ' + error.message);
+        setLoadingConsent(false);
+      }
+    );
+    return () => unsubscribeConsent();
+  }, []);
+
   // Handle search
   const handleSearch = useCallback(() => {
     const filteredSubs = submissions.filter(
@@ -904,6 +1035,25 @@ function ContactData() {
     setModalData({
       title: 'Confirm Report Deletion',
       message: 'Are you sure you want to delete this report? This action cannot be undone.',
+    });
+    setIsModalOpen(true);
+  };
+
+  // Delete consent submission with confirmation
+  const handleDeleteConsentSubmission = (id) => {
+    setModalAction(() => async () => {
+      try {
+        await remove(ref(db, `clientServiceConsentForms/${id}`));
+        toast.success('Consent submission deleted successfully.', { position: 'top-center' });
+      } catch (error) {
+        console.error('Error deleting consent submission:', error);
+        toast.error('Failed to delete consent submission: ' + error.message, { position: 'top-center' });
+      }
+      setIsModalOpen(false);
+    });
+    setModalData({
+      title: 'Confirm Deletion',
+      message: 'Are you sure you want to delete this consent submission? This action cannot be undone.',
     });
     setIsModalOpen(true);
   };
@@ -1153,6 +1303,34 @@ function ContactData() {
               handleSortToggle={handleSortToggle}
               sortOrder={sortOrder}
             />
+          )}
+
+          {/* Client Service Consent Submissions */}
+          <h3 className="text-2xl font-semibold text-white mb-4 mt-12">Client Service Consent Submissions</h3>
+          {loadingConsent ? (
+            <LoadingSpinner />
+          ) : errorConsent ? (
+            <motion.div
+              className="bg-red-500/20 rounded-xl p-6 shadow-lg border border-red-500/30 text-center text-white"
+              variants={itemVariants}
+              data-aos="fade-up"
+            >
+              {errorConsent}
+            </motion.div>
+          ) : (
+            <>
+              {consentSubmissions.length === 0 ? (
+                <motion.div
+                  className="bg-gray-800/30 rounded-xl p-6 shadow-lg border border-gray-200/20 text-center text-white"
+                  variants={itemVariants}
+                  data-aos="fade-up"
+                >
+                  No consent submissions to display.
+                </motion.div>
+              ) : (
+                <ConsentSubmissionTable submissions={consentSubmissions} handleDelete={handleDeleteConsentSubmission} />
+              )}
+            </>
           )}
 
           {/* Complaint Table */}

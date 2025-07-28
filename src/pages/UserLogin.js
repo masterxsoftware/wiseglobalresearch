@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import { toast } from "react-toastify";
@@ -7,6 +7,7 @@ import { motion, useAnimation } from "framer-motion";
 import logo from "../assets/images/w.png"; // Verify this path is correct
 
 const UserLogin = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,13 +27,13 @@ const UserLogin = () => {
 
   // Redirect if already authenticated
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user && localStorage.getItem("isAuthenticated") === "true") {
-        navigate("/admin/contact-data");
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        navigate(location.state?.from?.pathname || "/admin", { replace: true });
       }
     });
     return () => unsubscribe();
-  }, [navigate]);
+  }, [navigate, location]);
 
   // Form validation
   const validateForm = () => {
@@ -83,9 +84,8 @@ const UserLogin = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      localStorage.setItem("isAuthenticated", "true");
       toast.success("Login successful!", { position: "top-center" });
-      navigate("/admin/contact-data");
+      // onAuthStateChanged will handle the navigation automatically
     } catch (error) {
       let errorMessage = "Login failed. Please try again.";
       if (error.code === "auth/user-not-found") {

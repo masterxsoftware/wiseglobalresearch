@@ -5,14 +5,19 @@ import {
   FaUser, FaUserTie, FaIdCard, FaEnvelope, FaCalendarAlt,
   FaAddressCard, FaRegAddressCard, FaArrowRight, FaUpload
 } from 'react-icons/fa';
-import { ref, push } from 'firebase/database';
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, push } from 'firebase/database'; // Removed storage imports
 import { toast } from 'react-toastify';
 import { db } from '../firebase';
 import { Link } from 'react-router-dom';
 
-// Initialize Firebase Storage
-const storage = getStorage();
+// Helper function to convert file to Base64
+const fileToBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -48,35 +53,16 @@ const ClientServiceConsent = () => {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     try {
-      // Upload PAN card
-      let panUrl = '';
-      if (panFile) {
-        const panStorageRef = storageRef(storage, `pan_cards/${panFile.name}_${Date.now()}`);
-        await uploadBytes(panStorageRef, panFile);
-        panUrl = await getDownloadURL(panStorageRef);
-      }
-
-      // Upload Aadhaar card
-      let aadhaarUrl = '';
-      if (aadhaarFile) {
-        const aadhaarStorageRef = storageRef(storage, `aadhaar_cards/${aadhaarFile.name}_${Date.now()}`);
-        await uploadBytes(aadhaarStorageRef, aadhaarFile);
-        aadhaarUrl = await getDownloadURL(aadhaarStorageRef);
-      }
-
-      // Upload Signature
-      let signatureUrl = '';
-      if (signatureFile) {
-        const signatureStorageRef = storageRef(storage, `signatures/${signatureFile.name}_${Date.now()}`);
-        await uploadBytes(signatureStorageRef, signatureFile);
-        signatureUrl = await getDownloadURL(signatureStorageRef);
-      }
+      // Convert files to Base64 strings
+      const panDataUrl = panFile ? await fileToBase64(panFile) : '';
+      const aadhaarDataUrl = aadhaarFile ? await fileToBase64(aadhaarFile) : '';
+      const signatureDataUrl = signatureFile ? await fileToBase64(signatureFile) : '';
 
       const submissionData = {
         ...data,
-        panUrl,
-        aadhaarUrl,
-        signatureUrl,
+        panDataUrl,
+        aadhaarDataUrl,
+        signatureDataUrl,
         timestamp: new Date().toISOString(),
       };
 
