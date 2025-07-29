@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   FaUser, FaEnvelope, FaPhone, FaCommentDots,
   FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn, FaYoutube
-} from 'react-icons/fa6';
+} from 'react-icons/fa';
 import { ref, push } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { db } from '../firebase';

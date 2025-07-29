@@ -214,6 +214,7 @@ const Home = () => {
               key={index}
               src={image}
               alt={`Trading Slide ${index + 1}`}
+              loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
               style={{
                 transform: `translateZ(${index === currentSlide ? 0 : -200}px) scale(${
@@ -230,18 +231,26 @@ const Home = () => {
               }}
               transition={{ duration: 1, ease: 'easeInOut' }}
               onError={(e) => {
-                e.target.src = 'https://d9hhrg4mnvzow.cloudfront.net/promo.alparigroup.com/en/brand-1/5f52611f-rectangle-7_10g30hc000000000000028.png';
-                console.error(`Failed to load image: ${image}`);
+                // Fallback to local icon if image fails to load
+                e.target.src = '/logo192.png';
+                console.warn(`Failed to load image: ${image}`);
               }}
             />
           ))}
         </div>
         <motion.div
-          className="text-center px-4 sm:px-6 max-w-3xl z-10 custom-box-bg rounded-xl p-6 sm:p-8"
+          className="text-center px-4 sm:px-6 max-w-3xl z-10 rounded-xl p-6 sm:p-8"
+          style={{
+            background: 'rgba(255, 255, 255, 0.25)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.4)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            transformStyle: 'preserve-3d'
+          }}
           variants={cardVariants}
           initial="hidden"
           animate="visible"
-          style={{ transformStyle: 'preserve-3d' }}
         >
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 animate-float">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
@@ -297,7 +306,7 @@ const Home = () => {
             ].map((item, index) => (
               <motion.div
                 key={index}
-                className="custom-box-bg rounded-xl p-4 sm:p-6 shadow-md border border-gray-200/20"
+                className="bg-white/20 backdrop-blur-lg rounded-xl p-4 sm:p-6 shadow-md border-2 border-white/30 hover:shadow-2xl"
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
@@ -328,7 +337,7 @@ const Home = () => {
             {marketData.map((item, index) => (
               <motion.div
                 key={index}
-                className="custom-box-bg rounded-xl p-4 sm:p-6 shadow-md border border-gray-200/20"
+                className="bg-white/20 backdrop-blur-lg rounded-xl p-4 sm:p-6 shadow-md border-2 border-white/30 hover:shadow-2xl"
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
@@ -419,7 +428,7 @@ const Home = () => {
             ].map((service, index) => (
               <motion.div
                 key={index}
-                className="custom-box-bg rounded-xl p-4 sm:p-6 shadow-md border border-gray-200/20 cursor-pointer"
+                className="bg-white/20 backdrop-blur-lg rounded-xl p-4 sm:p-6 shadow-md border-2 border-white/30 hover:shadow-2xl cursor-pointer"
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
@@ -618,7 +627,7 @@ const Home = () => {
             ].map((method, index) => (
               <motion.div
                 key={index}
-                className="custom-box-bg rounded-xl p-4 sm:p-6 shadow-md border border-gray-200/20"
+                className="bg-white/20 backdrop-blur-lg rounded-xl p-4 sm:p-6 shadow-md border-2 border-white/30 hover:shadow-2xl"
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
@@ -689,7 +698,7 @@ const Home = () => {
             ].map((member, index) => (
               <motion.div
                 key={index}
-                className="custom-box-bg rounded-xl p-4 sm:p-6 shadow-md border border-gray-200/20 text-center"
+                className="bg-white/20 backdrop-blur-lg rounded-xl p-4 sm:p-6 shadow-md border-2 border-white/30 hover:shadow-2xl text-center"
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
@@ -783,7 +792,7 @@ const Home = () => {
             ].map((feature, index) => (
               <motion.div
                 key={index}
-                className="custom-box-bg rounded-xl p-4 sm:p-6 shadow-md border border-gray-200/20"
+                className="bg-white/20 backdrop-blur-lg rounded-xl p-4 sm:p-6 shadow-md border-2 border-white/30 hover:shadow-2xl"
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
@@ -833,7 +842,7 @@ const Home = () => {
             ].map((testimonial, index) => (
               <motion.div
                 key={index}
-                className="custom-box-bg rounded-xl p-4 sm:p-6 shadow-md border border-gray-200/20"
+                className="bg-white/20 backdrop-blur-lg rounded-xl p-4 sm:p-6 shadow-md border-2 border-white/30 hover:shadow-2xl"
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
@@ -906,9 +915,9 @@ const Home = () => {
             ].map((plan, index) => (
               <motion.div
                 key={index}
-                className={`relative custom-box-bg rounded-xl p-4 sm:p-6 shadow-lg border-2 ${
-                  plan.popular ? 'border-blue-500 bg-blue-500/10' : 'border-gray-200/20'
-                }`}
+                className={`relative bg-white/20 backdrop-blur-lg rounded-xl p-4 sm:p-6 shadow-lg border-2 ${
+                  plan.popular ? 'border-blue-500 bg-blue-500/10' : 'border-white/30'
+                } hover:shadow-2xl`}
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
@@ -949,11 +958,17 @@ const Home = () => {
       {/* Call to Action Banner */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6">
         <motion.div
-          className="container text-center custom-box-bg rounded-xl p-6 sm:p-8 shadow-lg border border-gray-200/20"
+          className="container text-center rounded-xl p-6 sm:p-8 shadow-lg border-2 border-white/30 bg-white/20 backdrop-blur-lg hover:shadow-2xl"
+          style={{
+            background: 'rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(15px)',
+            WebkitBackdropFilter: 'blur(15px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            transformStyle: 'preserve-3d'
+          }}
           variants={cardVariants}
           initial="hidden"
           animate="visible"
-          style={{ transformStyle: 'preserve-3d' }}
         >
           <h2 className="text-2xl sm:text-3xl font-bold mb-4">Start Your Investment Journey Today</h2>
           <p className="mb-4 sm:mb-6 text-sm sm:text-base">
@@ -1091,7 +1106,12 @@ const Home = () => {
 
       {/* Contact Form */}
       <section ref={contactFormRef} className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6">
-        <div className="container max-w-2xl custom-box-bg rounded-xl shadow-lg p-6 sm:p-8 border border-gray-200/20">
+        <div className="container max-w-2xl rounded-xl shadow-lg p-6 sm:p-8 border border-gray-200/20" style={{
+          background: 'rgba(255, 255, 255, 0.2)',
+          backdropFilter: 'blur(15px)',
+          WebkitBackdropFilter: 'blur(15px)',
+          border: '1px solid rgba(255, 255, 255, 0.3)'
+        }}>
           <motion.h2
             className="text-2xl sm:text-3xl font-bold text-center mb-8"
             variants={itemVariants}
@@ -1122,11 +1142,16 @@ const Home = () => {
           ) : (
             <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-200/20 custom-scrollbar">
               <table
-                className="w-full border-collapse text-left text-xs sm:text-sm bg-white/10 backdrop-blur-[10px] -webkit-backdrop-blur-[10px]"
+                className="w-full border-collapse text-left text-xs sm:text-sm"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(15px)',
+                  WebkitBackdropFilter: 'blur(15px)'
+                }}
                 aria-label="Complaint Data for July 2025"
               >
                 <thead>
-                  <tr className="bg-white/20 text-white">
+                  <tr className="text-white" style={{background: 'rgba(255, 255, 255, 0.3)'}}>
                     <th className="p-2 sm:p-3 border border-gray-200/30">Sr. No.</th>
                     <th className="p-2 sm:p-3 border border-gray-200/30">Received from</th>
                     <th className="p-2 sm:p-3 border border-gray-200/30">Pending at the end of last month</th>
@@ -1138,26 +1163,24 @@ const Home = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.isArray(tableData) ? (
-                    tableData.map((row) => (
-                      <tr key={row.srNo} className="bg-white/5 hover:bg-white/10 transition-colors">
-                        <td className="p-2 sm:p-3 border border-gray-200/30">{row.srNo}</td>
-                        <td className="p-2 sm:p-3 border border-gray-200/30">{row.source}</td>
-                        <td className="p-2 sm:p-3 border border-gray-200/30">{row.pendingLastMonth || 0}</td>
-                        <td className="p-2 sm:p-3 border border-gray-200/30">{row.received || 0}</td>
-                        <td className="p-2 sm:p-3 border border-gray-200/30">{row.resolved || 0}</td>
-                        <td className="p-2 sm:p-3 border border-gray-200/30">{row.pending || 0}</td>
-                        <td className="p-2 sm:p-3 border border-gray-200/30">{row.pending3Months || 0}</td>
-                        <td className="p-2 sm:p-3 border border-gray-200/30">{row.avgResolutionTime || 0}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="8" className="p-2 sm:p-3 border border-gray-200/30 text-center text-red-500">
-                        Error: Table data is not in a valid format
-                      </td>
-                    </tr>
-                  )}
+                  {Array.isArray(tableData) &&
+  tableData.map((row) => (
+    <tr
+      key={row.srNo}
+      className="transition-colors hover:bg-opacity-25"
+      style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
+    >
+      <td className="p-2 sm:p-3 border border-gray-200/30">{row.srNo}</td>
+      <td className="p-2 sm:p-3 border border-gray-200/30">{row.source}</td>
+      <td className="p-2 sm:p-3 border border-gray-200/30">{row.pendingLastMonth || 0}</td>
+      <td className="p-2 sm:p-3 border border-gray-200/30">{row.received || 0}</td>
+      <td className="p-2 sm:p-3 border border-gray-200/30">{row.resolved || 0}</td>
+      <td className="p-2 sm:p-3 border border-gray-200/30">{row.pending || 0}</td>
+      <td className="p-2 sm:p-3 border border-gray-200/30">{row.pending3Months || 0}</td>
+      <td className="p-2 sm:p-3 border border-gray-200/30">{row.avgResolutionTime || 0}</td>
+    </tr>
+  ))
+                  }
                 </tbody>
               </table>
             </div>

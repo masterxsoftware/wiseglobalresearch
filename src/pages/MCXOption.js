@@ -15,6 +15,7 @@ import {
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import Layout from '../components/Layout';
 
 // Register Chart.js components and zoom plugin
 ChartJS.register(
@@ -288,417 +289,419 @@ const MCXOption = () => {
   };
 
   return (
-    <motion.div
-      className="min-h-screen bg-transparent py-12 px-4 sm:px-6 lg:px-8"
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
-      {/* Hero Section */}
-      <motion.section
-        ref={heroRef}
-        className="text-center mb-16"
-        variants={itemVariants}
-        animate={isHeroInView ? 'visible' : 'hidden'}
+    <Layout>
+      <motion.div
+        className="min-h-screen bg-transparent py-12 px-4 sm:px-6 lg:px-8"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
       >
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
-          MCX Options Trading
-        </h1>
-        <p className="text-lg sm:text-xl text-gray-800 max-w-3xl mx-auto">
-          Master commodity options trading on MCX with our cutting-edge platform, real-time
-          data, and powerful trading tools.
-        </p>
-        <motion.button
-          className="mt-6 bg-yellow-600 text-white px-8 py-3 rounded-full hover:bg-yellow-700 transition shadow-lg"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={handleNavigateToContact}
-          aria-label="Start Trading Options"
+        {/* Hero Section */}
+        <motion.section
+          ref={heroRef}
+          className="text-center mb-16"
+          variants={itemVariants}
+          animate={isHeroInView ? 'visible' : 'hidden'}
         >
-          Start Trading Options
-        </motion.button>
-      </motion.section>
-
-      {/* News Ticker */}
-      <motion.section className="mb-16" variants={itemVariants}>
-        <h2 className="text-2xl font-bold text-gray-900 text-center mb-4">
-          Market Updates
-        </h2>
-        <div className="bg-yellow-50 p-4 rounded-lg shadow-md overflow-hidden">
-          <motion.div
-            animate={{ x: ['0%', '-100%'] }}
-            transition={{ duration: 30, ease: 'linear', repeat: Infinity }}
-            className="flex space-x-12 whitespace-nowrap"
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
+            MCX Options Trading
+          </h1>
+          <p className="text-lg sm:text-xl text-gray-800 max-w-3xl mx-auto">
+            Master commodity options trading on MCX with our cutting-edge platform, real-time
+            data, and powerful trading tools.
+          </p>
+          <motion.button
+            className="mt-6 bg-yellow-600 text-white px-8 py-3 rounded-full hover:bg-yellow-700 transition shadow-lg"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleNavigateToContact}
+            aria-label="Start Trading Options"
           >
-            {newsTicker.map((news, index) => (
-              <span key={index} className="text-gray-800 text-lg">
-                {news}
-              </span>
-            ))}
-          </motion.div>
-        </div>
-      </motion.section>
+            Start Trading Options
+          </motion.button>
+        </motion.section>
 
-      {/* Services Section */}
-      <motion.section
-        ref={servicesRef}
-        className="mb-16"
-        variants={itemVariants}
-        animate={isServicesInView ? 'visible' : 'hidden'}
-      >
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
-          Our Options Trading Services
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-          {services.map((service, index) => (
+        {/* News Ticker */}
+        <motion.section className="mb-16" variants={itemVariants}>
+          <h2 className="text-2xl font-bold text-gray-900 text-center mb-4">
+            Market Updates
+          </h2>
+          <div className="bg-yellow-50 p-4 rounded-lg shadow-md overflow-hidden">
             <motion.div
-              key={index}
-              className="bg-gray-50 p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition"
-              variants={itemVariants}
-              whileHover={{ y: -10, boxShadow: '0 15px 25px rgba(0,0,0,0.15)' }}
+              animate={{ x: ['0%', '-100%'] }}
+              transition={{ duration: 30, ease: 'linear', repeat: Infinity }}
+              className="flex space-x-12 whitespace-nowrap"
             >
-              <span className="text-4xl mb-4 block">{service.icon}</span>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {service.title}
-              </h3>
-              <p className="text-gray-800 text-sm">{service.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
-
-      {/* Charts Section */}
-      <motion.section className="mb-16" variants={itemVariants}>
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
-          Options Market Insights
-        </h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <motion.div className="bg-gray-50 p-6 rounded-xl shadow-lg" variants={itemVariants}>
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">
-              Gold Options Price Trends
-            </h3>
-            <Line
-              data={optionPriceData}
-              options={{
-                responsive: true,
-                plugins: {
-                  legend: { position: 'top' },
-                  title: { display: true, text: 'Gold Call & Put Options (₹)' },
-                  zoom: {
-                    zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' },
-                    pan: { enabled: true, mode: 'x' },
-                  },
-                },
-                scales: {
-                  y: {
-                    beginAtZero: false,
-                    title: { display: true, text: 'Price (₹)' },
-                  },
-                },
-              }}
-            />
-          </motion.div>
-          <motion.div className="bg-gray-50 p-6 rounded-xl shadow-lg" variants={itemVariants}>
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">
-              Options Trading Volume
-            </h3>
-            <Bar
-              data={tradingVolumeData}
-              options={{
-                responsive: true,
-                plugins: {
-                  legend: { position: 'top' },
-                  title: { display: true, text: 'Trading Volume by Commodity (Lots)' },
-                },
-              }}
-            />
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Options Payoff Calculator */}
-      <motion.section className="mb-16" variants={itemVariants}>
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
-          Options Payoff Calculator
-        </h2>
-        <div className="bg-gray-50 p-6 rounded-xl shadow-lg max-w-xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-gray-800 mb-2">Strike Price (₹)</label>
-              <input
-                type="number"
-                value={calculatorInput.strikePrice}
-                onChange={(e) =>
-                  setCalculatorInput({ ...calculatorInput, strikePrice: parseFloat(e.target.value) })
-                }
-                className="w-full p-2 border rounded-lg bg-white text-black focus:ring-2 focus:ring-yellow-500"
-                aria-label="Strike Price"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-800 mb-2">Premium (₹)</label>
-              <input
-                type="number"
-                value={calculatorInput.premium}
-                onChange={(e) =>
-                  setCalculatorInput({ ...calculatorInput, premium: parseFloat(e.target.value) })
-                }
-                className="w-full p-2 border rounded-lg bg-white text-black focus:ring-2 focus:ring-yellow-500"
-                aria-label="Premium"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-800 mb-2">Quantity (Lots)</label>
-              <input
-                type="number"
-                value={calculatorInput.quantity}
-                onChange={(e) =>
-                  setCalculatorInput({ ...calculatorInput, quantity: parseInt(e.target.value) })
-                }
-                className="w-full p-2 border rounded-lg bg-white text-black focus:ring-2 focus:ring-yellow-500"
-                aria-label="Quantity"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-800 mb-2">Option Type</label>
-              <select
-                value={calculatorInput.type}
-                onChange={(e) =>
-                  setCalculatorInput({ ...calculatorInput, type: e.target.value })
-                }
-                className="w-full p-2 border rounded-lg bg-white text-black focus:ring-2 focus:ring-yellow-500"
-                aria-label="Option Type"
-              >
-                <option value="call">Call</option>
-                <option value="put">Put</option>
-              </select>
-            </div>
-          </div>
-          {error && (
-            <p className="text-red-600 mb-4">{error}</p>
-          )}
-          <div className="flex space-x-4">
-            <motion.button
-              className="bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 transition"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={calculatePayoff}
-              aria-label="Calculate Payoff"
-            >
-              Calculate Payoff
-            </motion.button>
-            <motion.button
-              className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={resetCalculator}
-              aria-label="Reset Calculator"
-            >
-              Reset
-            </motion.button>
-          </div>
-          {payoffResult && (
-            <motion.p
-              className="mt-4 text-lg font-semibold text-gray-900"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              Estimated Payoff: ₹{payoffResult}
-            </motion.p>
-          )}
-        </div>
-      </motion.section>
-
-      {/* Options Chain Section */}
-      <motion.section className="mb-16" variants={itemVariants}>
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
-          Live Options Chain
-        </h2>
-        <div className="bg-gray-50 p-6 rounded-xl shadow-lg overflow-x-auto">
-          <div className="flex justify-end mb-4">
-            <motion.button
-              className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={downloadOptionsChain}
-              aria-label="Download Options Chain as CSV"
-            >
-              Download as CSV
-            </motion.button>
-          </div>
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="bg-yellow-100">
-                <th className="p-4 font-semibold text-gray-900">Commodity</th>
-                <th className="p-4 font-semibold text-gray-900">Strike Price</th>
-                <th className="p-4 font-semibold text-gray-900">Premium</th>
-                <th className="p-4 font-semibold text-gray-900">Open Interest</th>
-                <th className="p-4 font-semibold text-gray-900">Change</th>
-              </tr>
-            </thead>
-            <tbody>
-              {optionsChain.map((item, index) => (
-                <motion.tr
-                  key={index}
-                  className="border-t border-gray-200"
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <td className="p-4 text-gray-800">{item.commodity}</td>
-                  <td className="p-4 text-gray-800">{item.strike}</td>
-                  <td className="p-4 text-gray-800">{item.premium}</td>
-                  <td className="p-4 text-gray-800">{item.oi}</td>
-                  <td className={`p-4 ${item.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
-                    {item.change}
-                  </td>
-                </motion.tr>
+              {newsTicker.map((news, index) => (
+                <span key={index} className="text-gray-800 text-lg">
+                  {news}
+                </span>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </motion.section>
+            </motion.div>
+          </div>
+        </motion.section>
 
-      {/* Pricing Plans Section */}
-      <motion.section className="mb-16" variants={itemVariants}>
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
-          Our Trading Plans
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {plans.map((plan, index) => (
-            <motion.div
-              key={index}
-              className="bg-gray-50 p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition"
-              variants={itemVariants}
-              whileHover={{ y: -10, boxShadow: '0 15px 25px rgba(0,0,0,0.15)' }}
-            >
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {plan.name}
+        {/* Services Section */}
+        <motion.section
+          ref={servicesRef}
+          className="mb-16"
+          variants={itemVariants}
+          animate={isServicesInView ? 'visible' : 'hidden'}
+        >
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            Our Options Trading Services
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {services.map((service, index) => (
+              <motion.div
+                key={index}
+                className="bg-gray-50 p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition"
+                variants={itemVariants}
+                whileHover={{ y: -10, boxShadow: '0 15px 25px rgba(0,0,0,0.15)' }}
+              >
+                <span className="text-4xl mb-4 block">{service.icon}</span>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {service.title}
+                </h3>
+                <p className="text-gray-800 text-sm">{service.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Charts Section */}
+        <motion.section className="mb-16" variants={itemVariants}>
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            Options Market Insights
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <motion.div className="bg-gray-50 p-6 rounded-xl shadow-lg" variants={itemVariants}>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Gold Options Price Trends
               </h3>
-              <p className="text-2xl font-bold text-yellow-600 mb-4">
-                {plan.price}
-              </p>
-              <ul className="text-gray-800 mb-6">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="mb-2 flex items-center justify-center">
-                    <span className="mr-2 text-yellow-600">✔</span> {feature}
-                  </li>
-                ))}
-              </ul>
+              <Line
+                data={optionPriceData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Gold Call & Put Options (₹)' },
+                    zoom: {
+                      zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' },
+                      pan: { enabled: true, mode: 'x' },
+                    },
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: false,
+                      title: { display: true, text: 'Price (₹)' },
+                    },
+                  },
+                }}
+              />
+            </motion.div>
+            <motion.div className="bg-gray-50 p-6 rounded-xl shadow-lg" variants={itemVariants}>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Options Trading Volume
+              </h3>
+              <Bar
+                data={tradingVolumeData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Trading Volume by Commodity (Lots)' },
+                  },
+                }}
+              />
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* Options Payoff Calculator */}
+        <motion.section className="mb-16" variants={itemVariants}>
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            Options Payoff Calculator
+          </h2>
+          <div className="bg-gray-50 p-6 rounded-xl shadow-lg max-w-xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-gray-800 mb-2">Strike Price (₹)</label>
+                <input
+                  type="number"
+                  value={calculatorInput.strikePrice}
+                  onChange={(e) =>
+                    setCalculatorInput({ ...calculatorInput, strikePrice: parseFloat(e.target.value) })
+                  }
+                  className="w-full p-2 border rounded-lg bg-white text-black focus:ring-2 focus:ring-yellow-500"
+                  aria-label="Strike Price"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-800 mb-2">Premium (₹)</label>
+                <input
+                  type="number"
+                  value={calculatorInput.premium}
+                  onChange={(e) =>
+                    setCalculatorInput({ ...calculatorInput, premium: parseFloat(e.target.value) })
+                  }
+                  className="w-full p-2 border rounded-lg bg-white text-black focus:ring-2 focus:ring-yellow-500"
+                  aria-label="Premium"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-800 mb-2">Quantity (Lots)</label>
+                <input
+                  type="number"
+                  value={calculatorInput.quantity}
+                  onChange={(e) =>
+                    setCalculatorInput({ ...calculatorInput, quantity: parseInt(e.target.value) })
+                  }
+                  className="w-full p-2 border rounded-lg bg-white text-black focus:ring-2 focus:ring-yellow-500"
+                  aria-label="Quantity"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-800 mb-2">Option Type</label>
+                <select
+                  value={calculatorInput.type}
+                  onChange={(e) =>
+                    setCalculatorInput({ ...calculatorInput, type: e.target.value })
+                  }
+                  className="w-full p-2 border rounded-lg bg-white text-black focus:ring-2 focus:ring-yellow-500"
+                  aria-label="Option Type"
+                >
+                  <option value="call">Call</option>
+                  <option value="put">Put</option>
+                </select>
+              </div>
+            </div>
+            {error && (
+              <p className="text-red-600 mb-4">{error}</p>
+            )}
+            <div className="flex space-x-4">
               <motion.button
                 className="bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 transition"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleNavigateToContact}
-                aria-label={`Choose ${plan.name} Plan`}
+                onClick={calculatePayoff}
+                aria-label="Calculate Payoff"
               >
-                Choose Plan
+                Calculate Payoff
               </motion.button>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
-
-      {/* FAQ Section */}
-      <motion.section className="mb-16" variants={itemVariants}>
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
-          Frequently Asked Questions
-        </h2>
-        <div className="max-w-3xl mx-auto">
-          {faqs.map((faq, index) => (
-            <motion.div
-              key={index}
-              className="bg-gray-50 p-6 rounded-xl shadow-md mb-4"
-              variants={itemVariants}
-            >
-              <button
-                className="w-full text-left text-lg font-semibold text-gray-900 flex justify-between items-center"
-                onClick={() => setActiveFaq(activeFaq === index ? null : index)}
-                aria-expanded={activeFaq === index}
-                aria-controls={`faq-${index}`}
+              <motion.button
+                className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={resetCalculator}
+                aria-label="Reset Calculator"
               >
-                {faq.question}
-                <span className="text-yellow-600">{activeFaq === index ? '−' : '+'}</span>
-              </button>
-              <AnimatePresence>
-                {activeFaq === index && (
-                  <motion.div
-                    id={`faq-${index}`}
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="text-gray-800 mt-2"
+                Reset
+              </motion.button>
+            </div>
+            {payoffResult && (
+              <motion.p
+                className="mt-4 text-lg font-semibold text-gray-900"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                Estimated Payoff: ₹{payoffResult}
+              </motion.p>
+            )}
+          </div>
+        </motion.section>
+
+        {/* Options Chain Section */}
+        <motion.section className="mb-16" variants={itemVariants}>
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            Live Options Chain
+          </h2>
+          <div className="bg-gray-50 p-6 rounded-xl shadow-lg overflow-x-auto">
+            <div className="flex justify-end mb-4">
+              <motion.button
+                className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={downloadOptionsChain}
+                aria-label="Download Options Chain as CSV"
+              >
+                Download as CSV
+              </motion.button>
+            </div>
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="bg-yellow-100">
+                  <th className="p-4 font-semibold text-gray-900">Commodity</th>
+                  <th className="p-4 font-semibold text-gray-900">Strike Price</th>
+                  <th className="p-4 font-semibold text-gray-900">Premium</th>
+                  <th className="p-4 font-semibold text-gray-900">Open Interest</th>
+                  <th className="p-4 font-semibold text-gray-900">Change</th>
+                </tr>
+              </thead>
+              <tbody>
+                {optionsChain.map((item, index) => (
+                  <motion.tr
+                    key={index}
+                    className="border-t border-gray-200"
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
                   >
-                    {faq.answer}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
+                    <td className="p-4 text-gray-800">{item.commodity}</td>
+                    <td className="p-4 text-gray-800">{item.strike}</td>
+                    <td className="p-4 text-gray-800">{item.premium}</td>
+                    <td className="p-4 text-gray-800">{item.oi}</td>
+                    <td className={`p-4 ${item.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+                      {item.change}
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </motion.section>
 
-      {/* Testimonials Section */}
-      <motion.section className="mb-16" variants={itemVariants}>
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
-          What Our Traders Say
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {[
-            {
-              name: 'Priya Sharma',
-              text: 'The strategy builder transformed my options trading approach.',
-              role: 'Options Trader',
-            },
-            {
-              name: 'Rahul Mehta',
-              text: 'Real-time analytics and options chain data are top-notch.',
-              role: 'Commodity Investor',
-            },
-            {
-              name: 'Anita Desai',
-              text: 'The payoff calculator is a must-have for planning trades.',
-              role: 'Professional Trader',
-            },
-            {
-              name: 'Vikram Singh',
-              text: 'The platform’s tools make MCX options trading seamless.',
-              role: 'Retail Trader',
-            },
-          ].map((testimonial, index) => (
-            <motion.div
-              key={index}
-              className="bg-gray-50 p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition"
-              variants={itemVariants}
-              whileHover={{ y: -10, boxShadow: '0 15px 25px rgba(0,0,0,0.15)' }}
-            >
-              <p className="text-gray-800 mb-4">"{testimonial.text}"</p>
-              <h3 className="text-lg font-semibold text-gray-900">{testimonial.name}</h3>
-              <p className="text-sm text-gray-700">{testimonial.role}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
+        {/* Pricing Plans Section */}
+        <motion.section className="mb-16" variants={itemVariants}>
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            Our Trading Plans
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {plans.map((plan, index) => (
+              <motion.div
+                key={index}
+                className="bg-gray-50 p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition"
+                variants={itemVariants}
+                whileHover={{ y: -10, boxShadow: '0 15px 25px rgba(0,0,0,0.15)' }}
+              >
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {plan.name}
+                </h3>
+                <p className="text-2xl font-bold text-yellow-600 mb-4">
+                  {plan.price}
+                </p>
+                <ul className="text-gray-800 mb-6">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="mb-2 flex items-center justify-center">
+                      <span className="mr-2 text-yellow-600">✔</span> {feature}
+                    </li>
+                  ))}
+                </ul>
+                <motion.button
+                  className="bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 transition"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleNavigateToContact}
+                  aria-label={`Choose ${plan.name} Plan`}
+                >
+                  Choose Plan
+                </motion.button>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
 
-      {/* CTA Section */}
-      <motion.section className="text-center" variants={itemVariants}>
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-          Ready to Trade MCX Options?
-        </h2>
-        <p className="text-lg text-gray-800 mb-6 max-w-2xl mx-auto">
-          Join thousands of traders leveraging our platform for smarter commodity options trading.
-        </p>
-        <motion.button
-          className="bg-yellow-600 text-white px-8 py-3 rounded-full hover:bg-yellow-700 transition shadow-lg"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={handleNavigateToContact}
-          aria-label="Start Trading Now"
-        >
-          Start Trading Now
-        </motion.button>
-      </motion.section>
-    </motion.div>
+        {/* FAQ Section */}
+        <motion.section className="mb-16" variants={itemVariants}>
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            Frequently Asked Questions
+          </h2>
+          <div className="max-w-3xl mx-auto">
+            {faqs.map((faq, index) => (
+              <motion.div
+                key={index}
+                className="bg-gray-50 p-6 rounded-xl shadow-md mb-4"
+                variants={itemVariants}
+              >
+                <button
+                  className="w-full text-left text-lg font-semibold text-gray-900 flex justify-between items-center"
+                  onClick={() => setActiveFaq(activeFaq === index ? null : index)}
+                  aria-expanded={activeFaq === index}
+                  aria-controls={`faq-${index}`}
+                >
+                  {faq.question}
+                  <span className="text-yellow-600">{activeFaq === index ? '−' : '+'}</span>
+                </button>
+                <AnimatePresence>
+                  {activeFaq === index && (
+                    <motion.div
+                      id={`faq-${index}`}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="text-gray-800 mt-2"
+                    >
+                      {faq.answer}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Testimonials Section */}
+        <motion.section className="mb-16" variants={itemVariants}>
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            What Our Traders Say
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                name: 'Priya Sharma',
+                text: 'The strategy builder transformed my options trading approach.',
+                role: 'Options Trader',
+              },
+              {
+                name: 'Rahul Mehta',
+                text: 'Real-time analytics and options chain data are top-notch.',
+                role: 'Commodity Investor',
+              },
+              {
+                name: 'Anita Desai',
+                text: 'The payoff calculator is a must-have for planning trades.',
+                role: 'Professional Trader',
+              },
+              {
+                name: 'Vikram Singh',
+                text: 'The platform’s tools make MCX options trading seamless.',
+                role: 'Retail Trader',
+              },
+            ].map((testimonial, index) => (
+              <motion.div
+                key={index}
+                className="bg-gray-50 p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition"
+                variants={itemVariants}
+                whileHover={{ y: -10, boxShadow: '0 15px 25px rgba(0,0,0,0.15)' }}
+              >
+                <p className="text-gray-800 mb-4">"{testimonial.text}"</p>
+                <h3 className="text-lg font-semibold text-gray-900">{testimonial.name}</h3>
+                <p className="text-sm text-gray-700">{testimonial.role}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* CTA Section */}
+        <motion.section className="text-center" variants={itemVariants}>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Ready to Trade MCX Options?
+          </h2>
+          <p className="text-lg text-gray-800 mb-6 max-w-2xl mx-auto">
+            Join thousands of traders leveraging our platform for smarter commodity options trading.
+          </p>
+          <motion.button
+            className="bg-yellow-600 text-white px-8 py-3 rounded-full hover:bg-yellow-700 transition shadow-lg"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleNavigateToContact}
+            aria-label="Start Trading Now"
+          >
+            Start Trading Now
+          </motion.button>
+        </motion.section>
+      </motion.div>
+    </Layout>
   );
 };
 

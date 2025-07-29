@@ -1,23 +1,15 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import {
   FaUser, FaUserTie, FaIdCard, FaEnvelope, FaCalendarAlt,
-  FaAddressCard, FaRegAddressCard, FaArrowRight, FaUpload
+  FaAddressCard, FaRegAddressCard, FaArrowRight, FaUpload, FaFilePdf, FaFileImage, FaTimesCircle
 } from 'react-icons/fa';
-import { ref, push } from 'firebase/database'; // Removed storage imports
+import { ref, push, set } from 'firebase/database';
 import { toast } from 'react-toastify';
-import { db } from '../firebase';
+import { db, storage } from '../firebase';
 import { Link } from 'react-router-dom';
-
-// Helper function to convert file to Base64
-const fileToBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
 
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -38,7 +30,7 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-const ClientServiceConsent = () => {
+const ClientServiceConsent = () => { // Corrected component name
   const {
     register,
     handleSubmit,
@@ -52,21 +44,34 @@ const ClientServiceConsent = () => {
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
+    const consentFormRef = push(ref(db, 'clientServiceConsentForms'));
+    const submissionId = consentFormRef.key;
+
     try {
-      // Convert files to Base64 strings
-      const panDataUrl = panFile ? await fileToBase64(panFile) : '';
-      const aadhaarDataUrl = aadhaarFile ? await fileToBase64(aadhaarFile) : '';
-      const signatureDataUrl = signatureFile ? await fileToBase64(signatureFile) : '';
+      const uploadFile = async (file, fieldName) => {
+        if (!file) return { downloadURL: '', storagePath: '' };
+        const filePath = `client-consents/${submissionId}/${fieldName}-${file.name}`;
+        const fileStorageRef = storageRef(storage, filePath);
+        await uploadBytes(fileStorageRef, file);
+        const downloadURL = await getDownloadURL(fileStorageRef);
+        return { downloadURL, storagePath: filePath };
+      };
+
+      const [panUpload, aadhaarUpload, signatureUpload] = await Promise.all([
+        uploadFile(panFile, 'pan'),
+        uploadFile(aadhaarFile, 'aadhaar'),
+        uploadFile(signatureFile, 'signature'),
+      ]);
 
       const submissionData = {
         ...data,
-        panDataUrl,
-        aadhaarDataUrl,
-        signatureDataUrl,
+        panCard: panUpload,
+        aadhaarCard: aadhaarUpload,
+        signature: signatureUpload,
         timestamp: new Date().toISOString(),
       };
 
-      await push(ref(db, 'clientServiceConsentForms'), submissionData);
+      await set(consentFormRef, submissionData);
       toast.success('Consent form submitted successfully!', {
         position: 'top-center',
       });
@@ -85,21 +90,21 @@ const ClientServiceConsent = () => {
   };
 
   const renderInput = (id, label, icon, type = 'text', validation, note) => (
-    <motion.div variants={itemVariants}>
+    <motion.div variants={itemVariants} className="w-full">
       <label htmlFor={id} className="block text-sm font-medium text-white mb-2">
         {label}
       </label>
       <div className="relative">
-        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-white text-xl">
+        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-white/70 text-xl">
           {icon}
         </span>
         <input
           id={id}
           type={type}
           {...register(id, validation)}
-          placeholder={`Enter ${label.replace('*', '')}`}
-          className={`w-full pl-10 pr-4 py-3 rounded-lg border custom-box-bg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors[id] ? 'border-red-500' : 'border-gray-300/50'
+          placeholder={`Enter your ${label.replace('*', '').toLowerCase()}`}
+          className={`w-full pl-11 pr-4 py-3 rounded-lg border custom-box-bg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ${
+            errors[id] ? 'border-red-500 ring-red-500/50' : 'border-gray-300/50'
           }`}
         />
       </div>
@@ -110,41 +115,57 @@ const ClientServiceConsent = () => {
     </motion.div>
   );
 
-  const renderFileInput = (id, label, icon, setFile, accept) => (
-    <motion.div variants={itemVariants}>
+  const renderFileInput = (id, label, icon, setFile, file, accept) => (
+    <motion.div variants={itemVariants} className="w-full">
       <label htmlFor={id} className="block text-sm font-medium text-white mb-2">
         {label}
       </label>
-      <div className="relative">
-        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-white text-xl">
-          {icon}
-        </span>
+      <div className={`relative border-2 border-dashed rounded-lg p-4 text-center transition-all duration-300 ${errors[id] ? 'border-red-500' : 'border-gray-300/50 hover:border-blue-500'}`}>
         <input
-          id={id}
-          type="file"
-          accept={accept}
-          {...register(id, {
-            required: `${label.replace('*', '')} is required`,
-            validate: {
-              fileSize: (fileList) => fileList[0]?.size <= 5000000 || 'File size must be less than 5MB',
-              fileType: (fileList) => {
-                if (!fileList[0]) return 'No file selected';
-                const validTypes = accept.split(',');
-                return validTypes.some(type => fileList[0].type.includes(type.trim())) || 'Invalid file type';
+            id={id}
+            type="file"
+            accept={accept}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            {...register(id, {
+              required: file ? false : `${label.replace('*', '')} is required`,
+              validate: {
+                fileSize: (fileList) => !fileList[0] || fileList[0].size <= 5000000 || 'File size must be less than 5MB',
+                fileType: (fileList) => {
+                  if (!fileList[0]) return true;
+                  const validTypes = accept.split(',');
+                  return validTypes.some(type => fileList[0].type.includes(type.trim())) || 'Invalid file type. Accepted: PDF, JPG, PNG';
+                }
               }
-            }
-          })}
-          onChange={(e) => {
-            if (e.target.files[0]) {
-              setFile(e.target.files[0]);
-            }
-          }}
-          className={`w-full pl-10 pr-4 py-3 rounded-lg border bg-gradient-to-r from-gray-800 to-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/50 ${
-            errors[id] ? 'border-red-500' : 'border-blue-500/50'
-          }`}
-        />
+            })}
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                setFile(e.target.files[0]);
+              }
+            }}
+          />
+        {!file ? (
+          <div className="flex flex-col items-center justify-center text-white/70">
+            {icon}
+            <p className="mt-2 text-sm">Click or drag file to upload</p>
+            <p className="text-xs text-gray-400 mt-1">PDF, JPG, PNG (Max 5MB)</p>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between text-white">
+            <div className="flex items-center gap-3">
+              {file.type.includes('pdf') ? <FaFilePdf className="text-red-400 text-2xl" /> : <FaFileImage className="text-blue-400 text-2xl" />}
+              <span className="text-sm font-medium truncate max-w-xs">{file.name}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setFile(null)}
+              className="text-red-500 hover:text-red-400 transition-colors"
+              aria-label="Remove file"
+            >
+              <FaTimesCircle size={20} />
+            </button>
+          </div>
+        )}
       </div>
-      <p className="text-xs text-gray-400 mt-1">Accepted formats: PDF, JPG, PNG (Max 5MB)</p>
       {errors[id] && (
         <p className="text-red-400 text-xs mt-1">{errors[id].message}</p>
       )}
@@ -152,8 +173,9 @@ const ClientServiceConsent = () => {
   );
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 text-white">
-      <motion.div
+    // Removed min-h-screen, padding, and text-white for consistency
+    <div className="py-12">
+       <motion.div
         className="max-w-4xl mx-auto"
         initial="hidden"
         animate="visible"
@@ -162,7 +184,7 @@ const ClientServiceConsent = () => {
         <motion.div className="text-sm mb-8" variants={itemVariants}>
           <Link to="/" className="hover:text-blue-400">Home</Link>
           <span className="mx-2">/</span>
-          <span className="text-blue-400">Client Service Consent Form</span>
+          <span className="text-blue-400">Client Service Consent</span>
         </motion.div>
 
         <motion.div
@@ -171,7 +193,7 @@ const ClientServiceConsent = () => {
         >
           <div className="text-center mb-8">
             <h2 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-              Client Service Consent Form
+              Client Service Consent
             </h2>
             <p className="mt-2 text-gray-300">
               Please fill out the form below and upload required documents.
@@ -179,11 +201,11 @@ const ClientServiceConsent = () => {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <h3 className="text-xl font-semibold text-white border-b border-white/20 pb-2 mb-6">
-              Client Information
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <motion.div variants={containerVariants} className="p-6 rounded-lg bg-white/5 border border-white/10">
+              <h3 className="text-xl font-semibold text-white border-b border-white/20 pb-2 mb-6">
+                Client Information
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {renderInput(
                 'clientName',
                 'Client Name*',
@@ -204,9 +226,7 @@ const ClientServiceConsent = () => {
                   minLength: { value: 2, message: "Father's name must be at least 2 characters" }
                 }
               )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
               {renderInput(
                 'clientId',
                 'Client ID*',
@@ -234,9 +254,7 @@ const ClientServiceConsent = () => {
                   },
                 }
               )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
               {renderInput(
                 'dob',
                 'Date Of Birth*',
@@ -268,44 +286,51 @@ const ClientServiceConsent = () => {
                   maxLength: { value: 10, message: 'PAN must be 10 characters' },
                 }
               )}
-            </div>
+              {renderInput(
+                'aadhaar',
+                'Aadhaar*',
+                <FaRegAddressCard />,
+                'text',
+                {
+                  required: 'Aadhaar is required',
+                  pattern: {
+                    value: /^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/,
+                    message: 'Invalid Aadhaar format',
+                  },
+                  minLength: { value: 12, message: 'Aadhaar must be 12 digits' },
+                  maxLength: { value: 12, message: 'Aadhaar must be 12 digits' },
+                }
+              )}
+              </div>
+            </motion.div>
 
-            {renderInput(
-              'aadhaar',
-              'Aadhaar*',
-              <FaRegAddressCard />,
-              'text',
-              {
-                required: 'Aadhaar is required',
-                pattern: {
-                  value: /^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/,
-                  message: 'Invalid Aadhaar format',
-                },
-                minLength: { value: 12, message: 'Aadhaar must be 12 digits' },
-                maxLength: { value: 12, message: 'Aadhaar must be 12 digits' },
-              }
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <motion.div variants={containerVariants} className="p-6 rounded-lg bg-white/5 border border-white/10">
+              <h3 className="text-xl font-semibold text-white border-b border-white/20 pb-2 mb-6">
+                Document Uploads
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {renderFileInput(
                 'panFile',
                 'PAN Card Upload*',
-                <FaUpload />,
+                <FaUpload size={24} />,
                 setPanFile,
+                panFile,
                 'image/jpeg,image/png,application/pdf'
               )}
               {renderFileInput(
                 'aadhaarFile',
                 'Aadhaar Card Upload*',
-                <FaUpload />,
+                <FaUpload size={24} />,
                 setAadhaarFile,
+                aadhaarFile,
                 'image/jpeg,image/png,application/pdf'
               )}
               {renderFileInput(
                 'signatureFile',
                 'Signature Upload*',
-                <FaUpload />,
+                <FaUpload size={24} />,
                 setSignatureFile,
+                signatureFile,
                 'image/jpeg,image/png,application/pdf'
               )}
             </div>
@@ -322,7 +347,7 @@ const ClientServiceConsent = () => {
                 })}
                 rows="4"
                 placeholder="Enter Full Address"
-                className={`w-full px-4 py-3 rounded-lg border custom-box-bg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full px-4 py-3 rounded-lg border custom-box-bg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ${
                   errors.address ? 'border-red-500' : 'border-gray-300/50'
                 }`}
               ></textarea>
@@ -332,12 +357,13 @@ const ClientServiceConsent = () => {
                 </p>
               )}
             </motion.div>
+            </motion.div>
 
             <motion.div variants={itemVariants}>
               <motion.button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full shine-hover py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-lg shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full shine-hover py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform transition-all duration-300"
                 whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                 whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
               >

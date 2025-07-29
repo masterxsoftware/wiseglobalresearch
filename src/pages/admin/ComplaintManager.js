@@ -94,8 +94,8 @@ EditModal.propTypes = {
 };
 
 const ComplaintTable = ({ tableData, handleEdit, handleDelete }) => (
-  <motion.div className="bg-gray-800/30 rounded-xl shadow-lg border border-gray-200/20 overflow-x-auto" variants={itemVariants}>
-    <table className="w-full text-white">
+  <motion.div className="bg-gray-800/30 rounded-xl shadow-lg border border-gray-200/20" variants={itemVariants}>
+    <table className="w-full text-white responsive-table">
       <thead className="bg-gray-700/50">
         <tr>
           <th className="p-4 text-left text-sm font-semibold">Sr. No.</th>
@@ -112,15 +112,15 @@ const ComplaintTable = ({ tableData, handleEdit, handleDelete }) => (
       <tbody>
         {(Array.isArray(tableData) ? tableData : Object.values(tableData || {})).map(row => (
           <motion.tr key={row.srNo} className="border-b border-gray-200/20 hover:bg-gray-700/20" variants={itemVariants}>
-            <td className="p-4">{row.srNo}</td>
-            <td className="p-4">{row.source || 'N/A'}</td>
-            <td className="p-4">{row.pendingLastMonth || 0}</td>
-            <td className="p-4">{row.received || 0}</td>
-            <td className="p-4">{row.resolved || 0}</td>
-            <td className="p-4">{row.pending || 0}</td>
-            <td className="p-4">{row.pending3Months || 0}</td>
-            <td className="p-4">{row.avgResolutionTime || 0}</td>
-            <td className="p-4 flex gap-2">
+            <td data-label="Sr. No." className="p-4">{row.srNo}</td>
+            <td data-label="Received from" className="p-4">{row.source || 'N/A'}</td>
+            <td data-label="Pending last month" className="p-4">{row.pendingLastMonth || 0}</td>
+            <td data-label="Received" className="p-4">{row.received || 0}</td>
+            <td data-label="Resolved" className="p-4">{row.resolved || 0}</td>
+            <td data-label="Pending" className="p-4">{row.pending || 0}</td>
+            <td data-label="Pending > 3 Months" className="p-4">{row.pending3Months || 0}</td>
+            <td data-label="Avg. Resolution time (days)" className="p-4">{row.avgResolutionTime || 0}</td>
+            <td data-label="Actions" className="p-4 flex gap-2">
               <motion.button onClick={() => handleEdit(row)} className="text-blue-500 hover:text-blue-700" variants={buttonVariants} whileHover="hover"><FiEdit size={16} /></motion.button>
               {row.srNo !== 'Grand Total' && (
                 <motion.button onClick={() => handleDelete(row.srNo)} className="text-red-500 hover:text-red-700" variants={buttonVariants} whileHover="hover"><FiTrash2 size={16} /></motion.button>
@@ -208,4 +208,3 @@ const ComplaintManager = () => {
 };
 
 export default ComplaintManager;
-

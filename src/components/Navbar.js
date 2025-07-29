@@ -62,18 +62,18 @@ const dropdownLinks = {
   Insights: [
     { path: '/blogs', label: 'Blogs', icon: <FaNewspaper /> },
     { path: '/market-news', label: 'Market News', icon: <FaGlobe /> },
+    { path: '/reports', label: 'Research Reports', icon: <FaFileAlt /> },
   ],
   Dashboard: [
     { path: '/admin', label: 'Admin Panel', icon: <FaUserShield /> },
     { path: '/client-panel', label: 'Client Panel', icon: <FaCoins /> },
-    { path: '/client-service-consert', label: 'Client Service Consert', icon: <FaUserShield /> },
+    { path: '/client-service-consent', label: 'Client Service Consent', icon: <FaFileAlt /> },
     { path: '/investor-chart', label: 'Investor Chart', icon: <FaChartLine /> },
     { path: '/anti-money-laundering', label: 'Anti-Money Laundering', icon: <FaShieldAlt /> },
   ],
 };
 
 const navLinks = [
-  { path: '/reports', label: 'Research Reports' },
   { path: '/payment', label: 'Payment' },
   { path: '/complaint', label: 'Complaint Box' },
   { path: '/contact', label: 'Contact Us' },
@@ -110,7 +110,7 @@ const MegaMenu = React.memo(({ label, categories, location, textColor }) => {
       ref={menuRef}
     >
       <button
-        className="nav-item font-semibold text-sm md:text-base px-2 py-1"
+        className={`nav-item font-semibold text-sm md:text-base px-2 py-1${location.pathname.startsWith('/services') ? ' active' : ''}`}
         style={{ color: textColor }}
         aria-expanded={isOpen}
         aria-label={`Toggle ${label} menu`}
@@ -202,7 +202,7 @@ function Navbar() {
           <div className="desktop-menu hidden md:flex space-x-4 items-center font-medium">
             <Link
               to="/"
-              className="nav-item font-semibold text-sm md:text-base px-2 py-1"
+              className={`nav-item font-semibold text-sm md:text-base px-2 py-1${location.pathname==='/' ? ' active' : ''}`}
               style={{ color: textColor }}
             >
               Home
@@ -213,7 +213,7 @@ function Navbar() {
             {Object.entries(dropdownLinks).map(([label, items]) => (
               <div className="relative group" key={label}>
                 <button
-                  className="nav-item font-semibold text-sm md:text-base px-2 py-1"
+                  className={`nav-item font-semibold text-sm md:text-base px-2 py-1${items.some(item => location.pathname.startsWith(item.path)) ? ' active' : ''}`}
                   style={{ color: textColor }}
                   aria-label={`Toggle ${label} menu`}
                 >
@@ -239,7 +239,7 @@ function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
-                className="nav-item font-semibold text-sm md:text-base px-2 py-1"
+                className={`nav-item font-semibold text-sm md:text-base px-2 py-1${location.pathname===link.path ? ' active' : ''}`}
                 style={{ color: textColor }}
               >
                 {link.label}
@@ -321,7 +321,7 @@ function Navbar() {
             <Link
               key={link.path}
               to={link.path}
-              className="nav-item block py-1"
+              className={`nav-item block py-1${location.pathname===link.path ? ' active' : ''}`}
               onClick={() => setDrawerOpen(false)}
               style={{ color: textColor }}
             >

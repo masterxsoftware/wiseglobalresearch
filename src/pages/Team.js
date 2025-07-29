@@ -2,6 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FaLinkedin, FaTwitter, FaEnvelope } from 'react-icons/fa';
+import Layout from '../components/Layout';
 
 // Animation variants for container
 const containerVariants = {
@@ -175,100 +176,102 @@ const Team = () => {
   };
 
   return (
-    <motion.div
-      className="container mx-auto py-12 px-4 bg-gray-800"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      style={{ perspective: '1000px' }}
-    >
-      {/* Header Section */}
-      <motion.div className="text-center mb-12" variants={itemVariants}>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
-          Meet Our Team
-        </h1>
-        <p className="text-lg text-white max-w-2xl mx-auto">
-          Meet the dedicated professionals behind Wise Global, driving innovation and success for traders across India.
-        </p>
-      </motion.div>
-
-      {/* Mission Statement */}
+    <Layout>
       <motion.div
-        className="bg-blue-900 rounded-xl p-8 mb-12 text-center"
-        variants={itemVariants}
-        style={{ transformStyle: 'preserve-3d' }}
-      >
-        <h2 className="text-3xl font-bold text-white mb-4">{missionStatement.title}</h2>
-        <p className="text-white max-w-3xl mx-auto">{missionStatement.description}</p>
-      </motion.div>
-
-      {/* Team Members Grid */}
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
+        className="container mx-auto py-12 px-4 bg-gray-800"
         variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        style={{ perspective: '1000px' }}
       >
-        {teamMembers.map((member) => (
-          <motion.div
-            key={member.id}
-            className="rounded-xl shadow-lg p-6 bg-gray-700 border-t-4 border-blue-500"
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-            style={{ transformStyle: 'preserve-3d' }}
-          >
-            <div className="flex flex-col items-center mb-4">
-              <img
-                src={member.image}
-                alt={member.name}
-                className="w-32 h-32 rounded-full object-cover mb-4"
-                onError={handleImageError}
-              />
-              <h2 className="text-xl font-bold text-white text-center">{member.name}</h2>
-              <p className="text-white text-center">{member.role}</p>
-            </div>
-            <p className="text-white text-center mb-4">{member.bio}</p>
-            <div className="flex justify-center space-x-4">
-              <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:text-blue-100">
-                <FaLinkedin size={24} />
-              </a>
-              <a href={member.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:text-blue-100">
-                <FaTwitter size={24} />
-              </a>
-              <a href={member.email} className="text-blue-300 hover:text-blue-100">
-                <FaEnvelope size={24} />
-              </a>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
+        {/* Header Section */}
+        <motion.div className="text-center mb-12" variants={itemVariants}>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
+            Meet Our Team
+          </h1>
+          <p className="text-lg text-white max-w-2xl mx-auto">
+            Meet the dedicated professionals behind Wise Global, driving innovation and success for traders across India.
+          </p>
+        </motion.div>
 
-      {/* Call to Action */}
-      <motion.div
-        className="text-center bg-green-900 rounded-xl p-8"
-        variants={itemVariants}
-        style={{ transformStyle: 'preserve-3d' }}
-      >
-        <h2 className="text-3xl font-bold text-white mb-4">{cta.title}</h2>
-        <p className="text-white max-w-2xl mx-auto mb-6">{cta.description}</p>
-        <a
-          href={cta.buttonLink}
-          className="inline-block bg-blue-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-600 transition"
+        {/* Mission Statement */}
+        <motion.div
+          className="bg-blue-900 rounded-xl p-8 mb-12 text-center"
+          variants={itemVariants}
+          style={{ transformStyle: 'preserve-3d' }}
         >
-          {cta.buttonText}
-        </a>
-      </motion.div>
+          <h2 className="text-3xl font-bold text-white mb-4">{missionStatement.title}</h2>
+          <p className="text-white max-w-3xl mx-auto">{missionStatement.description}</p>
+        </motion.div>
 
-      {/* Disclaimer */}
-      <motion.div
-        variants={itemVariants}
-        className="text-center mt-12 p-4 bg-yellow-900 text-white rounded-lg"
-      >
-        <p>
-          <strong>Disclaimer:</strong> Investments in the securities market are subject to market risks. Read all related documents carefully before investing. Wise Global is not responsible for any profit or loss that may occur.
-        </p>
+        {/* Team Members Grid */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
+          variants={containerVariants}
+        >
+          {teamMembers.map((member) => (
+            <motion.div
+              key={member.id}
+              className="rounded-xl shadow-lg p-6 bg-gray-700 border-t-4 border-blue-500"
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
+              style={{ transformStyle: 'preserve-3d' }}
+            >
+              <div className="flex flex-col items-center mb-4">
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  className="w-32 h-32 rounded-full object-cover mb-4"
+                  onError={handleImageError}
+                />
+                <h2 className="text-xl font-bold text-white text-center">{member.name}</h2>
+                <p className="text-white text-center">{member.role}</p>
+              </div>
+              <p className="text-white text-center mb-4">{member.bio}</p>
+              <div className="flex justify-center space-x-4">
+                <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:text-blue-100">
+                  <FaLinkedin size={24} />
+                </a>
+                <a href={member.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:text-blue-100">
+                  <FaTwitter size={24} />
+                </a>
+                <a href={member.email} className="text-blue-300 hover:text-blue-100">
+                  <FaEnvelope size={24} />
+                </a>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Call to Action */}
+        <motion.div
+          className="text-center bg-green-900 rounded-xl p-8"
+          variants={itemVariants}
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          <h2 className="text-3xl font-bold text-white mb-4">{cta.title}</h2>
+          <p className="text-white max-w-2xl mx-auto mb-6">{cta.description}</p>
+          <a
+            href={cta.buttonLink}
+            className="inline-block bg-blue-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-600 transition"
+          >
+            {cta.buttonText}
+          </a>
+        </motion.div>
+
+        {/* Disclaimer */}
+        <motion.div
+          variants={itemVariants}
+          className="text-center mt-12 p-4 bg-yellow-900 text-white rounded-lg"
+        >
+          <p>
+            <strong>Disclaimer:</strong> Investments in the securities market are subject to market risks. Read all related documents carefully before investing. Wise Global is not responsible for any profit or loss that may occur.
+          </p>
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </Layout>
   );
 };
 

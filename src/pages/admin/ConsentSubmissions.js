@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ref, onValue, remove } from 'firebase/database';
+import { getStorage, ref as storageRef, deleteObject } from 'firebase/storage';
 import { db } from '../../firebase';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
-import { FiTrash2 } from 'react-icons/fi';
+import { FiTrash2, FiDownload } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 
 import LoadingSpinner from '../../components/admin/LoadingSpinner';
@@ -31,7 +32,7 @@ const ConsentTable = ({ submissions, handleDelete }) => (
     className="bg-gray-800/30 rounded-xl shadow-lg border border-gray-200/20 overflow-x-auto"
     variants={itemVariants}
   >
-    <table className="w-full text-white">
+    <table className="w-full text-white responsive-table">
       <thead className="bg-gray-700/50">
         <tr>
           <th className="p-4 text-left text-sm font-semibold">Client Name</th>
@@ -51,21 +52,51 @@ const ConsentTable = ({ submissions, handleDelete }) => (
             className="border-b border-gray-200/20 hover:bg-gray-700/20"
             variants={itemVariants}
           >
-            <td className="p-4">{submission.clientName || 'N/A'}</td>
-            <td className="p-4">{submission.clientId || 'N/A'}</td>
-            <td className="p-4">{submission.email || 'N/A'}</td>
-            <td className="p-4">
-              {submission.panDataUrl ? <a href={submission.panDataUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View</a> : 'N/A'}
+            <td data-label="Client Name" className="p-4">{submission.clientName || 'N/A'}</td>
+            <td data-label="Client ID" className="p-4">{submission.clientId || 'N/A'}</td>
+            <td data-label="Email" className="p-4">{submission.email || 'N/A'}</td>
+            <td data-label="PAN Card" className="p-4">
+              {submission.panCard?.downloadURL ? (
+                <a
+                  href={submission.panCard.downloadURL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="text-blue-400 hover:underline flex items-center gap-1"
+                >
+                  <FiDownload size={14} /> Download
+                </a>
+              ) : 'N/A'}
             </td>
-            <td className="p-4">
-              {submission.aadhaarDataUrl ? <a href={submission.aadhaarDataUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View</a> : 'N/A'}
+            <td data-label="Aadhaar Card" className="p-4">
+              {submission.aadhaarCard?.downloadURL ? (
+                <a
+                  href={submission.aadhaarCard.downloadURL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="text-blue-400 hover:underline flex items-center gap-1"
+                >
+                  <FiDownload size={14} /> Download
+                </a>
+              ) : 'N/A'}
             </td>
-            <td className="p-4">
-              {submission.signatureDataUrl ? <a href={submission.signatureDataUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View</a> : 'N/A'}
+            <td data-label="Signature" className="p-4">
+              {submission.signature?.downloadURL ? (
+                <a
+                  href={submission.signature.downloadURL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="text-blue-400 hover:underline flex items-center gap-1"
+                >
+                  <FiDownload size={14} /> Download
+                </a>
+              ) : 'N/A'}
             </td>
-            <td className="p-4">{submission.timestamp ? new Date(submission.timestamp).toLocaleString('en-IN') : 'N/A'}</td>
-            <td className="p-4">
-              <motion.button onClick={() => handleDelete(submission.id)} className="text-red-500 hover:text-red-700" variants={buttonVariants} whileHover="hover"><FiTrash2 size={16} /></motion.button>
+            <td data-label="Timestamp" className="p-4">{submission.timestamp ? new Date(submission.timestamp).toLocaleString('en-IN') : 'N/A'}</td>
+            <td data-label="Actions" className="p-4">
+              <motion.button onClick={() => handleDelete(submission)} className="text-red-500 hover:text-red-700" variants={buttonVariants} whileHover="hover"><FiTrash2 size={16} /></motion.button>
             </td>
           </motion.tr>
         ))}
@@ -88,6 +119,8 @@ const ConsentSubmissions = () => {
   const [itemsPerPage] = useState(10);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+
+  const storage = getStorage();
 
   useEffect(() => {
     const consentRef = ref(db, 'clientServiceConsentForms');
@@ -120,22 +153,44 @@ const ConsentSubmissions = () => {
     handleSearch();
   }, [handleSearch]);
 
-  const handleDeleteClick = (id) => {
-    setItemToDelete(id);
+  const handleDeleteClick = (submission) => {
+    setItemToDelete(submission);
     setIsModalOpen(true);
   };
 
   const confirmDelete = async () => {
-    if (itemToDelete) {
-      try {
-        await remove(ref(db, `clientServiceConsentForms/${itemToDelete}`));
-        toast.success('Consent submission deleted successfully.');
-      } catch (error) {
-        toast.error('Failed to delete consent submission: ' + error.message);
+    if (!itemToDelete || !itemToDelete.id) return;
+
+    const { id, panCard, aadhaarCard, signature } = itemToDelete;
+
+    try {
+      // 1. Delete associated files from Storage
+      const fileDeletionPromises = [];
+      if (panCard?.storagePath) {
+        fileDeletionPromises.push(deleteObject(storageRef(storage, panCard.storagePath)));
       }
-      setIsModalOpen(false);
-      setItemToDelete(null);
+      if (aadhaarCard?.storagePath) {
+        fileDeletionPromises.push(deleteObject(storageRef(storage, aadhaarCard.storagePath)));
+      }
+      if (signature?.storagePath) {
+        fileDeletionPromises.push(deleteObject(storageRef(storage, signature.storagePath)));
+      }
+
+      const results = await Promise.allSettled(fileDeletionPromises);
+      results.forEach(result => {
+        if (result.status === 'rejected' && result.reason.code !== 'storage/object-not-found') {
+          toast.warn(`A file could not be deleted from storage: ${result.reason.code}`);
+        }
+      });
+
+      // 2. Delete the record from Realtime Database
+      await remove(ref(db, `clientServiceConsentForms/${id}`));
+      toast.success('Consent submission and associated files deleted successfully.');
+    } catch (error) {
+      toast.error('Failed to delete consent submission: ' + error.message);
     }
+    setIsModalOpen(false);
+    setItemToDelete(null);
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;

@@ -13,6 +13,7 @@ import {
   Legend,
   Filler
 } from 'chart.js';
+import GlobalLayout from '../components/GlobalLayout';
 
 // Register Chart.js components
 ChartJS.register(
@@ -61,16 +62,6 @@ const tradingVolumeData = {
       borderWidth: 2,
     },
   ],
-};
-
-// Animation variants
-const containerVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: 'easeOut', staggerChildren: 0.2 },
-  },
 };
 
 const itemVariants = {
@@ -155,12 +146,7 @@ const Metal = () => {
   ];
 
   return (
-    <motion.div
-      className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
+    <GlobalLayout>
       {/* Hero Section */}
       <motion.section className="text-center mb-16" variants={itemVariants}>
         <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
@@ -370,7 +356,7 @@ const Metal = () => {
           Start Trading Now
         </motion.button>
       </motion.section>
-    </motion.div>
+    </GlobalLayout>
   );
 };
 

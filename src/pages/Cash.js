@@ -1,14 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {
-  FaWhatsapp, FaArrowRight, FaRupeeSign, FaChartLine,
-  FaShieldAlt, FaStar, FaUserTie, FaPhoneAlt,
-  FaRegClock, FaHandHoldingUsd, FaUniversity, FaChartBar,
-  FaExclamationTriangle, FaBook
+import { 
+  FaWhatsapp, FaArrowRight, FaChartLine, FaShieldAlt, FaRupeeSign,
+  FaStar, FaUserTie, FaPhoneAlt, FaChartBar, FaRegClock,
+  FaHandHoldingUsd, FaUniversity, FaExclamationTriangle
 } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import Layout from '../components/Layout';
+import Card from '../components/Card';
 
 const Cash = () => {
   const [openFAQ, setOpenFAQ] = useState(null);
@@ -113,101 +113,14 @@ const Cash = () => {
     },
   ];
 
-  const performanceStats = [
-    { metric: '6,000+', label: 'Active Investors' },
-    { metric: '78.2%', label: 'Trade Success Rate' },
-    { metric: '22.4%', label: '3-Yr CAGR' },
-    { metric: '24/7', label: 'Support Availability' },
-  ];
-
-  const testimonials = [
-    {
-      text: 'The research calls are well-analyzed, and the support team is always responsive. Their insights have supported my portfolio decisions.',
-      author: 'Ramesh Patel, Mumbai',
-      rating: 5,
-    },
-    {
-      text: 'The educational resources helped me gain confidence as an investor. The webinars are highly informative and practical.',
-      author: 'Anjali Sharma, Delhi',
-      rating: 5,
-    },
-    {
-      text: 'Real-time alerts allow me to time my trades effectively. The team’s research is thorough and reliable.',
-      author: 'Vikram Singh, Bangalore',
-      rating: 4,
-    },
-  ];
-
-  const regulations = [
-    {
-      title: 'Market Risks',
-      description: 'Investments in securities are subject to market risks. Stock prices may fluctuate due to economic, political, or company-specific factors. Always review offer documents carefully.',
-    },
-    {
-      title: 'No Guaranteed Returns',
-      description: 'SEBI prohibits promises of assured returns. Historical performance, such as our 22.4% CAGR, is not indicative of future results.',
-    },
-    {
-      title: 'KYC Compliance',
-      description: 'Investors must complete KYC verification (PAN, Aadhaar) to comply with SEBI regulations, ensuring transparency and security.',
-    },
-    {
-      title: 'Grievance Redressal',
-      description: 'For complaints, contact us or use SEBI’s SCORES platform to resolve issues promptly and transparently.',
-    },
-  ];
-
   return (
-    <div className="pt-24 px-4 pb-10 min-h-screen bg-transparent text-gray-800">
-      <Helmet>
-        <title>Equity Cash Advisory Services India | Wise Global</title>
-        <meta
-          name="description"
-          content="Wise Global offers equity cash advisory with research-driven stock recommendations, real-time alerts, and personalized portfolio management. Navigate the Indian stock market with confidence."
-        />
-        <meta
-          name="keywords"
-          content="equity cash advisory, stock market research, investment advisory India, stock trading tips, portfolio management, investor education, financial advisory India"
-        />
-        <meta name="robots" content="index, follow" />
-        <meta name="author" content="Wise Global" />
-        <meta property="og:title" content="Equity Cash Advisory Services India | Wise Global" />
-        <meta
-          property="og:description"
-          content="Discover Wise Global’s equity cash advisory for research-driven stock recommendations and personalized portfolio strategies. Start your investment journey in India today."
-        />
-        <meta property="og:image" content="https://wiseglobal.com/assets/og-image.jpg" /> {/* Replace with actual image URL */}
-        <meta property="og:url" content="https://wiseglobal.com/cash" /> {/* Replace with actual URL */}
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Equity Cash Advisory Services India | Wise Global" />
-        <meta
-          name="twitter:description"
-          content="Join Wise Global for equity cash advisory with real-time alerts and personalized strategies. Navigate the Indian stock market confidently."
-        />
-        <meta name="twitter:image" content="https://wiseglobal.com/assets/og-image.jpg" /> {/* Replace with actual image URL */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": faqList.map(faq => ({
-              "@type": "Question",
-              "name": faq.question,
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": faq.answer.replace(/\n/g, '<br>')
-              }
-            }))
-          })}
-        </script>
-      </Helmet>
-
+    <Layout>
       {/* Hero Section */}
       <motion.section
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="text-center mb-20 max-w-5xl mx-auto"
+        className="container mx-auto text-center mb-20"
       >
         <motion.span
           initial={{ scale: 0.8 }}
@@ -259,151 +172,36 @@ const Cash = () => {
         </div>
       </motion.section>
 
-      {/* Performance Stats */}
-      <motion.section
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-        className="max-w-6xl mx-auto mb-20"
-      >
-        <h2 className="text-3xl font-bold text-center text-white mb-12">Our Track Record</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-4">
-          {performanceStats.map((stat, index) => (
-            <motion.div
-              key={index}
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              whileHover={{ scale: 1.08, boxShadow: '0 0 15px rgba(255, 255, 255, 0.2)' }}
-              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl text-center border border-white/20"
-            >
-              <div className="text-4xl font-bold text-white mb-3">{stat.metric}</div>
-              <div className="text-gray-300 text-sm">{stat.label}</div>
-            </motion.div>
-          ))}
-        </div>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          className="text-center text-sm text-gray-400 mt-6"
-        >
-          <FaExclamationTriangle className="inline mr-2" />
-          Performance metrics are historical and not a guarantee of future results.
-        </motion.div>
-      </motion.section>
-
-      {/* Features Section */}
+      {/* Features */}
       <motion.section
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
-        className="max-w-6xl mx-auto mb-20 px-4"
+        className="container mx-auto mb-20 px-4"
       >
         <h2 className="text-3xl font-bold text-center text-white mb-12">Our Advisory Services</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -10, boxShadow: '0 0 20px rgba(255, 255, 255, 0.2)' }}
-              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20"
-            >
+        <div className="grid md:grid-cols-3 gap-8">
+          {features.map((feature, i) => (
+            <Card key={i} className="p-8">
               <div className="mb-5">{feature.icon}</div>
               <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
               <p className="text-gray-300 text-sm">{feature.description}</p>
-            </motion.div>
+            </Card>
           ))}
         </div>
       </motion.section>
 
-      {/* Testimonials Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
-        className="max-w-6xl mx-auto mb-20 px-4"
-      >
-        <h2 className="text-3xl font-bold text-center text-white mb-12">Hear from Our Investors</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              whileHover={{ scale: 1.05 }}
-              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20"
-            >
-              <div className="text-yellow-400 mb-4 flex">
-                {Array(testimonial.rating).fill().map((_, i) => (
-                  <FaStar key={i} />
-                ))}
-              </div>
-              <blockquote className="text-gray-300 italic mb-4">{testimonial.text}</blockquote>
-              <div className="text-white font-medium">{testimonial.author}</div>
-            </motion.div>
-          ))}
-        </div>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          className="text-center text-sm text-gray-400 mt-6"
-        >
-          <FaExclamationTriangle className="inline mr-2" />
-          Testimonials reflect individual experiences and may not represent typical results.
-        </motion.div>
-      </motion.section>
-
-      {/* Stock Market Regulations Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-        className="max-w-6xl mx-auto mb-20 px-4"
-      >
-        <h2 className="text-3xl font-bold text-center text-white mb-12">Understanding Stock Market Regulations</h2>
-        <div className="grid md:grid-cols-2 gap-8">
-          {regulations.map((regulation, index) => (
-            <motion.div
-              key={index}
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              whileHover={{ scale: 1.05 }}
-              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20"
-            >
-              <div className="mb-5">
-                <FaBook className="text-3xl text-blue-500" />
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-3">{regulation.title}</h3>
-              <p className="text-gray-300 text-sm">{regulation.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
-
-      {/* FAQ Section */}
+      {/* FAQ */}
       <motion.section
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.7 }}
-        className="max-w-5xl mx-auto mb-20 px-4"
+        className="container mx-auto mb-20 px-4"
       >
         <h2 className="text-3xl font-bold text-center text-white mb-12">Frequently Asked Questions</h2>
         <div className="space-y-6">
           {faqList.map((faq, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              whileHover={{ scale: 1.02 }}
-              className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20"
-            >
+            <Card key={idx} className="p-6">
               <button
                 onClick={() => toggleFAQ(idx)}
                 className="flex justify-between items-center w-full"
@@ -431,55 +229,11 @@ const Cash = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </Card>
           ))}
         </div>
       </motion.section>
-
-      {/* Call to Action */}
-      <motion.section
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.8 }}
-        className="max-w-3xl mx-auto text-center mb-16 px-4"
-      >
-        <h2 className="text-3xl font-bold text-white mb-6">Start Your Investment Journey Today</h2>
-        <p className="text-gray-300 mb-8 text-lg">
-          Discover research-driven stock advisory with 3 introductory recommendations. Join thousands of investors navigating India’s markets with Wise Global.
-        </p>
-        <motion.button
-          whileHover={{ scale: 1.1, boxShadow: '0 0 20px rgba(0, 255, 0, 0.3)' }}
-          whileTap={{ scale: 0.95 }}
-          animate={{ scale: [1, 1.05, 1], transition: { repeat: Infinity, duration: 2 } }}
-          onClick={handleWhatsAppClick}
-          disabled={isLoading}
-          className="flex items-center justify-center gap-2 mx-auto bg-green-600 hover:bg-green-700 text-white px-10 py-4 rounded-full text-lg font-semibold shadow-lg min-w-[280px] transition-all"
-        >
-          {isLoading ? 'Connecting…' : (
-            <>
-              <FaWhatsapp /> Explore Research Tips
-            </>
-          )}
-        </motion.button>
-      </motion.section>
-
-      {/* Compliance Footer */}
-      <motion.section
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.9 }}
-        className="max-w-6xl mx-auto text-center px-4 py-8 bg-white/10 backdrop-blur-lg rounded-xl border border-white/20"
-      >
-        <h3 className="text-xl font-semibold text-white mb-4">Important Disclosures</h3>
-        <p className="text-gray-300 text-sm mb-4">
-          <FaExclamationTriangle className="inline mr-2" />
-          Investments in securities are subject to market risks. Read all offer documents carefully before investing. Past performance is not indicative of future results. Wise Global provides research-based advisory services, and recommendations are subject to market conditions. For subscription fees, visit <a href="https://x.ai/grok" className="text-blue-400 hover:underline">our pricing page</a>.
-        </p>
-        <p className="text-gray-300 text-sm">
-          For grievances, contact us at <a href="mailto:support@wiseglobal.com" className="text-blue-400 hover:underline">support@wiseglobal.com</a> or file a complaint on SEBI’s SCORES platform at <a href="https://scores.gov.in" className="text-blue-400 hover:underline">scores.gov.in</a>.
-        </p>
-      </motion.section>
-    </div>
+    </Layout>
   );
 };
 

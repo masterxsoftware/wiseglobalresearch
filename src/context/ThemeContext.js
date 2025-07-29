@@ -3,9 +3,10 @@ import React, { createContext, useState, useEffect } from 'react';
 // Define an extensive set of vibrant, sexy gradients
 const gradients = {
   default: {
-    background: 'linear-gradient(to right, rgba(250, 115, 5, 0.9), rgba(223, 92, 16, 0.88))',
+    // Techy indigo-to-periwinkle gradient
+    background: 'linear-gradient(-225deg, #2db2ff7e 0%, #b5b3ff77 48%, #b4bcee46 100%)',
     textColor: '#ffffff',
-    transition: 'background 0.5s ease-in-out', // Smooth transition
+    transition: 'background 0.5s ease-in-out',
   },
   sunny: {
     background: 'linear-gradient(to right, #f6d365, #fda085)',

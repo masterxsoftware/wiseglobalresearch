@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './index.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { lazy, Suspense } from 'react';
@@ -51,6 +51,7 @@ const Index = lazy(() => import('./pages/Index'));
 const Future = lazy(() => import('./pages/Future'));
 const StockIndexOption = lazy(() => import('./pages/StockIndexOption'));
 const BTST = lazy(() => import('./pages/BTST'));
+const Cash = lazy(() => import('./pages/Cash'));
 const Bullions = lazy(() => import('./pages/Bullions'));
 const Energy = lazy(() => import('./pages/Energy'));
 const Metal = lazy(() => import('./pages/Metal'));
@@ -63,7 +64,7 @@ const Terms = lazy(() => import('./pages/Terms'));
 const Refund = lazy(() => import('./pages/Refund'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const DailyRecommendation = lazy(() => import('./pages/DailyRecommendation'));
-const ClientServiceConsert = lazy(() => import('./pages/ClientServiceConsert'));
+const ClientServiceConsent = lazy(() => import('./pages/ClientServiceConsent'));
 const InvestorChart = lazy(() => import('./pages/InvestorChart'));
 const AntiMoneyLaundering = lazy(() => import('./pages/AntiMoneyLaundering'));
 
@@ -75,6 +76,10 @@ const ComplaintManager = lazy(() => import('./pages/admin/ComplaintManager'));
 const ReportManager = lazy(() => import('./pages/admin/ReportManager'));
 
 function App() {
+  const [particleCount, setParticleCount] = React.useState(window.innerWidth <= 640 ? 20 : 50);
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith('/admin');
+
   useEffect(() => {
     // Optimize AOS for mobile
     if (window.innerWidth <= 640) {
@@ -82,6 +87,16 @@ function App() {
     } else {
       AOS.init({ duration: 800, once: true });
     }
+
+    const handleResize = () => {
+      setParticleCount(window.innerWidth <= 640 ? 20 : 50);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   return (
@@ -97,7 +112,7 @@ function App() {
         <ParticlesBackground
           options={{
             particles: {
-              number: { value: window.innerWidth <= 640 ? 20 : 50 },
+              number: { value: particleCount },
               size: { value: 3 },
             },
           }}
@@ -108,7 +123,9 @@ function App() {
       <Navbar />
 
       {/* Page Content Wrapper */}
-      <main className="pt-16 px-2 sm:px-4 md:px-8 lg:px-12 min-h-screen max-w-screen-2xl mx-auto">
+      <main
+        className={`min-h-screen ${isAdminPage ? 'pt-0' : 'pt-16 px-2 sm:px-4 md:px-8 lg:px-12 max-w-screen-2xl mx-auto'}`}
+      >
         <Suspense
           fallback={
             <div className="text-center py-10 text-primaryBlue font-josefin">
@@ -148,6 +165,7 @@ function App() {
             <Route path="/services/equity/future" element={<Future />} />
             <Route path="/services/equity/stock-index-option" element={<StockIndexOption />} />
             <Route path="/services/equity/btst" element={<BTST />} />
+            <Route path="/services/equity/cash" element={<Cash />} />
             <Route path="/services/mcx/bullions" element={<Bullions />} />
             <Route path="/services/mcx/energy" element={<Energy />} />
             <Route path="/services/mcx/metal" element={<Metal />} />
@@ -167,7 +185,7 @@ function App() {
               <Route path="complaints" element={<ComplaintManager />} />
               <Route path="reports" element={<ReportManager />} />
             </Route>
-            <Route path="/client-service-consert" element={<ClientServiceConsert />} />
+            <Route path="/client-service-consent" element={<ClientServiceConsent />} />
             <Route path="/investor-chart" element={<InvestorChart />} />
             <Route path="/anti-money-laundering" element={<AntiMoneyLaundering />} />
             <Route path="*" element={<NotFound />} />

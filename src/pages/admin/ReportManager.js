@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ref, onValue, push, remove } from 'firebase/database';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject as deleteFile } from 'firebase/storage';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FiUpload, FiEye, FiTrash2 } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { db, auth } from '../../firebase';
@@ -205,4 +205,3 @@ const ReportManager = () => {
 };
 
 export default ReportManager;
-

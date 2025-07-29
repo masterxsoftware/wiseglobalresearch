@@ -17,8 +17,8 @@ const staggerContainer = {
 
 function Legal() {
   return (
-    <motion.div
-      className="py-16 px-6 bg-transparent text-gray-800 min-h-screen"
+    <motion.div // Removed bg-transparent, text-gray-800, and min-h-screen
+      className="py-16 px-6 text-gray-800 dark:text-gray-200"
       initial="hidden"
       animate="visible"
       variants={staggerContainer}

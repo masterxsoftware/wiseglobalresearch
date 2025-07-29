@@ -11,8 +11,9 @@ const ParticlesBackground = () => {
     <Particles
       id="tsparticles"
       init={particlesInit}
+      style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0 }}
       options={{
-        fullScreen: { enable: false },
+        fullScreen: { enable: true, zIndex: 1 },
         background: { color: { value: 'transparent' } },
         fpsLimit: 60,
         interactivity: {

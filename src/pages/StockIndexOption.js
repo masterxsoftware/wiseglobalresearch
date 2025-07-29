@@ -1,7 +1,9 @@
 // Import required dependencies
 import React, { useState, useMemo } from 'react';
+import GlobalLayout from '../components/GlobalLayout';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaWhatsapp, FaArrowRight, FaRupeeSign, FaChartLine,
   FaShieldAlt, FaStar, FaUserTie, FaPhoneAlt,
@@ -9,7 +11,6 @@ import {
   FaExclamationTriangle, FaBook, FaUsers, FaPercentage,
   FaCalendarAlt, FaChevronLeft, FaChevronRight
 } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
 
 // Main StockIndexOption component
 const StockIndexOption = () => {
@@ -212,7 +213,7 @@ const StockIndexOption = () => {
   ];
 
   return (
-    <div className="pt-24 px-4 pb-10 min-h-screen bg-gradient-to-b from-teal-900/10 to-blue-900/10 text-gray-800">
+    <GlobalLayout>
       {/* SEO and Meta Tags */}
       <Helmet>
         <title>Stock Index Options Trading India | Wise Global</title>
@@ -274,7 +275,7 @@ const StockIndexOption = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="text-center mb-20 max-w-7xl mx-auto"
+        className="container mx-auto text-center mb-20"
       >
         <motion.span
           initial={{ scale: 0.8 }}
@@ -331,7 +332,7 @@ const StockIndexOption = () => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, delay: 0.3 }}
-        className="max-w-6xl mx-auto mb-20"
+        className="container mx-auto mb-20"
       >
         <h2 className="text-3xl font-bold text-center text-white mb-12">Our Index Options Track Record</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-4">
@@ -342,7 +343,7 @@ const StockIndexOption = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
               whileHover={{ scale: 1.08, boxShadow: '0 0 15px rgba(255, 255, 255, 0.2)' }}
-              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl text-center border border-white/20"
+              className="bg-white/20 backdrop-blur-lg p-8 rounded-xl text-center border-2 border-white/30 hover:shadow-2xl"
             >
               <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }} className="mb-3">
                 {stat.icon}
@@ -368,7 +369,7 @@ const StockIndexOption = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
-        className="max-w-7xl mx-auto mb-20 px-4"
+        className="container mx-auto mb-20 px-4"
       >
         <h2 className="text-3xl font-bold text-center text-white mb-12">Our Index Options Services</h2>
         <div className="grid md:grid-cols-3 gap-8">
@@ -379,7 +380,7 @@ const StockIndexOption = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ y: -10, boxShadow: '0 0 20px rgba(255, 255, 255, 0.2)' }}
-              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20"
+              className="bg-white/20 backdrop-blur-lg p-8 rounded-xl border-2 border-white/30 hover:shadow-2xl"
             >
               <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }} className="mb-5">
                 {feature.icon}
@@ -396,7 +397,7 @@ const StockIndexOption = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.5 }}
-        className="max-w-7xl mx-auto mb-20 px-4"
+        className="container mx-auto mb-20 px-4"
       >
         <h2 className="text-3xl font-bold text-center text-white mb-12">Market Insights for Index Options</h2>
         <div className="grid md:grid-cols-3 gap-8">
@@ -407,7 +408,7 @@ const StockIndexOption = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
               whileHover={{ scale: 1.05 }}
-              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20"
+              className="bg-white/20 backdrop-blur-lg p-8 rounded-xl border-2 border-white/30 hover:shadow-2xl"
             >
               <h3 className="text-xl font-semibold text-white mb-3">{insight.title}</h3>
               <p className="text-gray-300 text-sm">{insight.description}</p>
@@ -421,7 +422,7 @@ const StockIndexOption = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6 }}
-        className="max-w-6xl mx-auto mb-20 px-4"
+        className="container mx-auto mb-20 px-4"
       >
         <h2 className="text-3xl font-bold text-center text-white mb-12">What Our Traders Say</h2>
         <div className="relative">
@@ -431,7 +432,7 @@ const StockIndexOption = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
             transition={{ duration: 0.5 }}
-            className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20"
+            className="bg-white/20 backdrop-blur-lg p-8 rounded-xl border-2 border-white/30 hover:shadow-2xl"
           >
             <div className="text-yellow-400 mb-4 flex justify-center">
               {Array(testimonials[currentTestimonial].rating).fill().map((_, i) => (
@@ -466,10 +467,10 @@ const StockIndexOption = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.7 }}
-        className="max-w-6xl mx-auto mb-20 px-4"
+        className="container mx-auto mb-20 px-4"
       >
         <h2 className="text-3xl font-bold text-center text-white mb-12">Risk Calculator</h2>
-        <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20 text-center">
+        <div className="bg-white/20 backdrop-blur-lg p-8 rounded-xl border-2 border-white/30 hover:shadow-2xl text-center">
           <p className="text-gray-300 mb-4">
             Use our risk calculator to estimate potential losses and optimize position sizing for index options trading.
           </p>
@@ -493,7 +494,7 @@ const StockIndexOption = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.8 }}
-        className="max-w-6xl mx-auto mb-20 px-4"
+        className="container mx-auto mb-20 px-4"
       >
         <h2 className="text-3xl font-bold text-center text-white mb-12">Stock Market Regulations</h2>
         <div className="grid md:grid-cols-2 gap-8">
@@ -504,7 +505,7 @@ const StockIndexOption = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
               whileHover={{ scale: 1.05 }}
-              className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20"
+              className="bg-white/20 backdrop-blur-lg p-8 rounded-xl border-2 border-white/30 hover:shadow-2xl"
             >
               <div className="mb-5">
                 <FaBook className="text-3xl text-teal-500" />
@@ -532,7 +533,7 @@ const StockIndexOption = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               whileHover={{ scale: 1.02 }}
-              className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20"
+              className="bg-white/20 backdrop-blur-lg p-6 rounded-xl border-2 border-white/30 hover:shadow-2xl"
             >
               <button
                 onClick={() => toggleFAQ(idx)}
@@ -598,7 +599,7 @@ const StockIndexOption = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 1.1 }}
-        className="max-w-7xl mx-auto text-center px-4 py-8 bg-white/10 backdrop-blur-lg rounded-xl border border-white/20"
+        className="container mx-auto text-center px-4 py-8 bg-white/20 backdrop-blur-lg rounded-xl border-2 border-white/30 hover:shadow-2xl"
       >
         <h3 className="text-xl font-semibold text-white mb-4">Important Disclosures</h3>
         <p className="text-gray-300 text-sm mb-4">
@@ -609,7 +610,7 @@ const StockIndexOption = () => {
           For grievances, contact us at <a href="mailto:support@wiseglobal.com" className="text-cyan-400 hover:underline">support@wiseglobal.com</a> or file a complaint on SEBI’s SCORES platform at <a href="https://scores.gov.in" className="text-cyan-400 hover:underline">scores.gov.in</a>.
         </p>
       </motion.section>
-    </div>
+    </GlobalLayout>
   );
 };
 
