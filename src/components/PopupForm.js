@@ -162,7 +162,7 @@ const ContactForm = ({ onClose }) => {
       style={{ background: 'rgba(0,0,0,0.8)' }}
     >
       <motion.div
-        className="relative bg-gradient-to-br from-gray-900 to-blue-900 bg-opacity-80 backdrop-blur-xl rounded-2xl p-8 w-3/4 max-w-md aspect-square shadow-2xl"
+        className="relative bg-gradient-to-br from-gray-900 to-blue-900 bg-opacity-80 backdrop-blur-xl rounded-2xl p-4 sm:p-8 w-full sm:w-3/4 max-w-sm sm:max-w-md shadow-2xl overflow-auto max-h-full"
         onClick={(e) => e.stopPropagation()}
         initial={{ scale: 0.8, opacity: 0, y: 50 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
