@@ -25,12 +25,10 @@ function StockOption() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <span className="inline-block bg-blue-100 text-blue-800 px-4 py-1 rounded-full text-sm font-medium mb-4">
-            SEBI Registered Advisory
-          </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">\            Advanced <span className="text-blue-600">Stock Options</span> Trading
+         
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4">Advanced <span className="text-blue-600">Stock Options</span> Trading
           </h1>
-          <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-white max-w-3xl mx-auto">
             Professional options strategies with <span className="font-semibold text-green-600">75%+ accuracy</span> and complete risk management
           </p>
         </motion.div>
@@ -52,8 +50,8 @@ function StockOption() {
             >
               <div className="p-2 bg-blue-50 rounded-lg">{stat.icon}</div>
               <div>
-                <div className="font-bold text-gray-800">{stat.value}</div>
-                <div className="text-sm text-gray-600">{stat.label}</div>
+              <div className="font-bold text-white">{stat.value}</div>
+                <div className="text-sm text-white">{stat.label}</div>
               </div>
             </motion.div>
           ))}
@@ -62,7 +60,7 @@ function StockOption() {
 
       {/* Features Section */}
       <section className="py-12 px-4 max-w-7xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-10 text-gray-800">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-10 text-white">
           Our <span className="text-blue-600">Options Trading</span> Features
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -104,18 +102,18 @@ function StockOption() {
               className="bg-transparent backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-sm"
             >
               <div className="p-3 bg-blue-50 rounded-lg w-fit mb-3">{feature.icon}</div>
-              <h3 className="text-lg font-bold text-gray-800 mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.desc}</p>
+              <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
+              <p className="text-white">{feature.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      <section className="py-16 px-4 bg-transparent text-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-4">Start Trading Options Like a Pro</h2>
-          <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-white mb-8 max-w-2xl mx-auto">
             Get your first 3 options trading calls free with our SEBI-registered advisory
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -130,7 +128,7 @@ function StockOption() {
       </section>
 
       {/* Disclaimer */}
-      <div className="py-6 px-4 bg-yellow-50 text-yellow-800 text-sm">
+      <div className="py-6 px-4 bg-transparent text-white text-sm">
         <div className="max-w-7xl mx-auto flex items-start gap-2">
           <FaInfoCircle className="mt-0.5 flex-shrink-0" />
           <div>

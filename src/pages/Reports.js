@@ -5,9 +5,8 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { ref, onValue } from 'firebase/database';
-import { db, auth } from '../firebase';
+import { db } from '../firebase';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiDownload, FiSearch, FiLock, FiEye } from 'react-icons/fi';
@@ -345,7 +344,6 @@ Pagination.propTypes = {
  * @returns {JSX.Element} Reports page UI
  */
 function Reports() {
-  const navigate = useNavigate();
   const [activeDay, setActiveDay] = useState('Monday');
   const [pdfPreview, setPdfPreview] = useState(null);
   const [reports, setReports] = useState({});
@@ -360,19 +358,6 @@ function Reports() {
   const [sortBy, setSortBy] = useState('title');
   const [sortOrder, setSortOrder] = useState('asc');
 
-  // Check authentication
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (!user) {
-        localStorage.removeItem('isAuthenticated');
-        navigate('/user-login');
-        toast.error('Please log in to access this page.', { position: 'top-center' });
-      } else {
-        localStorage.setItem('isAuthenticated', 'true');
-      }
-    });
-    return () => unsubscribe();
-  }, [navigate]);
 
   // Fetch reports
   useEffect(() => {

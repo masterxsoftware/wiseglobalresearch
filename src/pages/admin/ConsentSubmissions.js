@@ -4,7 +4,7 @@ import { getStorage, ref as storageRef, deleteObject } from 'firebase/storage';
 import { db } from '../../firebase';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
-import { FiTrash2, FiDownload } from 'react-icons/fi';
+import { FiTrash2, FiDownload, FiEye } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 
 import LoadingSpinner from '../../components/admin/LoadingSpinner';
@@ -29,18 +29,18 @@ const buttonVariants = {
 
 const ConsentTable = ({ submissions, handleDelete }) => (
   <motion.div
-    className="bg-gray-800/30 rounded-xl shadow-lg border border-gray-200/20 overflow-x-auto"
+    className="bg-gray-800/30 rounded-xl shadow-lg border border-gray-200/20 overflow-x-auto p-2"
     variants={itemVariants}
   >
-    <table className="w-full text-white responsive-table">
+    <table className="min-w-full table-auto text-white">
       <thead className="bg-gray-700/50">
         <tr>
           <th className="p-4 text-left text-sm font-semibold">Client Name</th>
           <th className="p-4 text-left text-sm font-semibold">Client ID</th>
           <th className="p-4 text-left text-sm font-semibold">Email</th>
-          <th className="p-4 text-left text-sm font-semibold">PAN Card</th>
-          <th className="p-4 text-left text-sm font-semibold">Aadhaar Card</th>
-          <th className="p-4 text-left text-sm font-semibold">Signature</th>
+          <th className="hidden md:table-cell p-2 sm:p-4 text-left text-sm sm:text-base font-semibold">PAN Card</th>
+          <th className="hidden md:table-cell p-2 sm:p-4 text-left text-sm sm:text-base font-semibold">Aadhaar Card</th>
+          <th className="hidden lg:table-cell p-2 sm:p-4 text-left text-sm sm:text-base font-semibold">Signature</th>
           <th className="p-4 text-left text-sm font-semibold">Timestamp</th>
           <th className="p-4 text-left text-sm font-semibold">Actions</th>
         </tr>
@@ -55,47 +55,44 @@ const ConsentTable = ({ submissions, handleDelete }) => (
             <td data-label="Client Name" className="p-4">{submission.clientName || 'N/A'}</td>
             <td data-label="Client ID" className="p-4">{submission.clientId || 'N/A'}</td>
             <td data-label="Email" className="p-4">{submission.email || 'N/A'}</td>
-            <td data-label="PAN Card" className="p-4">
-              {submission.panCard?.downloadURL ? (
-                <a
-                  href={submission.panCard.downloadURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                  className="text-blue-400 hover:underline flex items-center gap-1"
-                >
-                  <FiDownload size={14} /> Download
-                </a>
+            <td data-label="PAN Card" className="hidden md:table-cell p-2 sm:p-4">
+              {submission.panCard ? (
+                <div className="flex items-center gap-2">
+                  <a href={submission.panCard} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+                    <FiEye size={14} />
+                  </a>
+                  <a href={submission.panCard} download className="text-green-400 hover:underline">
+                    <FiDownload size={14} />
+                  </a>
+                </div>
               ) : 'N/A'}
             </td>
-            <td data-label="Aadhaar Card" className="p-4">
-              {submission.aadhaarCard?.downloadURL ? (
-                <a
-                  href={submission.aadhaarCard.downloadURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                  className="text-blue-400 hover:underline flex items-center gap-1"
-                >
-                  <FiDownload size={14} /> Download
-                </a>
+            <td data-label="Aadhaar Card" className="hidden md:table-cell p-2 sm:p-4">
+              {submission.aadhaarCard ? (
+                <div className="flex items-center gap-2">
+                  <a href={submission.aadhaarCard} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+                    <FiEye size={14} />
+                  </a>
+                  <a href={submission.aadhaarCard} download className="text-green-400 hover:underline">
+                    <FiDownload size={14} />
+                  </a>
+                </div>
               ) : 'N/A'}
             </td>
-            <td data-label="Signature" className="p-4">
-              {submission.signature?.downloadURL ? (
-                <a
-                  href={submission.signature.downloadURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                  className="text-blue-400 hover:underline flex items-center gap-1"
-                >
-                  <FiDownload size={14} /> Download
-                </a>
+            <td data-label="Signature" className="hidden lg:table-cell p-2 sm:p-4">
+              {submission.signature ? (
+                <div className="flex items-center gap-2">
+                  <a href={submission.signature} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+                    <FiEye size={14} />
+                  </a>
+                  <a href={submission.signature} download className="text-green-400 hover:underline">
+                    <FiDownload size={14} />
+                  </a>
+                </div>
               ) : 'N/A'}
             </td>
-            <td data-label="Timestamp" className="p-4">{submission.timestamp ? new Date(submission.timestamp).toLocaleString('en-IN') : 'N/A'}</td>
-            <td data-label="Actions" className="p-4">
+            <td data-label="Timestamp" className="p-2 sm:p-4">{submission.timestamp ? new Date(submission.timestamp).toLocaleString('en-IN') : 'N/A'}</td>
+            <td data-label="Actions" className="p-2 sm:p-4">
               <motion.button onClick={() => handleDelete(submission)} className="text-red-500 hover:text-red-700" variants={buttonVariants} whileHover="hover"><FiTrash2 size={16} /></motion.button>
             </td>
           </motion.tr>

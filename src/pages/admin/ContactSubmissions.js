@@ -28,24 +28,24 @@ const buttonVariants = {
 };
 
 const SubmissionTable = ({ submissions, handleDelete, sortOrder, handleSortToggle }) => (
-  <motion.div
-    className="bg-gray-800/30 rounded-xl shadow-lg border border-gray-200/20 overflow-x-auto"
+    <motion.div
+      className="bg-gray-800/30 rounded-xl shadow-lg border border-gray-200/20 overflow-x-auto p-2"
     variants={itemVariants}
   >
-    <table className="w-full text-white">
+    <table className="min-w-full table-auto text-white">
       <thead className="bg-gray-700/50">
         <tr>
-          <th className="p-4 text-left text-sm font-semibold">Name</th>
-          <th className="p-4 text-left text-sm font-semibold">Email</th>
-          <th className="p-4 text-left text-sm font-semibold">Phone</th>
-          <th className="p-4 text-left text-sm font-semibold">Interest</th>
-          <th className="p-4 text-left text-sm font-semibold">Message</th>
-          <th className="p-4 text-left text-sm font-semibold">
+          <th className="p-2 sm:p-4 text-left text-sm sm:text-base font-semibold">Name</th>
+          <th className="p-2 sm:p-4 text-left text-sm sm:text-base font-semibold">Mobile</th>
+          <th className="p-2 sm:p-4 text-left text-sm sm:text-base font-semibold">City</th>
+          <th className="p-2 sm:p-4 text-left text-sm sm:text-base font-semibold">Experience</th>
+          <th className="p-2 sm:p-4 text-left text-sm sm:text-base font-semibold">Newsletter</th>
+          <th className="p-2 sm:p-4 text-left text-sm sm:text-base font-semibold">
             <button onClick={handleSortToggle} className="hover:text-indigo-400 transition-colors">
               Timestamp {sortOrder === 'desc' ? '↓' : '↑'}
             </button>
           </th>
-          <th className="p-4 text-left text-sm font-semibold">Actions</th>
+          <th className="p-2 sm:p-4 text-left text-sm sm:text-base font-semibold">Actions</th>
         </tr>
       </thead>
       <tbody>

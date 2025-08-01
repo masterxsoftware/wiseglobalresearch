@@ -37,6 +37,7 @@
     "https-browserify": "^1.0.0",
     "ipaddr.js": "^2.2.0",
     "lightweight-charts": "^5.0.7",
+    "lodash.debounce": "^4.0.8",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.518.0",
     "papaparse": "^5.5.3",

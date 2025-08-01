@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FiMail, FiFileText, FiAlertCircle, FiBarChart2 } from 'react-icons/fi';
+import { FiMail, FiFileText, FiAlertCircle, FiBarChart2, FiBell } from 'react-icons/fi';
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -11,6 +11,7 @@ const itemVariants = {
 const Dashboard = () => {
   const cards = [
     { title: 'Contact Submissions', link: '/admin/contacts', icon: <FiMail size={24} /> },
+    { title: 'Popup Submissions', link: '/admin/popups', icon: <FiBell size={24} /> },
     { title: 'Consent Submissions', link: '/admin/consents', icon: <FiFileText size={24} /> },
     { title: 'Complaint Manager', link: '/admin/complaints', icon: <FiAlertCircle size={24} /> },
     { title: 'Report Manager', link: '/admin/reports', icon: <FiBarChart2 size={24} /> },

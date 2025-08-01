@@ -18,7 +18,6 @@ import ScrollToTopButton from './components/ScrollToTopButton';
 import ScrollToTop from './components/ScrollToTop';
 import ChatWidget from './components/ChatWidget';
 import FloatingPayButton from './components/FloatingPayButton';
-import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import ParticlesBackground from './components/ParticlesBackground';
 import AdminLayout from './pages/admin/AdminLayout';
 
@@ -74,6 +73,7 @@ const ContactSubmissions = lazy(() => import('./pages/admin/ContactSubmissions')
 const ConsentSubmissions = lazy(() => import('./pages/admin/ConsentSubmissions'));
 const ComplaintManager = lazy(() => import('./pages/admin/ComplaintManager'));
 const ReportManager = lazy(() => import('./pages/admin/ReportManager'));
+const PopupSubmissions = lazy(() => import('./pages/admin/PopupSubmissions'));
 
 function App() {
   const [particleCount, setParticleCount] = React.useState(window.innerWidth <= 640 ? 20 : 50);
@@ -108,23 +108,27 @@ function App() {
       <ScrollToTop />
 
       {/* Background Particles (Hidden on Mobile) */}
-      <div className="hidden sm:block fixed top-0 left-0 w-full h-full z-[-1]">
-        <ParticlesBackground
-          options={{
-            particles: {
-              number: { value: particleCount },
-              size: { value: 3 },
-            },
-          }}
-        />
-      </div>
+      {!isAdminPage && (
+        <div className="hidden sm:block fixed top-0 left-0 w-full h-full z-[-1]">
+          <ParticlesBackground
+            options={{
+              particles: {
+                number: { value: particleCount },
+                size: { value: 3 },
+              },
+            }}
+          />
+        </div>
+      )}
 
       {/* Navbar */}
-      <Navbar />
+      {!isAdminPage && <Navbar />}
 
       {/* Page Content Wrapper */}
       <main
-        className={`min-h-screen ${isAdminPage ? 'pt-0' : 'pt-16 px-2 sm:px-4 md:px-8 lg:px-12 max-w-screen-2xl mx-auto'}`}
+        className={`min-h-screen ${
+          isAdminPage ? '' : 'pt-16 px-2 sm:px-4 md:px-8 lg:px-12 max-w-screen-2xl mx-auto'
+        }`}
       >
         <Suspense
           fallback={
@@ -175,11 +179,12 @@ function App() {
             <Route path="/services/currency" element={<Currency />} />
             <Route path="/services/comex" element={<Comex />} />
             <Route 
-              path="/admin"
-              element={<ProtectedAdminRoute><AdminLayout /></ProtectedAdminRoute>}
+              path="/admin" 
+              element={<AdminLayout />}
             >
               <Route index element={<Dashboard />} />
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="popups" element={<PopupSubmissions />} />
               <Route path="contacts" element={<ContactSubmissions />} />
               <Route path="consents" element={<ConsentSubmissions />} />
               <Route path="complaints" element={<ComplaintManager />} />
@@ -194,11 +199,15 @@ function App() {
       </main>
 
       {/* Footer & Floating Buttons */}
-      <Footer />
-      <WhatsAppButton />
-      <ScrollToTopButton />
-      <ChatWidget />
-      <FloatingPayButton />
+      {!isAdminPage && (
+        <>
+          <Footer />
+          <WhatsAppButton />
+          <ScrollToTopButton />
+          <ChatWidget />
+          <FloatingPayButton />
+        </>
+      )}
     </TimeBasedThemeWrapper>
   );
 }

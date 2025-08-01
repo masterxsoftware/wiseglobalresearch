@@ -67,11 +67,11 @@ const DeliveryTrading = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: fastAnimation.duration }}
-            className="text-4xl md:text-5xl font-bold mb-4 text-gray-800"
+          className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >
             Delivery Trading Services
           </motion.h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-white max-w-2xl mx-auto">
             Invest smartly with Wise Global's long-term, research-driven trading approach.
           </p>
         </div>
@@ -80,7 +80,7 @@ const DeliveryTrading = () => {
       {/* Features */}
       <div className="py-16 bg-transparent">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
+          <h2 className="text-3xl font-bold text-center mb-12 text-white">
             Why Choose Wise Global?
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -94,11 +94,11 @@ const DeliveryTrading = () => {
                   delay: index * fastAnimation.delayMultiplier 
                 }}
                 viewport={{ once: true }}
-                className="bg-white bg-opacity-90 p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow"
+                className="bg-white/10 backdrop-blur-md p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow"
               >
                 <div className="flex justify-center mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-center mb-3">{feature.title}</h3>
-                <p className="text-gray-600 text-center">{feature.desc}</p>
+                <h3 className="text-xl font-semibold text-center mb-3 text-white">{feature.title}</h3>
+                <p className="text-white text-center">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -126,9 +126,9 @@ const DeliveryTrading = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: fastAnimation.duration * 1.5 }}
                 viewport={{ once: true }}
-                className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl shadow-xl"
+                className="bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-xl"
               >
-                <h2 className="text-3xl font-bold mb-6 text-blue-800 flex items-center">
+                <h2 className="text-3xl font-bold mb-6 text-white flex items-center">
                   <MdSecurity className="inline-block mr-2 text-blue-600 text-4xl" />
                   SEBI Compliant Dashboard
                 </h2>
@@ -152,7 +152,7 @@ const DeliveryTrading = () => {
                       <h3 className={`text-2xl font-bold text-${item.color}-600`}>
                         {item.value}
                       </h3>
-                      <p className="text-gray-700 font-medium">{item.label}</p>
+                      <p className="text-white font-medium">{item.label}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -165,7 +165,7 @@ const DeliveryTrading = () => {
       {/* Strategies */}
       <div className="py-16 bg-transparent">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
+          <h2 className="text-3xl font-bold text-center mb-12 text-white">
             Proven Trading Strategies
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -179,13 +179,13 @@ const DeliveryTrading = () => {
                   delay: index * fastAnimation.delayMultiplier 
                 }}
                 viewport={{ once: true }}
-                className="bg-white bg-opacity-90 p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow"
+                className="bg-tra bg-opacity-90 p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow"
               >
                 <div className="flex justify-center mb-4">
                   <MdTrendingUp className="text-blue-600 text-3xl" />
                 </div>
-                <h3 className="text-xl font-semibold text-center mb-3">{strategy.title}</h3>
-                <p className="text-gray-600 text-center">{strategy.desc}</p>
+                <h3 className="text-xl font-semibold text-center mb-3 text-white">{strategy.title}</h3>
+                <p className="text-white text-center">{strategy.desc}</p>
               </motion.div>
             ))}
           </div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { ref, onValue, push, remove } from 'firebase/database';
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject as deleteFile } from 'firebase/storage';
 import { motion } from 'framer-motion';
 import { FiUpload, FiEye, FiTrash2 } from 'react-icons/fi';
 import { toast } from 'react-toastify';
@@ -9,6 +8,14 @@ import PropTypes from 'prop-types';
 
 import LoadingSpinner from '../../components/admin/LoadingSpinner';
 import ConfirmationModal from '../../components/admin/ConfirmationModal';
+
+const toBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -72,8 +79,8 @@ const ReportUploadCard = ({ day, reports, onUpload, onDelete, onPreview }) => {
               <motion.li key={report.id} className="flex justify-between items-center p-3 bg-gray-700/20 rounded-lg" variants={itemVariants}>
                 <p className="text-sm text-white font-medium truncate" title={report.title}>{report.title}</p>
                 <div className="flex gap-2">
-                  <motion.button onClick={() => onPreview(report)} className="text-indigo-500 hover:text-indigo-700" variants={buttonVariants} whileHover="hover"><FiEye size={16} /></motion.button>
-                  <motion.button onClick={() => onDelete(report.id, report.storagePath)} className="text-red-500 hover:text-red-700" variants={buttonVariants} whileHover="hover"><FiTrash2 size={16} /></motion.button>
+                  <motion.button onClick={() => onPreview(report)} className="text-indigo-400 hover:text-indigo-300" variants={buttonVariants} whileHover="hover"><FiEye size={16} /></motion.button>
+                  <motion.button onClick={() => onDelete(report.id)} className="text-red-500 hover:text-red-400" variants={buttonVariants} whileHover="hover"><FiTrash2 size={16} /></motion.button>
                 </div>
               </motion.li>
             ))}
@@ -95,10 +102,8 @@ ReportUploadCard.propTypes = {
 const ReportManager = () => {
   const [reports, setReports] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState({ id: null, storagePath: null });
-
-  const storage = getStorage();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   useEffect(() => {
     const reportsRef = ref(db, 'reports');
@@ -125,11 +130,7 @@ const ReportManager = () => {
       return;
     }
     const file = reportData.file;
-    const filePath = `reports/${day}/${Date.now()}_${file.name}`;
-    const fileRef = storageRef(storage, filePath);
-
-    await uploadBytes(fileRef, file);
-    const fileUrl = await getDownloadURL(fileRef);
+    const fileDataUrl = await toBase64(file);
     const password = Math.floor(1000 + Math.random() * 9000).toString();
 
     const newReportData = {
@@ -137,8 +138,7 @@ const ReportManager = () => {
       description: reportData.description || 'No description',
       category: reportData.category,
       size: `${(file.size / (1024 * 1024)).toFixed(2)}MB`,
-      fileUrl,
-      storagePath: filePath,
+      fileData: fileDataUrl,
       filename: file.name,
       timestamp: Date.now(),
       day,
@@ -149,35 +149,36 @@ const ReportManager = () => {
     toast.success(`Report uploaded for ${day}. Password: ${password}`, { autoClose: 5000 });
   };
 
-  const handleDeleteClick = (id, storagePath) => {
-    setItemToDelete({ id, storagePath });
-    setIsModalOpen(true);
+  const handleDeleteClick = (id) => {
+    setItemToDelete(id);
+    setIsDeleteModalOpen(true);
   };
 
   const confirmDelete = async () => {
-    const { id, storagePath } = itemToDelete;
-    if (id && storagePath) {
+    if (itemToDelete) {
       try {
         // Delete from Realtime Database
-        await remove(ref(db, `reports/${id}`));
-        // Delete from Storage
-        const fileRef = storageRef(storage, storagePath);
-        await deleteFile(fileRef);
+        await remove(ref(db, `reports/${itemToDelete}`));
         toast.success('Report deleted successfully.');
       } catch (error) {
         toast.error(`Failed to delete report: ${error.message}`);
       }
-      setIsModalOpen(false);
-      setItemToDelete({ id: null, storagePath: null });
+      setIsDeleteModalOpen(false);
+      setItemToDelete(null);
     }
   };
 
   const handlePreview = (report) => {
-    window.open(report.fileUrl, '_blank');
+    window.open(report.fileData, '_blank');
   };
 
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible">
+    <motion.div
+      className="bg-gray-800/50 p-6 rounded-lg shadow-lg"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       <h2 className="text-3xl font-bold text-white mb-6">Report Manager</h2>
       {isLoading ? <LoadingSpinner /> : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -194,8 +195,8 @@ const ReportManager = () => {
         </div>
       )}
       <ConfirmationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDelete}
         title="Confirm Report Deletion"
         message="Are you sure you want to delete this report? This action cannot be undone."

@@ -126,21 +126,21 @@ const Cash = () => {
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="inline-block bg-white/10 backdrop-blur-md text-blue-200 px-4 py-1 rounded-full text-sm font-medium mb-4"
+          className="inline-block bg-white/10 backdrop-blur-md text-white px-4 py-1 rounded-full text-sm font-medium mb-4"
         >
           Research-Driven Stock Advisory
         </motion.span>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-purple-200 to-indigo-200 mb-6">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6">
           Navigate India’s Stock Market with Expertise
         </h1>
-        <p className="text-lg text-gray-300 mt-4 max-w-3xl mx-auto">
+        <p className="text-lg text-white mt-4 max-w-3xl mx-auto">
           Partner with Wise Global for research-driven insights, real-time alerts, and personalized strategies to support your equity cash trading journey in India.
         </p>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-sm text-gray-400 mt-4"
+          className="text-sm text-white mt-4"
         >
           <FaExclamationTriangle className="inline mr-2" />
           Investments in securities are subject to market risks. Read all offer documents carefully before investing.
@@ -185,7 +185,7 @@ const Cash = () => {
             <Card key={i} className="p-8">
               <div className="mb-5">{feature.icon}</div>
               <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-              <p className="text-gray-300 text-sm">{feature.description}</p>
+              <p className="text-white text-sm">{feature.description}</p>
             </Card>
           ))}
         </div>
@@ -210,8 +210,8 @@ const Cash = () => {
                   <div className="p-3 bg-transparent rounded-lg">{faq.icon}</div>
                   <span className="font-semibold text-left text-white text-base md:text-lg">{faq.question}</span>
                 </div>
-                <FaArrowRight
-                  className={`transition-transform duration-300 ${openFAQ === idx ? 'rotate-90 text-blue-400' : 'text-gray-400'}`}
+                  <FaArrowRight
+                  className={`transition-transform duration-300 ${openFAQ === idx ? 'rotate-90 text-white' : 'text-white'}`}
                 />
               </button>
               <AnimatePresence>
@@ -221,7 +221,7 @@ const Cash = () => {
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.4 }}
-                    className="overflow-hidden pt-3 pl-12 text-gray-300 text-sm"
+                    className="overflow-hidden pt-3 pl-12 text-white text-sm"
                   >
                     {faq.answer.split('\n').map((line, i) => (
                       <p key={i} className="mb-2">{line}</p>

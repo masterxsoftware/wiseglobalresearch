@@ -62,7 +62,6 @@ const dropdownLinks = {
   Insights: [
     { path: '/blogs', label: 'Blogs', icon: <FaNewspaper /> },
     { path: '/market-news', label: 'Market News', icon: <FaGlobe /> },
-    { path: '/reports', label: 'Research Reports', icon: <FaFileAlt /> },
   ],
   Dashboard: [
     { path: '/admin', label: 'Admin Panel', icon: <FaUserShield /> },
@@ -77,6 +76,7 @@ const navLinks = [
   { path: '/payment', label: 'Payment' },
   { path: '/complaint', label: 'Complaint Box' },
   { path: '/contact', label: 'Contact Us' },
+  { path: '/reports', label: 'Research Reports' },
 ];
 
 const MegaMenu = React.memo(({ label, categories, location, textColor }) => {
