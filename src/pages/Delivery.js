@@ -147,7 +147,7 @@ const DeliveryTrading = () => {
                         duration: fastAnimation.duration, 
                         delay: i * fastAnimation.delayMultiplier 
                       }}
-                      className="bg-white rounded-lg p-4 shadow-md text-center"
+                      className="bg-trasprint rounded-lg p-4 shadow-md text-center"
                     >
                       <h3 className={`text-2xl font-bold text-${item.color}-600`}>
                         {item.value}
@@ -163,7 +163,7 @@ const DeliveryTrading = () => {
       </div>
 
       {/* Strategies */}
-      <div className="py-16 bg-transparent">
+      <div className="py-16 bg-white/10 backdrop-blur-md">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 text-white">
             Proven Trading Strategies
