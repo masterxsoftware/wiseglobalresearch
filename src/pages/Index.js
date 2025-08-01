@@ -20,15 +20,17 @@ const Index = () => {
   // Color scheme - using semantic color names that work in both themes
   const colors = {
     primary: isDarkMode ? '#3b82f6' : '#2563eb',
-    textPrimary: isDarkMode ? 'rgba(255, 255, 255, 0.92)' : 'rgba(0, 0, 0, 0.92)',
-    textSecondary: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
+    // Text always white
+    textPrimary: '#ffffff',
+    textSecondary: '#ffffff',
     bgPrimary: 'transparent',
     bgSecondary: isDarkMode ? 'rgba(17, 24, 39, 0.8)' : 'rgba(255, 255, 255, 0.8)',
     border: isDarkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)',
     gain: '#10b981',
     loss: '#ef4444',
-    cardBg: isDarkMode ? 'rgba(17, 24, 39, 0.8)' : 'rgba(255, 255, 255, 0.8)',
-    mutedBg: isDarkMode ? 'rgba(31, 41, 55, 0.6)' : 'rgba(243, 244, 246, 0.6)'
+    // Box backgrounds: uniform white at 10% opacity
+    cardBg: 'rgba(255, 255, 255, 0.1)',
+    mutedBg: 'rgba(255, 255, 255, 0.1)'
   };
 
   // Updated market data
@@ -94,7 +96,7 @@ const Index = () => {
         <motion.h1 
           initial={{ y: -20 }}
           animate={{ y: 0 }}
-          className="text-3xl md:text-4xl font-bold mb-2"
+          className="text-3xl md:text-4xl font-bold mb-5 mt-5"
           style={{ color: colors.textPrimary }}
         >
           Indian Stock Market Indices
@@ -102,7 +104,7 @@ const Index = () => {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.2 }} 
           className="text-lg"
           style={{ color: colors.textSecondary }}
         >

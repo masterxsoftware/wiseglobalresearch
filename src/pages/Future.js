@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import AnimatedChart from '../components/AnimatedChart';
 
 const Future = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -56,7 +57,7 @@ const Future = () => {
 
   return (
     <div 
-      className="min-h-screen w-full py-8 px-4 sm:px-6 lg:px-8"
+      className="min-h-screen w-full py-8 px-4 sm:px-6 lg:px-8 text-white"
       
     >
       <motion.div
@@ -66,25 +67,25 @@ const Future = () => {
         className="max-w-7xl mx-auto"
       >
         <header className="mb-10 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2" style={{ color: '#1a1a1a' }}> {/* Darker text */}
+          <h1 className="text-4xl md:text-5xl font-bold mb-2 mt-4">
             Equity Futures Dashboard
           </h1>
-          <p className="text-xl text-gray-800 max-w-3xl mx-auto" style={{ color: '#333' }}> {/* Darker text */}
+          <p className="text-xl max-w-3xl mx-auto">
             Comprehensive analytics and trading tools for index and stock futures
           </p>
         </header>
 
         {/* Timeframe Selector */}
         <div className="flex justify-center mb-8">
-          <div className="inline-flex rounded-md shadow-sm bg-white bg-opacity-30 p-1"> {/* More transparent */}
+        <div className="inline-flex rounded-md shadow-sm bg-white bg-opacity-10 p-1 text-white">
             {timeframes.map((tf) => (
               <button
                 key={tf.id}
                 onClick={() => setTimeframe(tf.id)}
                 className={`px-4 py-2 text-sm font-medium rounded-md ${
                   timeframe === tf.id
-                    ? 'bg-blue-600 text-white' // More vibrant blue
-                    : 'text-gray-800 hover:bg-gray-200 hover:bg-opacity-50' // Darker text
+                    ? 'bg-blue-600 text-white'
+                    : 'text-white hover:bg-gray-200 hover:bg-opacity-50'
                 }`}
               >
                 {tf.label}
@@ -94,9 +95,9 @@ const Future = () => {
         </div>
 
         {/* Main Content */}
-        <div className="bg-white bg-opacity-30 rounded-xl shadow-xl overflow-hidden mb-8" style={{ backdropFilter: 'blur(5px)' }}> {/* More transparent */}
+        <div className="bg-white bg-opacity-10 rounded-xl shadow-xl overflow-hidden mb-8 text-white" style={{ backdropFilter: 'blur(5px)' }}>
           {/* Tabs */}
-          <div className="border-b border-gray-300 border-opacity-50"> {/* Lighter border */}
+          <div className="border-b border-gray-300 border-opacity-50">
             <nav className="flex -mb-px">
               {tabs.map((tab) => (
                 <button
@@ -104,8 +105,8 @@ const Future = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm ${
                     activeTab === tab.id
-                      ? 'border-blue-600 text-blue-700' // More vibrant
-                      : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-400' // Darker text
+                      ? 'border-blue-600 text-white'
+                      : 'border-transparent text-white'
                   }`}
                 >
                   {tab.label}
@@ -125,7 +126,7 @@ const Future = () => {
                   exit={{ opacity: 0 }}
                   className="flex justify-center items-center h-64"
                 >
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div> {/* More vibrant */}
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
                 </motion.div>
               ) : (
                 <motion.div
@@ -141,13 +142,13 @@ const Future = () => {
                         <motion.div
                           key={index.name}
                           whileHover={{ y: -5 }}
-                          className="bg-white bg-opacity-40 rounded-lg shadow-md p-6 cursor-pointer" // More transparent
+                          className="bg-white bg-opacity-10 rounded-lg shadow-md p-6 cursor-pointer"
                           onClick={() => handleCardExpand(`index-${i}`)}
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <h3 className="text-lg font-semibold text-gray-900">{index.name}</h3> {/* Darker text */}
-                              <p className="text-2xl font-bold mt-2 text-gray-900">{index.value.toLocaleString()}</p> {/* Darker text */}
+                              <h3 className="text-lg font-semibold">{index.name}</h3>
+                              <p className="text-2xl font-bold mt-2">{index.value.toLocaleString()}</p>
                             </div>
                             <span
                               className={`px-2 py-1 rounded text-sm font-medium ${
@@ -164,18 +165,18 @@ const Future = () => {
                             <motion.div
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
-                              className="mt-4 pt-4 border-t border-gray-300 border-opacity-50" // Lighter border
+                              className="mt-4 pt-4 border-t border-gray-300 border-opacity-50"
                             >
-                              <div className="flex justify-between text-sm text-gray-700"> {/* Darker text */}
+                              <div className="flex justify-between text-sm">
                                 <span>Open Interest</span>
                                 <span className="font-medium">12.5M</span>
                               </div>
-                              <div className="flex justify-between text-sm text-gray-700 mt-2"> {/* Darker text */}
+                              <div className="flex justify-between text-sm mt-2">
                                 <span>Volume</span>
                                 <span className="font-medium">8.2M</span>
                               </div>
                               <div className="mt-3">
-                                <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors"> {/* More vibrant */}
+                                <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors">
                                   View Chart
                                 </button>
                               </div>
@@ -189,10 +190,10 @@ const Future = () => {
                   {activeTab === 'futures' && marketData && (
                     <div>
                       <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-300 divide-opacity-50"> {/* Lighter border */}
-                          <thead className="bg-gray-100 bg-opacity-50"> {/* More transparent */}
+                        <table className="min-w-full divide-y divide-gray-300 divide-opacity-50">
+                          <thead className="bg-gray-100 bg-opacity-50">
                             <tr>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"> {/* Darker text */}
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                                 Symbol
                               </th>
                               <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
@@ -209,14 +210,14 @@ const Future = () => {
                               </th>
                             </tr>
                           </thead>
-                          <tbody className="bg-white bg-opacity-30 divide-y divide-gray-300 divide-opacity-50"> {/* More transparent */}
+                          <tbody className="bg-white bg-opacity-30 divide-y divide-gray-300 divide-opacity-50">
                             {marketData.futures.map((future, i) => (
                               <tr key={future.symbol}>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                  <div className="text-sm font-medium text-gray-900">{future.symbol}</div> {/* Darker text */}
+                                  <div className="text-sm font-medium text-gray-900">{future.symbol}</div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                  <div className="text-sm text-gray-900">{future.last.toLocaleString()}</div> {/* Darker text */}
+                                  <div className="text-sm text-gray-900">{future.last.toLocaleString()}</div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                   <span
@@ -231,15 +232,15 @@ const Future = () => {
                                   </span>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                  <div className="text-sm text-gray-900"> {/* Darker text */}
+                                  <div className="text-sm text-gray-900">
                                     {(future.oi / 1000000).toFixed(1)}M
                                   </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700"> {/* Darker text */}
-                                  <button className="text-blue-600 hover:text-blue-800 mr-3"> {/* Darker blue */}
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                  <button className="text-blue-600 hover:text-blue-800 mr-3">
                                     Buy
                                   </button>
-                                  <button className="text-red-600 hover:text-red-800"> {/* Darker red */}
+                                  <button className="text-red-600 hover:text-red-800">
                                     Sell
                                   </button>
                                 </td>
@@ -257,10 +258,10 @@ const Future = () => {
                         <motion.div
                           key={item.id}
                           whileHover={{ scale: 1.01 }}
-                          className="bg-white bg-opacity-40 rounded-lg shadow p-6" // More transparent
+                          className="bg-white bg-opacity-40 rounded-lg shadow p-6"
                         >
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3> {/* Darker text */}
-                          <div className="flex justify-between text-sm text-gray-700"> {/* Darker text */}
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
+                          <div className="flex justify-between text-sm">
                             <span>{item.source}</span>
                             <span>{item.time}</span>
                           </div>
@@ -300,21 +301,21 @@ const Future = () => {
                         <motion.div
                           key={strategy.name}
                           whileHover={{ y: -3 }}
-                          className="bg-white bg-opacity-40 rounded-lg shadow-md p-6" // More transparent
+                          className="bg-white bg-opacity-40 rounded-lg shadow-md p-6"
                         >
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{strategy.name}</h3> {/* Darker text */}
-                          <p className="text-gray-700 mb-4">{strategy.description}</p> {/* Darker text */}
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{strategy.name}</h3>
+                          <p className="text-gray-700 mb-4">{strategy.description}</p>
                           <div className="flex justify-between text-sm">
                             <div>
-                              <span className="text-gray-600">Risk:</span>{' '} {/* Darker text */}
+                              <span className="text-gray-600">Risk:</span>{' '}
                               <span className="font-medium">{strategy.risk}</span>
                             </div>
                             <div>
-                              <span className="text-gray-600">Reward:</span>{' '} {/* Darker text */}
+                              <span className="text-gray-600">Reward:</span>{' '}
                               <span className="font-medium">{strategy.reward}</span>
                             </div>
                           </div>
-                          <button className="mt-4 w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors"> {/* More vibrant */}
+                          <button className="mt-4 w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors">
                             Analyze Strategy
                           </button>
                         </motion.div>
@@ -328,31 +329,31 @@ const Future = () => {
         </div>
 
         {/* Market Overview */}
-        <div className="bg-white bg-opacity-30 rounded-xl shadow-xl p-6 mb-8" style={{ backdropFilter: 'blur(5px)' }}> {/* More transparent */}
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Market Overview</h2> {/* Darker text */}
+        <div className="bg-white bg-opacity-30 rounded-xl shadow-xl p-6 mb-8" style={{ backdropFilter: 'blur(5px)' }}>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Market Overview</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white bg-opacity-40 rounded-lg p-4 shadow"> {/* More transparent */}
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">NIFTY 50</h3> {/* Darker text */}
+            <div className="bg-white bg-opacity-40 rounded-lg p-4 shadow">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">NIFTY 50</h3>
               <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-gray-900">19,556.25</span> {/* Darker text */}
-                <span className="text-green-700 font-medium">+1.23%</span> {/* Darker green */}
+                <span className="text-2xl font-bold text-gray-900">19,556.25</span>
+                <span className="text-green-700 font-medium">+1.23%</span>
               </div>
-              <div className="h-40 mt-4 bg-gray-200 bg-opacity-50 rounded flex items-center justify-center text-gray-500"> {/* Lighter placeholder */}
-                Chart Placeholder
+              <div className="h-40 mt-4">
+                <AnimatedChart symbol="NSE:NIFTY" />
               </div>
             </div>
-            <div className="bg-white bg-opacity-40 rounded-lg p-4 shadow"> {/* More transparent */}
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">SENSEX</h3> {/* Darker text */}
+            <div className="bg-white bg-opacity-40 rounded-lg p-4 shadow">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">SENSEX</h3>
               <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-gray-900">65,656.25</span> {/* Darker text */}
-                <span className="text-green-700 font-medium">+1.05%</span> {/* Darker green */}
+                <span className="text-2xl font-bold text-gray-900">65,656.25</span>
+                <span className="text-green-700 font-medium">+1.05%</span>
               </div>
-              <div className="h-40 mt-4 bg-gray-200 bg-opacity-50 rounded flex items-center justify-center text-gray-500"> {/* Lighter placeholder */}
-                Chart Placeholder
+              <div className="h-40 mt-4">
+                <AnimatedChart symbol="BSE:SENSEX" />
               </div>
             </div>
-            <div className="bg-white bg-opacity-40 rounded-lg p-4 shadow"> {/* More transparent */}
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Sector Performance</h3> {/* Darker text */}
+            <div className="bg-white bg-opacity-40 rounded-lg p-4 shadow">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Sector Performance</h3>
               <div className="space-y-3">
                 {[
                   { sector: 'IT', performance: '+2.3%' },
@@ -360,9 +361,9 @@ const Future = () => {
                   { sector: 'Auto', performance: '+0.7%' },
                   { sector: 'Pharma', performance: '-0.4%' }
                 ].map((item, i) => (
-                  <div key={i} className="flex justify-between text-gray-800"> {/* Darker text */}
+                  <div key={i} className="flex justify-between text-gray-800">
                     <span>{item.sector}</span>
-                    <span className={item.performance.startsWith('+') ? 'text-green-700' : 'text-red-700'}> {/* Darker colors */}
+                    <span className={item.performance.startsWith('+') ? 'text-green-700' : 'text-red-700'}>
                       {item.performance}
                     </span>
                   </div>
@@ -371,12 +372,6 @@ const Future = () => {
             </div>
           </div>
         </div>
-
-        {/* Footer */}
-        <footer className="text-center text-gray-700 text-sm mt-12"> {/* Darker text */}
-          <p>Data provided by Market Data API • Updated as of {new Date().toLocaleString()}</p>
-          <p className="mt-2">© {new Date().getFullYear()} Equity Futures Dashboard. All rights reserved.</p>
-        </footer>
       </motion.div>
     </div>
   );

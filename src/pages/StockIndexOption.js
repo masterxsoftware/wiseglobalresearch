@@ -1,6 +1,5 @@
 // Import required dependencies
 import React, { useState, useMemo } from 'react';
-import GlobalLayout from '../components/GlobalLayout';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -30,7 +29,7 @@ const StockIndexOption = () => {
   const handleWhatsAppClick = () => {
     setIsLoading(true);
     setTimeout(() => {
-      window.open('https://wa.me/9977909494', '_blank');
+      window.open('https://wa.me/919977909494', '_blank');
       setIsLoading(false);
     }, 500);
   };
@@ -213,8 +212,7 @@ const StockIndexOption = () => {
   ];
 
   return (
-    <GlobalLayout>
-      {/* SEO and Meta Tags */}
+    <div className="bg-transparent text-white min-h-screen">
       <Helmet>
         <title>Stock Index Options Trading India | Wise Global</title>
         <meta
@@ -281,21 +279,21 @@ const StockIndexOption = () => {
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="inline-block bg-white/10 backdrop-blur-md text-teal-200 px-4 py-1 rounded-full text-sm font-medium mb-4"
+ className="inline-block bg-transparent backdrop-blur-md text-white px-4 py-1 rounded-full text-sm font-medium mb-4"
         >
           SEBI-Registered Index Options Advisory
         </motion.span>
         <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-400 to-blue-400 mb-6">
           Excel in Stock Index Options Trading
         </h1>
-        <p className="text-lg text-gray-200 mt-4 max-w-3xl mx-auto">
+        <p className="text-lg text-white mt-4 max-w-3xl mx-auto">
           Leverage Wise Global’s expertise for research-driven Nifty and Bank Nifty options strategies, real-time alerts, and disciplined risk management.
         </p>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-sm text-gray-300 mt-4"
+          className="text-sm text-white mt-4"
         >
           <FaExclamationTriangle className="inline mr-2" />
           Index options trading carries high risks. Review all offer documents carefully.
@@ -320,7 +318,7 @@ const StockIndexOption = () => {
             whileTap={{ scale: 0.95 }}
             animate={{ scale: [1, 1.05, 1], transition: { repeat: Infinity, duration: 1.5 } }}
             onClick={handleContactClick}
-            className="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md text-cyan-200 border border-cyan-500 px-8 py-4 rounded-full font-semibold shadow-lg min-w-[260px] transition-all"
+ className="flex items-center justify-center gap-2 bg-transparent backdrop-blur-md text-white border border-cyan-500 px-8 py-4 rounded-full font-semibold shadow-lg min-w-[260px] transition-all"
           >
             <FaPhoneAlt /> Contact Research Team
           </motion.button>
@@ -343,21 +341,21 @@ const StockIndexOption = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
               whileHover={{ scale: 1.08, boxShadow: '0 0 15px rgba(255, 255, 255, 0.2)' }}
-              className="bg-white/20 backdrop-blur-lg p-8 rounded-xl text-center border-2 border-white/30 hover:shadow-2xl"
+ className="bg-transparent backdrop-blur-lg p-8 rounded-xl text-center border-2 border-white/30 hover:shadow-2xl"
             >
               <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }} className="mb-3">
                 {stat.icon}
               </motion.div>
               <div className="text-4xl font-bold text-white mb-3">{stat.metric}</div>
-              <div className="text-gray-300 text-sm">{stat.label}</div>
+              <div className="text-white text-sm">{stat.label}</div>
             </motion.div>
           ))}
         </div>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          className="text-center text-sm text-gray-300 mt-6"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+            className="text-center text-sm text-white mt-6"
         >
           <FaExclamationTriangle className="inline mr-2" />
           Metrics are historical and not a guarantee of future results.
@@ -380,13 +378,13 @@ const StockIndexOption = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ y: -10, boxShadow: '0 0 20px rgba(255, 255, 255, 0.2)' }}
-              className="bg-white/20 backdrop-blur-lg p-8 rounded-xl border-2 border-white/30 hover:shadow-2xl"
+ className="bg-transparent backdrop-blur-lg p-8 rounded-xl border-2 border-white/30 hover:shadow-2xl"
             >
               <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }} className="mb-5">
                 {feature.icon}
               </motion.div>
               <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-              <p className="text-gray-300 text-sm">{feature.description}</p>
+              <p className="text-white text-sm">{feature.description}</p>
             </motion.div>
           ))}
         </div>
@@ -408,10 +406,10 @@ const StockIndexOption = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
               whileHover={{ scale: 1.05 }}
-              className="bg-white/20 backdrop-blur-lg p-8 rounded-xl border-2 border-white/30 hover:shadow-2xl"
+ className="bg-transparent backdrop-blur-lg p-8 rounded-xl border-2 border-white/30 hover:shadow-2xl"
             >
               <h3 className="text-xl font-semibold text-white mb-3">{insight.title}</h3>
-              <p className="text-gray-300 text-sm">{insight.description}</p>
+              <p className="text-white text-sm">{insight.description}</p>
             </motion.div>
           ))}
         </div>
@@ -439,7 +437,7 @@ const StockIndexOption = () => {
                 <FaStar key={i} />
               ))}
             </div>
-            <blockquote className="text-gray-300 italic mb-4 text-center">{testimonials[currentTestimonial].text}</blockquote>
+        <blockquote className="text-white italic mb-4 text-center">{testimonials[currentTestimonial].text}</blockquote>
             <div className="text-white font-medium text-center">{testimonials[currentTestimonial].author}</div>
           </motion.div>
           <div className="flex justify-between mt-6">
@@ -455,7 +453,7 @@ const StockIndexOption = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.8 }}
-          className="text-center text-sm text-gray-300 mt-6"
+          className="text-center text-sm text-white mt-6"
         >
           <FaExclamationTriangle className="inline mr-2" />
           Testimonials reflect individual experiences and may not represent typical results.
@@ -471,7 +469,7 @@ const StockIndexOption = () => {
       >
         <h2 className="text-3xl font-bold text-center text-white mb-12">Risk Calculator</h2>
         <div className="bg-white/20 backdrop-blur-lg p-8 rounded-xl border-2 border-white/30 hover:shadow-2xl text-center">
-          <p className="text-gray-300 mb-4">
+          <p className="text-white mb-4">
             Use our risk calculator to estimate potential losses and optimize position sizing for index options trading.
           </p>
           <motion.button
@@ -482,7 +480,7 @@ const StockIndexOption = () => {
           >
             Try Risk Calculator
           </motion.button>
-          <p className="text-sm text-gray-300 mt-4">
+          <p className="text-sm text-white mt-4">
             <FaExclamationTriangle className="inline mr-2" />
             Always assess risks before trading. Consult a financial advisor.
           </p>
@@ -511,7 +509,7 @@ const StockIndexOption = () => {
                 <FaBook className="text-3xl text-teal-500" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">{regulation.title}</h3>
-              <p className="text-gray-300 text-sm">{regulation.description}</p>
+              <p className="text-white text-sm">{regulation.description}</p>
             </motion.div>
           ))}
         </div>
@@ -533,7 +531,7 @@ const StockIndexOption = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               whileHover={{ scale: 1.02 }}
-              className="bg-white/20 backdrop-blur-lg p-6 rounded-xl border-2 border-white/30 hover:shadow-2xl"
+ className="bg-transparent backdrop-blur-lg p-6 rounded-xl border-2 border-white/30 hover:shadow-2xl"
             >
               <button
                 onClick={() => toggleFAQ(idx)}
@@ -544,7 +542,7 @@ const StockIndexOption = () => {
                   <span className="font-semibold text-left text-white text-base md:text-lg">{faq.question}</span>
                 </div>
                 <FaArrowRight
-                  className={`transition-transform duration-300 ${openFAQ === idx ? 'rotate-90 text-cyan-400' : 'text-gray-300'}`}
+                  className={`transition-transform duration-300 ${openFAQ === idx ? 'rotate-90 text-cyan-400' : 'text-white'}`}
                 />
               </button>
               <AnimatePresence>
@@ -554,7 +552,7 @@ const StockIndexOption = () => {
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.4 }}
-                    className="overflow-hidden pt-3 pl-12 text-gray-300 text-sm"
+                    className="overflow-hidden pt-3 pl-12 text-white text-sm"
                   >
                     {faq.answer.split('\n').map((line, i) => (
                       <p key={i} className="mb-2">{line}</p>
@@ -575,7 +573,7 @@ const StockIndexOption = () => {
         className="max-w-4xl mx-auto text-center mb-16 px-4"
       >
         <h2 className="text-3xl font-bold text-white mb-6">Start Your Index Options Journey</h2>
-        <p className="text-gray-300 mb-8 text-lg">
+        <p className="text-white mb-8 text-lg">
           Join Wise Global for SEBI-registered index options advisory with 3 introductory calls. Navigate Nifty and Bank Nifty markets with confidence.
         </p>
         <motion.button
@@ -599,18 +597,18 @@ const StockIndexOption = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 1.1 }}
-        className="container mx-auto text-center px-4 py-8 bg-white/20 backdrop-blur-lg rounded-xl border-2 border-white/30 hover:shadow-2xl"
+ className="container mx-auto text-center px-4 py-8 bg-transparent backdrop-blur-lg rounded-xl border-2 border-white/30 hover:shadow-2xl"
       >
         <h3 className="text-xl font-semibold text-white mb-4">Important Disclosures</h3>
-        <p className="text-gray-300 text-sm mb-4">
+        <p className="text-white text-sm mb-4">
           <FaExclamationTriangle className="inline mr-2" />
           Index options trading involves high risks due to leverage and volatility. Losses may exceed investments. Past performance is not indicative of future results. For subscription fees, visit <a href="https://x.ai/grok" className="text-cyan-400 hover:underline">our pricing page</a>.
         </p>
-        <p className="text-gray-300 text-sm">
+        <p className="text-white text-sm">
           For grievances, contact us at <a href="mailto:support@wiseglobal.com" className="text-cyan-400 hover:underline">support@wiseglobal.com</a> or file a complaint on SEBI’s SCORES platform at <a href="https://scores.gov.in" className="text-cyan-400 hover:underline">scores.gov.in</a>.
         </p>
       </motion.section>
-    </GlobalLayout>
+    </div>
   );
 };
 

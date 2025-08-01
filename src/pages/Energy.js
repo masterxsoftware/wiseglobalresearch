@@ -1,5 +1,6 @@
 // src/components/Energy.js
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -105,32 +106,26 @@ const faqs = [
 ];
 
 function Energy() {
-  // State for form inputs
-  const [email, setEmail] = useState('');
-  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
 
-  // Handle form submission
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (email) {
-      setSubscriptionStatus('Subscribed successfully!');
-      setEmail('');
-      setTimeout(() => setSubscriptionStatus(null), 3000);
-    } else {
-      setSubscriptionStatus('Please enter a valid email.');
-    }
-  };
-
+  const navigate = useNavigate();
   // Chart options
   const chartOptions = {
     responsive: true,
+    animation: {
+      duration: 1000,
+      easing: 'easeInOutQuad',
+    },
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          color: 'white',
+        },
       },
       title: {
         display: true,
         text: 'Energy Commodity Price Trends (2025)',
+        color: 'white',
       },
     },
     scales: {
@@ -139,25 +134,33 @@ function Energy() {
         title: {
           display: true,
           text: 'Price (USD)',
+          color: 'white',
+        },
+        ticks: {
+          color: 'white',
         },
       },
       x: {
         title: {
           display: true,
           text: 'Month',
+          color: 'white',
+        },
+        ticks: {
+          color: 'white',
         },
       },
     },
   };
 
   return (
-    <div className="py-10 px-4 sm:px-6 lg:px-8 bg-gray-100 min-h-screen">
+    <div className="py-10 px-4 sm:px-6 lg:px-8 bg-transparent text-white min-h-screen">
       {/* Hero Section */}
       <section className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">
+        <h1 className="text-4xl font-bold text-white mb-4">
           MCX Energy Services
         </h1>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+        <p className="text-xl text-white/80 max-w-3xl mx-auto">
           Explore the dynamic world of energy trading on the Multi Commodity
           Exchange (MCX). Get real-time insights, trade futures, and stay updated
           with the latest energy market trends for commodities like crude oil,
@@ -167,25 +170,25 @@ function Energy() {
 
       {/* Commodity Overview Section */}
       <section className="mb-12">
-        <h2 className="text-3xl font-semibold text-gray-800 text-center mb-6">
+        <h2 className="text-3xl font-semibold text-white text-center mb-6">
           Energy Commodities
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {commodityData.map((commodity) => (
             <div
               key={commodity.id}
-              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+              className="bg-white/10 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-white/20"
             >
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 {commodity.name}
               </h3>
-              <p className="text-gray-600 mb-2">{commodity.description}</p>
-              <p className="text-lg font-semibold text-gray-800">
+              <p className="text-white/80 mb-2">{commodity.description}</p>
+              <p className="text-lg font-semibold text-white">
                 Price: {commodity.price} {commodity.unit}
               </p>
               <p
                 className={`text-sm ${
-                  commodity.trend === 'up' ? 'text-green-600' : 'text-red-600'
+                  commodity.trend === 'up' ? 'text-green-400' : 'text-red-400'
                 }`}
               >
                 Change: {commodity.change}
@@ -196,8 +199,8 @@ function Energy() {
       </section>
 
       {/* Price Trends Chart */}
-      <section className="mb-12 bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-3xl font-semibold text-gray-800 text-center mb-6">
+      <section className="mb-12 bg-transparent rounded-lg shadow-md p-6">
+        <h2 className="text-3xl font-semibold text-white text-center mb-6">
           Price Trends
         </h2>
         <div className="max-w-4xl mx-auto">
@@ -205,43 +208,20 @@ function Energy() {
         </div>
       </section>
 
-      {/* Subscription Form */}
+      {/* Contact Call-to-Action */}
       <section className="mb-12 text-center">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
-          Subscribe to Market Updates
+        <h2 className="text-3xl font-semibold text-white mb-6">
+          Need More Details?
         </h2>
-        <p className="text-gray-600 mb-4 max-w-xl mx-auto">
-          Stay informed with the latest energy market updates, price alerts, and
-          trading insights delivered to your inbox.
+        <p className="text-white/80 mb-4 max-w-xl mx-auto">
+          Contact our team for personalized energy updates and support.
         </p>
-        <form onSubmit={handleSubscribe} className="max-w-md mx-auto">
-          <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="flex-1 p-3 outline-none"
-            />
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-6 py-3 hover:bg-blue-700 transition-colors"
-            >
-              Subscribe
-            </button>
-          </div>
-          {subscriptionStatus && (
-            <p
-              className={`mt-2 text-sm ${
-                subscriptionStatus.includes('successfully')
-                  ? 'text-green-600'
-                  : 'text-red-600'
-              }`}
-            >
-              {subscriptionStatus}
-            </p>
-          )}
-        </form>
+        <button
+          onClick={() => navigate('/contact')}
+          className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Contact Us
+        </button>
       </section>
 
       {/* FAQ Section */}
@@ -271,12 +251,12 @@ function Energy() {
           their portfolios. Contact our team or sign up to begin your trading
           journey.
         </p>
-        <a
-          href="/contact"
+        <button
+          onClick={() => navigate('/contact')}
           className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors"
         >
           Get Started
-        </a>
+        </button>
       </section>
     </div>
   );

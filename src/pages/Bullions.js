@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { FaWhatsapp } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Bullions = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('gold');
   const [showReport, setShowReport] = useState(false);
 
@@ -312,10 +315,6 @@ const Bullions = () => {
       {/* CTA Section */}
       <div className="max-w-2xl mx-auto px-4 sm:px-6 mt-20 mb-20 text-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
           className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-8 backdrop-blur-lg"
         >
           <h2 className="text-2xl font-bold mb-4">Start Trading Bullions Today</h2>
@@ -323,10 +322,12 @@ const Bullions = () => {
             Get SEBI-compliant research, real-time alerts, and expert guidance for MCX bullion trading.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-gray-900 font-semibold transition">
-              Open Demat Account
-            </button>
-            <button className="px-6 py-3 bg-transparent hover:bg-white/10 border border-white/20 rounded-lg text-white font-medium transition">
+            <a href="https://wa.me/9977909494" target="_blank" rel="noopener noreferrer">
+              <button className="px-6 py-3 bg-green-500 hover:bg-green-600 rounded-lg text-white font-semibold transition flex items-center justify-center">
+                <FaWhatsapp className="mr-2 text-xl" /> WhatsApp Chat
+              </button>
+            </a>
+            <button onClick={() => navigate('/contact')} className="px-6 py-3 bg-transparent hover:bg-white/10 border border-white/20 rounded-lg text-white font-medium transition">
               Request Callback
             </button>
           </div>

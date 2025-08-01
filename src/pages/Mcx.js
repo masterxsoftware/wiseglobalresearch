@@ -16,6 +16,8 @@ const Mcx = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAlertForm, setShowAlertForm] = useState(false);
   const [newAlert, setNewAlert] = useState({ commodity: 'Gold', condition: 'above', price: '' });
+  // eslint-disable-next-line no-unused-vars
+  const [infoView, setInfoView] = useState('supreme'); // Toggle between info sections
 
   // Mock data fetch for commodities, news, and technicals
   useEffect(() => {
@@ -88,7 +90,12 @@ const Mcx = () => {
               { time: '10:15', price: 684.8 },
               { time: '10:30', price: 685.4 }
             ]
-          }
+          },
+          { id: 5, name: 'Aluminium', symbol: 'ALUMINIUM24JULFUT', price: 220, change: 0.5, oi: 8000, volume: 4500, support: 218, resistance: 222, history: [ { time: '10:00', price: 219 }, { time: '10:15', price: 219.5 }, { time: '10:30', price: 220 } ] },
+          { id: 6, name: 'Zinc', symbol: 'ZINC24JULFUT', price: 230, change: -0.25, oi: 6000, volume: 3500, support: 228, resistance: 232, history: [ { time: '10:00', price: 232 }, { time: '10:15', price: 231 }, { time: '10:30', price: 230 } ] },
+          { id: 7, name: 'Lead', symbol: 'LEAD24JULFUT', price: 160, change: 0.75, oi: 4000, volume: 2500, support: 158, resistance: 162, history: [ { time: '10:00', price: 159 }, { time: '10:15', price: 159.5 }, { time: '10:30', price: 160 } ] },
+          { id: 8, name: 'Nickel', symbol: 'NICKEL24JULFUT', price: 950, change: -1.1, oi: 3000, volume: 1800, support: 945, resistance: 960, history: [ { time: '10:00', price: 955 }, { time: '10:15', price: 952 }, { time: '10:30', price: 950 } ] },
+          { id: 9, name: 'Natural Gas', symbol: 'NATGAS24JULFUT', price: 220, change: 2.0, oi: 7000, volume: 5000, support: 218, resistance: 225, history: [ { time: '10:00', price: 218 }, { time: '10:15', price: 219 }, { time: '10:30', price: 220 } ] }
         ],
         news: [
           { id: 1, title: 'Gold prices hit 3-month high on weak dollar', source: 'Economic Times', timestamp: '2 hours ago', impact: 'high' },
@@ -148,15 +155,15 @@ const Mcx = () => {
   );
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-transparent text-white">
       {/* Enhanced Navbar with Gradient and Lower Positioning */}
-      <header className={`sticky top-0 z-50 py-6 px-4 sm:px-6 lg:px-8 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg mt-8 rounded-b-xl`}>
+      <header className="sticky top-0 z-50 py-6 px-4 sm:px-6 lg:px-8 bg-transparent shadow-lg mt-8 rounded-b-xl">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
           {/* Branding with Gradient */}
           <div className="flex items-center space-x-3">
-            <FiTrendingUp className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-[#A1C4FD] to-[#D4A1FD]" />
-            <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#A1C4FD] to-[#D4A1FD]">
-              MCX Pro
+            <FiTrendingUp className="text-3xl text-white" />
+            <h1 className="text-3xl font-extrabold text-white">
+              MCX Service
             </h1>
           </div>
           {/* Navigation Tabs */}
@@ -214,7 +221,7 @@ const Mcx = () => {
           transition={{ duration: 0.5 }}
           className="flex flex-col sm:flex-row justify-between items-center mb-8"
         >
-          <div className={`inline-flex rounded-md shadow-sm ${darkMode ? 'bg-gray-700' : 'bg-white'} p-1`}>
+          <div className="inline-flex rounded-md shadow-sm bg-white/20 p-1">
             {timeframes.map((tf) => (
               <motion.button
                 key={tf.id}
@@ -233,7 +240,7 @@ const Mcx = () => {
               </motion.button>
             ))}
           </div>
-          <div className={`text-sm ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+          <div className="text-sm text-white">
             Last updated: {new Date().toLocaleTimeString()}
           </div>
         </motion.div>
@@ -265,7 +272,7 @@ const Mcx = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className={`rounded-2xl shadow-xl overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+                    className="rounded-2xl shadow-xl overflow-hidden bg-white/20"
                   >
                     <div className="p-6 sm:p-8">
                       <h2 className={`text-2xl font-bold mb-6 ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
@@ -355,8 +362,21 @@ const Mcx = () => {
                                     </LineChart>
                                   </div>
                                 </div>
-                              </motion.div>
-                            )}
+                  </motion.div>
+                )}
+              {/* Service Toggle Buttons */}
+              {activeTab === 'dashboard' && (
+                <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2 rounded-md shadow-sm bg-white/20 p-1 mb-6 w-full">
+                  <button
+                    onClick={() => setInfoView('supreme')}
+                    className={`w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md ${infoView === 'supreme' ? 'bg-gradient-to-r from-[#A1C4FD] to-[#D4A1FD] text-white' : 'text-white hover:bg-white/30'}`}
+                  >MCX Supreme</button>
+                  <button
+                    onClick={() => setInfoView('galaxy')}
+                    className={`w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md ${infoView === 'galaxy' ? 'bg-gradient-to-r from-[#A1C4FD] to-[#D4A1FD] text-white' : 'text-white hover:bg-white/30'}`}
+                  >Galaxy MCX</button>
+                </div>
+              )}
                           </motion.div>
                         ))}
                       </div>
@@ -368,10 +388,10 @@ const Mcx = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className={`rounded-2xl shadow-xl overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+                    className="rounded-2xl shadow-xl overflow-hidden bg-white/20"
                   >
                     <div className="p-6 sm:p-8">
-                      <h2 className={`text-2xl font-bold mb-6 ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                      <h2 className="text-2xl font-bold mb-6 text-white">
                         Technical Analysis
                       </h2>
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -432,10 +452,10 @@ const Mcx = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
-                    className={`rounded-2xl shadow-xl overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+                    className="rounded-2xl shadow-xl overflow-hidden bg-white/20"
                   >
                     <div className="p-6 sm:p-8">
-                      <h2 className={`text-2xl font-bold mb-6 ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                      <h2 className="text-2xl font-bold mb-6 text-white">
                         Market News
                       </h2>
                       <div className="space-y-4">
@@ -472,16 +492,135 @@ const Mcx = () => {
                 </div>
               )}
 
+              {/* MCX Supreme Info */}
+              {activeTab === 'dashboard' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="rounded-2xl shadow-xl overflow-hidden bg-white/20"
+                >
+                  <div className="p-6 sm:p-8">
+                    <h2 className="text-2xl font-bold mb-4 text-white">MCX Supreme</h2>
+                    <p className="mb-4 text-white/80">
+                      MCX Supreme is designed and destined to deliver recommendations with good market moves. It’s unique blend of technical and fundamentals research makes it most exciting and rewarding product. It provides you 1-2 intraday recommendations. The recommendations are given in Bullions, Base Metals and energy traded in MCX. Our timely generated technical recommendations provide adequate time to enter in trades. Our recommendations are supreme blend of Technical and globally covered fundamental research.
+                    </p>
+                    <h3 className="text-xl font-semibold mb-2 text-white">MCX Supreme Features:</h3>
+                    <ul className="list-disc list-inside mb-4 text-white/80 space-y-1">
+                      <li>We provide 1-2 Intraday/Positional recommendations in Bullions, Base Metals and energy traded in MCX (as per market conditions).</li>
+                      <li>All recommendations have 2 TGT with proper Stop loss.</li>
+                      <li>Timely Follow Ups of all the trade signals.</li>
+                      <li>Proper time for entry & exit in recommendations.</li>
+                      <li>Nifty and Bank Nifty Trend and Support and resistance.</li>
+                      <li>Carefully Analysis Market direction.</li>
+                      <li>Concise information of Domestic & World Market.</li>
+                      <li>Recommendations are provided through SMS.</li>
+                      <li>Swift real time customer support between (09:00 AM to 06:00 PM).</li>
+                      <li>Trading rules that every trader must studious follow.</li>
+                      <li>Do not over trade.</li>
+                      <li>Only follow SMS research recommendations.</li>
+                      <li>Have to trade on each Recommendation with same quantity according to Research Team.</li>
+                      <li>Profit and Loss is subject to market risk and there is no guarantee or assurance for it.</li>
+                      <li>Never be emotional.</li>
+                      <li>Beware of overnight risk.</li>
+                      <li>Always trade with a stop loss.</li>
+                      <li>Don’t look back and rue trades.</li>
+                      <li>Don’t over leverage in a volatile market.</li>
+                      <li>Costs matter a lot when you are a trader.</li>
+                      <li>Trading begins with protecting your capital.</li>
+                      <li>Not doing anything is also a trading strategy.</li>
+                      <li>Profit is what is booked; all else is book profits.</li>
+                    </ul>
+                    <h3 className="text-xl font-semibold mb-2 text-white">Pricing Plan For MCX Supreme:</h3>
+                    <table className="min-w-full divide-y divide-gray-200 mb-4">
+                      <thead className="bg-white/20">
+                        <tr>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-white">Plan</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-white">Price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="bg-white/20">
+                          <td className="px-4 py-2 text-white">MCX Supreme</td>
+                          <td className="px-4 py-2 text-white">₹12,500 / Monthly</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p className="text-sm text-white/70">Note: Pricing are excluding GST (18%)</p>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Galaxy MCX Info */}
+              {activeTab === 'dashboard' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="rounded-2xl shadow-xl overflow-hidden bg-white/20"
+                >
+                  <div className="p-6 sm:p-8">
+                    <h2 className="text-2xl font-bold mb-4 text-white">Galaxy MCX</h2>
+                    <p className="mb-4 text-white/80">
+                      Our MCX Commodity Service provides real-time trading insights, research-backed recommendations, and expert research recommendations for F&O commodities such as gold, silver, crude oil, natural gas, and base metals. Designed for both beginners and experienced traders, whether you’re trading for short-term profits or long-term investments, our MCX Commodity Service is your reliable partner in navigating the Indian commodities market with confidence.
+                    </p>
+                    <h3 className="text-xl font-semibold mb-2 text-white">Galaxy MCX Features:</h3>
+                    <ul className="list-disc list-inside mb-4 text-white/80 space-y-1">
+                      <li>We provide 1-2 Intraday/Positional recommendations in Bullions, Base Metals and energy traded in MCX F&O (as per market conditions).</li>
+                      <li>All recommendations have 2 TGT with proper Stop loss.</li>
+                      <li>Timely Follow Ups of all the trade signals.</li>
+                      <li>Proper time for entry & exit in recommendations.</li>
+                      <li>Carefully Analysis Market direction.</li>
+                      <li>Concise information of Domestic & World Market.</li>
+                      <li>Recommendations are provided through SMS.</li>
+                      <li>Swift real time customer support between (09:00 AM to 06:00 PM).</li>
+                      <li>Trading rules that every trader must studious follow.</li>
+                      <li>Do not over trade.</li>
+                      <li>Only follow SMS research recommendations.</li>
+                      <li>Have to trade on each Recommendation with same quantity according to Research Team.</li>
+                      <li>Profit and Loss is subject to market risk and there is no guarantee or assurance for it.</li>
+                      <li>Never be emotional.</li>
+                      <li>Beware of overnight risk.</li>
+                      <li>Always trade with a stop loss.</li>
+                      <li>Don’t look back and rue trades.</li>
+                      <li>Don’t over leverage in a volatile market.</li>
+                      <li>Costs matter a lot when you are a trader.</li>
+                      <li>Trading begins with protecting your capital.</li>
+                      <li>Not doing anything is also a trading strategy.</li>
+                      <li>Profit is what is booked; all else is book profits.</li>
+                    </ul>
+                    <h3 className="text-xl font-semibold mb-2 text-white">Sample Calls:</h3>
+                    <p className="mb-4 text-white/80">BUY CRUDE OIL 5800 CE ABOVE 181 TARGET 204 226 STOPLOSS 154</p>
+                    <h3 className="text-xl font-semibold mb-2 text-white">Pricing Plan For Galaxy MCX:</h3>
+                    <table className="min-w-full divide-y divide-gray-200 mb-4">
+                      <thead className="bg-white/20">
+                        <tr>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-white">Plan</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-white">Price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="bg-white/20">
+                          <td className="px-4 py-2 text-white">Galaxy MCX</td>
+                          <td className="px-4 py-2 text-white">₹1,51,000 / Quarterly</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p className="text-sm text-white/70">Note: Pricing are excluding GST (18%)</p>
+                  </div>
+                </motion.div>
+              )}
+
               {/* Commodities Tab */}
               {activeTab === 'commodities' && marketData && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  className={`rounded-2xl shadow-xl overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+                  className="rounded-2xl shadow-xl overflow-hidden bg-white/20"
                 >
                   <div className="p-6 sm:p-8">
-                    <h2 className={`text-2xl font-bold mb-6 ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                    <h2 className="text-2xl font-bold mb-6 text-white">
                       Commodities
                     </h2>
                     {/* Search Bar */}
@@ -499,24 +638,24 @@ const Mcx = () => {
                     </div>
                     <div className="overflow-x-auto">
                       <table className="min-w-full divide-y divide-gray-200">
-                        <thead className={darkMode ? 'bg-gray-700' : 'bg-gray-50'}>
+                        <thead className="bg-white/20">
                           <tr>
-                            <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-white">
                               Commodity
                             </th>
-                            <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-white">
                               Price
                             </th>
-                            <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-white">
                               Change
                             </th>
-                            <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-white">
                               OI
                             </th>
-                            <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-white">
                               Volume
                             </th>
-                            <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-white">
                               Support/Resistance
                             </th>
                           </tr>
@@ -528,9 +667,9 @@ const Mcx = () => {
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               transition={{ duration: 0.3 }}
-                              className={darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'}
+                              className="bg-white/20 hover:bg-white/30"
                             >
-                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-white">
                                 <div className="flex items-center">
                                   <div className="flex-shrink-0 h-10 w-10">
                                     <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
@@ -543,19 +682,19 @@ const Mcx = () => {
                                     </div>
                                   </div>
                                   <div className="ml-4">
-                                    <div className={`text-sm font-medium ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                                    <div className="text-sm font-medium text-white">
                                       {commodity.name}
                                     </div>
-                                    <div className="text-sm text-gray-500">{commodity.symbol}</div>
+                                    <div className="text-sm text-white/70">{commodity.symbol}</div>
                                   </div>
                                 </div>
                               </td>
-                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-white">
                                 <div className={`text-sm font-medium ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
                                   {formatCurrency(commodity.price)}
                                 </div>
                               </td>
-                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-white">
                                 <div className={`flex items-center ${commodity.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                                   {commodity.change >= 0 ? (
                                     <FiTrendingUp className="mr-1" />
@@ -565,17 +704,17 @@ const Mcx = () => {
                                   <span>{commodity.change >= 0 ? '+' : ''}{commodity.change}%</span>
                                 </div>
                               </td>
-                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-white">
                                 <div className={`text-sm ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
                                   {(commodity.oi / 1000).toFixed(1)}K
                                 </div>
                               </td>
-                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-white">
                                 <div className={`text-sm ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
                                   {(commodity.volume / 1000).toFixed(1)}K
                                 </div>
                               </td>
-                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-white">
                                 <div className={`text-sm ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
                                   <div>S: {formatCurrency(commodity.support)}</div>
                                   <div>R: {formatCurrency(commodity.resistance)}</div>
@@ -596,10 +735,10 @@ const Mcx = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  className={`rounded-2xl shadow-xl overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+                  className="rounded-2xl shadow-xl overflow-hidden bg-white/20"
                 >
                   <div className="p-6 sm:p-8">
-                    <h2 className={`text-2xl font-bold mb-6 ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                    <h2 className="text-2xl font-bold mb-6 text-white">
                       Analytics
                     </h2>
                     <div className="overflow-x-auto">
@@ -627,18 +766,18 @@ const Mcx = () => {
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               transition={{ duration: 0.3 }}
-                              className={darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'}
+                              className="bg-white/20 hover:bg-white/30"
                             >
-                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-white">
                                 {commodity.name}
                               </td>
-                              <td className={`px-4 sm:px-6 py-4 whitespace-nowrap ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-white">
                                 {formatCurrency(commodity.price)}
                               </td>
-                              <td className={`px-4 sm:px-6 py-4 whitespace-nowrap ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-white">
                                 {formatCurrency(commodity.support)} - {formatCurrency(commodity.resistance)}
                               </td>
-                              <td className={`px-4 sm:px-6 py-4 whitespace-nowrap ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-white">
                                 {(commodity.volume / 1000).toFixed(1)}K
                               </td>
                             </motion.tr>
@@ -656,7 +795,7 @@ const Mcx = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  className={`rounded-2xl shadow-xl overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+                  className="rounded-2xl shadow-xl overflow-hidden bg-white/20"
                 >
                   <div className="p-6 sm:p-8">
                     <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
@@ -679,7 +818,7 @@ const Mcx = () => {
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
-                        className={`p-4 rounded-lg border ${darkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}
+                        className="p-4 rounded-lg bg-white/20"
                       >
                         <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
                           Create New Alert
@@ -740,24 +879,24 @@ const Mcx = () => {
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: 20 }}
                           transition={{ duration: 0.3 }}
-                          className={`p-4 rounded-lg border-l-4 ${
-                            alert.severity === 'high' ? 'border-red-500 bg-red-50' :
-                            alert.severity === 'medium' ? 'border-yellow-500 bg-yellow-50' :
-                            'border-blue-500 bg-blue-50'
-                          } ${darkMode ? 'bg-opacity-10' : ''}`}
+                          className={`p-4 rounded-lg bg-white/20 border-l-4 ${
+                            alert.severity === 'high' ? 'border-red-500' :
+                            alert.severity === 'medium' ? 'border-yellow-500' :
+                            'border-blue-500'
+                          }`}
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <p className={`font-medium ${darkMode ? 'text-[#E5E7EB]' : 'text-[#1F2937]'}`}>
+                              <p className="font-medium text-white">
                                 {alert.message}
                               </p>
-                              <p className="text-sm text-gray-500 mt-1">{alert.timestamp}</p>
+                              <p className="text-sm text-white/70 mt-1">{alert.timestamp}</p>
                             </div>
                             <motion.button
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                               onClick={() => setAlerts(alerts.filter((a) => a.id !== alert.id))}
-                              className="text-gray-400 hover:text-gray-600"
+                              className="text-white/70 hover:text-white"
                             >
                               ×
                             </motion.button>
